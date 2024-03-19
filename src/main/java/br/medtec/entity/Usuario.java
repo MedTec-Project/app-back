@@ -10,14 +10,22 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
-
-    @Getter
-    @Setter
-    @Id
-    private Long id;
+public class Usuario extends MedEntity {
 
     @Column(name = "nome")
     private String nome;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "senha")
+    private String senha;
+
+    @Column(name = "telefone")
+    private String telefone;
+
+    @Column(name = "administrador")
+    private Boolean administrador;
+
 
 }

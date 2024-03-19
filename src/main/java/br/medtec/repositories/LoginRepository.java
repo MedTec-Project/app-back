@@ -1,4 +1,4 @@
 package br.medtec.repositories;
 
-public class LoginRepository {
+public class LoginRepository  {
 }
