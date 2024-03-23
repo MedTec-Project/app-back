@@ -25,10 +25,10 @@ public class Medicamento extends MedEntity {
     private String descricao;
 
     @Column(name = "categoria_medicamento")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private CategoriaMedicamento categoriaMedicamento ;
     @Column(name = "forma_farmaceutica")
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private FormaFarmaceutica formaFarmaceutica;
 
     @Column(name = "numero_registro")
@@ -49,15 +49,28 @@ public class Medicamento extends MedEntity {
 
 
     public enum CategoriaMedicamento {
-        ANALGESICO("Analgesico"),
-        ANTIBIOTICO("Antibiotico"),
-        ANTIALERGICO("Antialérgico");
+        ANALGESICO(0,"Analgesico"),
+        ANTIBIOTICO(1, "Antibiotico"),
+        ANTIALERGICO(2, "Antialérgico");
 
         private final String descricao;
+        private Integer value;
 
-        CategoriaMedicamento(String descricao) {
+        CategoriaMedicamento(Integer value, String descricao) {
+            this.value = value;
             this.descricao = descricao;
         }
+
+        public static CategoriaMedicamento valueOf(Integer valor) {
+            CategoriaMedicamento[] tipos = CategoriaMedicamento.values();
+            for (CategoriaMedicamento tipo : tipos) {
+                if (Integer.valueOf(tipo.ordinal()).equals(valor)) {
+                    return tipo;
+                }
+            }
+            return null;
+        }
+
 
         @Override
         public String toString() {
@@ -66,15 +79,28 @@ public class Medicamento extends MedEntity {
     }
 
     public enum FormaFarmaceutica {
-        COMPRIMIDO("Comprimido"),
-        CAPSULA("Capsula"),
-        XAROPE("Xarope");
+        COMPRIMIDO(0, "Comprimido"),
+        CAPSULA(1,"Capsula"),
+        XAROPE(2,"Xarope");
 
         private final String descricao;
+        private Integer value;
 
-        FormaFarmaceutica(String descricao) {
+        FormaFarmaceutica(Integer value, String descricao) {
+            this.value = value;
             this.descricao = descricao;
         }
+
+        public static FormaFarmaceutica valueOf(Integer valor) {
+            FormaFarmaceutica[] tipos = FormaFarmaceutica.values();
+            for (FormaFarmaceutica tipo : tipos) {
+                if (Integer.valueOf(tipo.ordinal()).equals(valor)) {
+                    return tipo;
+                }
+            }
+            return null;
+        }
+
 
         @Override
         public String toString() {
