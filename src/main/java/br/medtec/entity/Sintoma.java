@@ -18,4 +18,7 @@ public class Sintoma extends MedEntity {
     @ManyToMany(mappedBy = "sintomas")
     private List<Medicamento> medicamentos;
 
+//    @ManyToMany(mappedBy = "efeitosColaterais")
+//    private List<Medicamento> medicamentosEfeitoColateral;
+
 }

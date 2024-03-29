@@ -1,18 +1,19 @@
 package br.medtec.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
+@Data
 @Table(name = "medicamento")
 public class Medicamento extends MedEntity {
 
     @Column(name = "nome")
     private String nome;
-
-    @Column(name = "oid_fabricante")
-    private String oidFabricante;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oid_fabricante")
