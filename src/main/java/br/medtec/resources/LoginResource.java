@@ -4,6 +4,8 @@ package br.medtec.resources;
 import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
 import br.medtec.services.LoginService;
+import br.medtec.utils.ResponseUtils;
+import br.medtec.utils.Validcoes;
 import com.google.gson.Gson;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -25,7 +27,7 @@ public class LoginResource {
     @Path("login")
     public Response login(UsuarioDTO usuarioDTO) {
         if (!loginService.verificaExiste(usuarioDTO)){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+//            return ResponseUtils.badRequest(new Validcoes(new Validcoes.Validacao()))
         } else {
             return Response.status(Response.Status.OK).entity(new Gson().toJson(usuarioDTO)).build();
         }
