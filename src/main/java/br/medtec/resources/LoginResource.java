@@ -5,6 +5,7 @@ import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
 import br.medtec.services.LoginService;
 import br.medtec.utils.ResponseUtils;
+import br.medtec.utils.Validacao;
 import br.medtec.utils.Validcoes;
 import com.google.gson.Gson;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,13 +24,17 @@ public class LoginResource {
     @Inject
     LoginService loginService;
 
+    @Inject
+    Gson gson;
+
     @POST
     @Path("login")
-    public Response login(UsuarioDTO usuarioDTO) {
+    public Response login(String json) {
+        UsuarioDTO usuarioDTO = gson.fromJson(json, UsuarioDTO.class);
         if (!loginService.verificaExiste(usuarioDTO)){
-//            return ResponseUtils.badRequest(new Validcoes(new Validcoes.Validacao()))
+            return ResponseUtils.badRequest(new Validacao("Email ou Senha Incorreto"));
         } else {
-            return Response.status(Response.Status.OK).entity(new Gson().toJson(usuarioDTO)).build();
+            return ResponseUtils.ok(usuarioDTO);
         }
 
     }
@@ -37,10 +42,10 @@ public class LoginResource {
     @Path("cadastrar")
     public Response cadastrar(UsuarioDTO usuarioDTO) {
         if (loginService.verificaExiste(usuarioDTO)){
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            return ResponseUtils.badRequest(new Validacao("Esse email já está cadastrado"));
         } else {
             Usuario usuario = loginService.criaUsuario(usuarioDTO);
-            return Response.status(Response.Status.OK).entity(new Gson().toJson(usuario)).build();
+            return ResponseUtils.created(usuarioDTO);
         }
     }
 

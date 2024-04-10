@@ -1,5 +1,7 @@
 package br.medtec.utils;
 
+import br.medtec.exceptions.MEDValidationExecption;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +17,9 @@ public class Validcoes {
         validacoes.add(new Validacao(message));
     }
 
-
-    public class Validacao {
-        String message;
-
-        public Validacao(String message) {
-            this.message = message;
+    public void lancaErros(){
+        if(!validacoes.isEmpty()){
+            throw new MEDValidationExecption(this);
         }
     }
 }
