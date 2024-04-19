@@ -4,6 +4,7 @@ package br.medtec.resources;
 import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
 import br.medtec.services.LoginService;
+import br.medtec.utils.JsonUtils;
 import br.medtec.utils.ResponseUtils;
 import br.medtec.utils.Validacao;
 import br.medtec.utils.Validcoes;
@@ -24,28 +25,28 @@ public class LoginResource {
     @Inject
     LoginService loginService;
 
-    @Inject
-    Gson gson;
 
     @POST
     @Path("login")
     public Response login(String json) {
-        UsuarioDTO usuarioDTO = gson.fromJson(json, UsuarioDTO.class);
-        if (!loginService.verificaExiste(usuarioDTO)){
-            return ResponseUtils.badRequest(new Validacao("Email ou Senha Incorreto"));
+        UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
+        if (!loginService.verificaExiste(usuarioDTO, true)){
+            return ResponseUtils.badRequest("Email ou Senha Incorreto");
         } else {
             return ResponseUtils.ok(usuarioDTO);
         }
 
     }
 
+    @POST
     @Path("cadastrar")
-    public Response cadastrar(UsuarioDTO usuarioDTO) {
-        if (loginService.verificaExiste(usuarioDTO)){
-            return ResponseUtils.badRequest(new Validacao("Esse email já está cadastrado"));
+    public Response cadastrar(String json) {
+        UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
+        if (loginService.verificaExiste(usuarioDTO, false)){
+            return ResponseUtils.badRequest("Esse email já está cadastrado");
         } else {
             Usuario usuario = loginService.criaUsuario(usuarioDTO);
-            return ResponseUtils.created(usuarioDTO);
+            return ResponseUtils.created(usuario);
         }
     }
 

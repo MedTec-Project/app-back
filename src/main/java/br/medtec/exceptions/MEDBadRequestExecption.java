@@ -9,4 +9,6 @@ public class MEDBadRequestExecption extends WebApplicationException {
     public MEDBadRequestExecption(Validacao validacao){
         super(ResponseUtils.badRequest(validacao));
     }
+
+
 }

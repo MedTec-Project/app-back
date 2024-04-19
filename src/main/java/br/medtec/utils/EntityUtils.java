@@ -2,14 +2,15 @@ package br.medtec.utils;
 
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 public class EntityUtils {
     @Inject
     EntityManager manager;
 
-    public EntityManager getManager(){ return this.manager;}
     public void persist(Object object){
         getManager().persist(object);
     }

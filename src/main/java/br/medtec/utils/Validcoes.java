@@ -7,14 +7,14 @@ import java.util.List;
 
 public class Validcoes {
 
-    public List<Validacao> validacoes;
+    public List<String> validacoes;
 
     public Validcoes(){
         this.validacoes = new ArrayList<>();
     }
 
     public void add(String message){
-        validacoes.add(new Validacao(message));
+        validacoes.add(message);
     }
 
     public void lancaErros(){

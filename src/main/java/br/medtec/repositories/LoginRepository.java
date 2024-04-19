@@ -1,22 +1,31 @@
 package br.medtec.repositories;
 
 import br.medtec.entity.Usuario;
+import br.medtec.utils.ConsultaBuilder;
+import br.medtec.utils.GenericRepository;
+import br.medtec.utils.GenericsService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 @ApplicationScoped
-public class LoginRepository{
+public class LoginRepository extends GenericRepository<Usuario> {
 
-    @Inject
-    EntityManager em;
+    public LoginRepository(){
+        super(Usuario.class);
+    }
 
-    public Usuario autenticar(String email, String Senha){
-        Usuario usuario = em.find(Usuario.class, email);
-        if(usuario.getSenha().equals(Senha)){
-            return usuario;
-        }
-        return null;
+
+    public Usuario findByEmailAndSenha(String email){
+        ConsultaBuilder consulta = createConsultaBuilder();
+
+        consulta.select("u")
+                .from("Usuario u")
+                .where("u.email = :email")
+                .param("email", email);
+
+
+        return (Usuario) consulta.primeiroRegistro();
     }
 
 }

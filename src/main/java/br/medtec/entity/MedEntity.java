@@ -11,7 +11,7 @@ public class MedEntity {
     @Id
     private String oid;
 
-    @Column (name = "oid_usuario_criacao", nullable = false, updatable = false)
+    @Column (name = "oid_usuario_criacao", updatable = false)
     private String oidUsuarioCriacao;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
@@ -22,14 +22,23 @@ public class MedEntity {
     private String oidUsuarioAlteracao;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_alteracao", nullable = true)
+    @Column(name = "data_alteracao")
     private Date dataAlteracao;
 
     @PrePersist
     public void beforePersist() {
 
-        if (oid == null) {
-            oid = UUID.randomUUID().toString();
+        if (this.oid == null) {
+            this.oid = UUID.randomUUID().toString();
         }
+
+        if (this.dataCriacao == null) {
+            this.dataCriacao = new Date();
+        }
+    }
+
+    @PreUpdate
+    public void beforeUpdate(){
+        this.dataAlteracao = new Date();
     }
 }

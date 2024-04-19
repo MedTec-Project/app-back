@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 public class JsonUtils{
 
-    public static <T> Object fromJson(String json, Class<T> Objectclass){
+    public static <T> T fromJson(String json, Class<T> Objectclass){
         return new Gson().fromJson(json, Objectclass);
     }
 
