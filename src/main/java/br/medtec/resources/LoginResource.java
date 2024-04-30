@@ -4,11 +4,9 @@ package br.medtec.resources;
 import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
 import br.medtec.services.LoginService;
-import br.medtec.utils.JsonUtils;
-import br.medtec.utils.ResponseUtils;
-import br.medtec.utils.Validacao;
-import br.medtec.utils.Validcoes;
+import br.medtec.utils.*;
 import com.google.gson.Gson;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -33,7 +31,7 @@ public class LoginResource {
         if (!loginService.verificaExiste(usuarioDTO, true)){
             return ResponseUtils.badRequest("Email ou Senha Incorreto");
         } else {
-            return ResponseUtils.ok(usuarioDTO);
+            return ResponseUtils.ok(loginService.login(usuarioDTO));
         }
 
     }

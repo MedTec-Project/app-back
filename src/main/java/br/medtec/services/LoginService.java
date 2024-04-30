@@ -2,8 +2,10 @@ package br.medtec.services;
 
 import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.repositories.LoginRepository;
 import br.medtec.utils.GenericsService;
+import br.medtec.utils.JWTUtils;
 import br.medtec.utils.UtilString;
 import br.medtec.utils.Validcoes;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,13 +19,14 @@ public class LoginService extends GenericsService<Usuario> {
     @Inject
     LoginRepository loginRepository;
 
+
     @Transactional
-    public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
-        if (usuarioDTO != null) {
-            Usuario usuarioLogin = loginRepository.findByEmailAndSenha(usuarioDTO.getEmail());
-            return verificarSenha ? usuarioLogin.getSenha().equals(usuarioDTO.getSenha()) : usuarioLogin != null;
+    public String login(UsuarioDTO usuarioDTO){
+        if (!verificaExiste(usuarioDTO, true)){
+            throw new MEDBadRequestExecption("Email ou Senha Incorreto");
+        } else {
+            return JWTUtils.gerarToken(usuarioDTO);
         }
-        return null;
     }
 
     @Transactional
@@ -37,6 +40,15 @@ public class LoginService extends GenericsService<Usuario> {
             usuarioLogin.setTelefone(usuario.getTelefone());
             persist(usuarioLogin);
             return usuarioLogin;
+        }
+        return null;
+    }
+
+    @Transactional
+    public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
+        if (usuarioDTO != null) {
+            Usuario usuarioLogin = loginRepository.findByEmailAndSenha(usuarioDTO.getEmail());
+            return verificarSenha ? usuarioLogin != null && usuarioLogin.getSenha().equals(usuarioDTO.getSenha()) : usuarioLogin != null;
         }
         return null;
     }

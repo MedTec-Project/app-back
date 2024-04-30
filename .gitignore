@@ -38,6 +38,8 @@ nb-configuration.xml
 
 # Local environment
 .env
+publicKey.pem
+privateKey.pem
 
 # Plugin directory
 /.quarkus/cli/plugins/
