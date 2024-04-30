@@ -5,4 +5,12 @@ public class UtilString {
         return (str != null) && (!(str).trim().isEmpty());
     }
 
+    public static boolean validarTelefone(String str){
+        return str.length() == 11;
+    }
+
+    public static boolean validarEmail(String str) {
+        return (str.indexOf("@") > 0) && (str.indexOf(".com") > 0);
+    }
+
 }
