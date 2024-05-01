@@ -40,7 +40,7 @@ public class LoginResource {
     @Path("cadastrar")
     public Response cadastrar(String json) {
         UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
-        if (loginService.verificaExiste(usuarioDTO, false)){
+        if (loginService.verificaExiste(usuarioDTO, false)) {
             return ResponseUtils.badRequest("Esse email já está cadastrado");
         } else {
             Usuario usuario = loginService.criaUsuario(usuarioDTO);

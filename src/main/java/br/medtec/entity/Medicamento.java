@@ -12,15 +12,18 @@ import java.util.List;
 @Table(name = "medicamento")
 public class Medicamento extends MedEntity {
 
-    @Column(name = "nome")
+    @Column(name = "nome", nullable = false)
     private String nome;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oid_fabricante")
     private Fabricante fabricante;
 
+    @Column(name = "oid_fabricante")
+    private String oidFabricante;
+
     @Column(name = "dosagem")
-    private Integer dosagem;
+    private String dosagem;
 
     @Column(name = "descricao")
     private String descricao;
@@ -28,6 +31,7 @@ public class Medicamento extends MedEntity {
     @Column(name = "categoria_medicamento")
     @Enumerated(EnumType.ORDINAL)
     private CategoriaMedicamento categoriaMedicamento ;
+
     @Column(name = "forma_farmaceutica")
     @Enumerated(EnumType.ORDINAL)
     private FormaFarmaceutica formaFarmaceutica;
@@ -35,13 +39,13 @@ public class Medicamento extends MedEntity {
     @Column(name = "numero_registro")
     private Integer numeroRegistro;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name="sintoma_medicamento", joinColumns=
             {@JoinColumn(name="oid_medicamento")}, inverseJoinColumns=
             {@JoinColumn(name="oid_sintoma")})
     private List<Sintoma> sintomas;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name="efeito_colateral", joinColumns=
             {@JoinColumn(name="oid_medicamento")}, inverseJoinColumns=
             {@JoinColumn(name="oid_sintoma")})

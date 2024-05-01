@@ -1,6 +1,7 @@
 package br.medtec.utils;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.exceptions.MEDExecption;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -69,7 +70,7 @@ public class ConsultaBuilder {
     }
 
 
-    public List executarConsulta() throws Exception {
+    public <T> List<T> executarConsulta() {
         Query query;
 
         StringBuilder sql = montaSql();
@@ -78,7 +79,7 @@ public class ConsultaBuilder {
                 query = instance.entityManager.createQuery(sql.toString());
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new Exception(e);
+                throw new MEDExecption(e.getMessage());
             }
 
         if ((instance.limit != null) && (instance.limit >= 1)) {
