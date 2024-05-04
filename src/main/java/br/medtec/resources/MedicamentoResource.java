@@ -9,6 +9,7 @@ import br.medtec.utils.UtilString;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 
@@ -21,43 +22,43 @@ public class MedicamentoResource {
     MedicamentoService medicamentoService;
 
     @POST
-    public void cadastrarMedicamento(String json) {
+    public Response cadastrarMedicamento(String json) {
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
         medicamentoService.cadastrarMedicamento(medicamentoDTO);
-        ResponseUtils.created(medicamentoDTO);
+        return ResponseUtils.created(medicamentoDTO);
     }
 
     @PUT
-    public void atualizarMedicamento(String json) {
+    public Response atualizarMedicamento(String json) {
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
         medicamentoService.atualizarMedicamento(medicamentoDTO);
-        ResponseUtils.ok(medicamentoDTO);
+        return ResponseUtils.ok(medicamentoDTO);
     }
 
     @DELETE
     @Path("{oid}")
-    public void deletarMedicamento(@PathParam("oid") String oid) {
+    public Response deletarMedicamento(@PathParam("oid") String oid) {
         medicamentoService.deletarMedicamento(oid);
-        ResponseUtils.deleted();
+        return ResponseUtils.deleted();
     }
 
     @GET
     @Path("{oid}")
-    public void buscarMedicamento(@PathParam("oid") String oid) {
+    public Response buscarMedicamento(@PathParam("oid") String oid) {
         if (UtilString.stringValida(oid)) {
-            ResponseUtils.ok(medicamentoService.buscarMedicamento(oid));
+            return ResponseUtils.ok(medicamentoService.buscarMedicamento(oid));
         } else {
-            ResponseUtils.badRequest("Oid inválido");
+            return ResponseUtils.badRequest("Oid inválido");
         }
     }
 
     @GET
-    public void buscarMedicamentos() {
+    public Response buscarMedicamentos() {
         List<Medicamento> medicamentos = medicamentoService.buscarMedicamentos();
         if (medicamentos != null) {
-            ResponseUtils.ok(medicamentos);
+           return ResponseUtils.ok(medicamentos);
         } else {
-            ResponseUtils.badRequest("Nenhum medicamento encontrado");
+            return ResponseUtils.badRequest("Nenhum medicamento encontrado");
         }
     }
 }
