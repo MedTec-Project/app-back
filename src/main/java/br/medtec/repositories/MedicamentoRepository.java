@@ -5,6 +5,7 @@ import br.medtec.entity.Sintoma;
 import br.medtec.entity.Usuario;
 import br.medtec.utils.ConsultaBuilder;
 import br.medtec.utils.GenericRepository;
+import br.medtec.utils.UtilString;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
@@ -16,11 +17,26 @@ public class MedicamentoRepository extends GenericRepository<Medicamento> {
         super(Medicamento.class);
     }
 
-    public List<Medicamento> findAll(){
+    public List<Medicamento> findAll(String nome, String oidFabricante, Integer categoriaMedicamento){
         ConsultaBuilder consulta = createConsultaBuilder();
-        return consulta.select("m")
-                .from("Medicamento m")
-                .executarConsulta();
+        consulta.select("m");
+
+            if (UtilString.stringValida(nome)) {
+                consulta.where("m.nome like :nome")
+                        .param("nome", "%" + nome + "%");
+            }
+
+            if (UtilString.stringValida(oidFabricante)) {
+                consulta.where("m.oidFabricante = :oidFabricante")
+                        .param("oidFabricante", oidFabricante);
+            }
+
+            if (categoriaMedicamento != null && Medicamento.CategoriaMedicamento.valueOf(categoriaMedicamento) != null) {
+                consulta.where("m.categoriaMedicamento = :categoriaMedicamento")
+                        .param("categoriaMedicamento", categoriaMedicamento);
+            }
+
+            return consulta.executarConsulta();
     }
 
     public Sintoma findSintomaByOid(String oid){
@@ -31,6 +47,7 @@ public class MedicamentoRepository extends GenericRepository<Medicamento> {
                 .param("oid", oid)
                 .primeiroRegistro();
     }
+
 
 
 

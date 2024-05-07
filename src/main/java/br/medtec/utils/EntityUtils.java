@@ -4,18 +4,18 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class EntityUtils {
+
     @Inject
     EntityManager manager;
 
-    public void persist(Object object){
+    public <T> T persist(T object){
         getManager().persist(object);
+        return object;
     }
 
-    public void remove(Object object){
+    public <T> void remove(T object){
         getManager().remove(object);
     }
 

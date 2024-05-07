@@ -2,6 +2,7 @@ package br.medtec.resources;
 
 import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
+import br.medtec.repositories.MedicamentoRepository;
 import br.medtec.services.MedicamentoService;
 import br.medtec.utils.JsonUtils;
 import br.medtec.utils.ResponseUtils;
@@ -20,6 +21,9 @@ public class MedicamentoResource {
 
     @Inject
     MedicamentoService medicamentoService;
+
+    @Inject
+    MedicamentoRepository medicamentoRepository;
 
     @POST
     public Response cadastrarMedicamento(String json) {
@@ -46,15 +50,18 @@ public class MedicamentoResource {
     @Path("{oid}")
     public Response buscarMedicamento(@PathParam("oid") String oid) {
         if (UtilString.stringValida(oid)) {
-            return ResponseUtils.ok(medicamentoService.buscarMedicamento(oid));
+            return ResponseUtils.ok(medicamentoRepository.findByOid(oid));
         } else {
             return ResponseUtils.badRequest("Oid inválido");
         }
     }
 
     @GET
-    public Response buscarMedicamentos() {
-        List<Medicamento> medicamentos = medicamentoService.buscarMedicamentos();
+    public Response buscarMedicamentos(@QueryParam("nome") String nomeMedicamento,
+                                       @QueryParam("oidFabricante") String oidFabricante,
+                                       @QueryParam("categoria") Integer categoriaMedicamento) {
+
+        List<Medicamento> medicamentos = medicamentoRepository.findAll(nomeMedicamento, oidFabricante, categoriaMedicamento);
         if (medicamentos != null) {
            return ResponseUtils.ok(medicamentos);
         } else {

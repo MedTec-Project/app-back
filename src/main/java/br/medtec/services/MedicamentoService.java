@@ -3,7 +3,6 @@ package br.medtec.services;
 import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
 import br.medtec.entity.Sintoma;
-import br.medtec.entity.Usuario;
 import br.medtec.repositories.MedicamentoRepository;
 import br.medtec.utils.GenericsService;
 import br.medtec.utils.UtilColecao;
@@ -11,8 +10,6 @@ import br.medtec.utils.UtilString;
 import br.medtec.utils.Validcoes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
-import java.util.List;
 
 @ApplicationScoped
 public class MedicamentoService extends GenericsService<Medicamento> {
@@ -42,18 +39,6 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         if (medicamento != null) {
             remove(medicamento);
         }
-    }
-
-    public Medicamento buscarMedicamento(String oid) {
-        return medicamentoRepository.findByOid(oid);
-    }
-
-    public List<Medicamento> buscarMedicamentos() {
-      if (UtilColecao.colecaoValida(medicamentoRepository.findAll())) {
-          return medicamentoRepository.findAll();
-      } else {
-            return null;
-      }
     }
 
     public Medicamento montarMedicamento(MedicamentoDTO medicamentoDTO){
@@ -126,7 +111,7 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         }
 
         if (UtilString.stringValida(medicamentoDTO.getDosagem())) {
-            validacoes.add("Fabricante do medicamento é obrigatório");
+            validacoes.add("Dosagem do medicamento é obrigatório");
         }
 
         validacoes.lancaErros();

@@ -10,7 +10,8 @@ public class UtilString {
     }
 
     public static boolean validarEmail(String str) {
-        return (str.indexOf("@") > 0) && (str.indexOf(".com") > 0);
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return str.matches(emailRegex);
     }
 
 }
