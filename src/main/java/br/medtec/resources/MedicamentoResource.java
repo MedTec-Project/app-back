@@ -4,9 +4,11 @@ import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
 import br.medtec.repositories.MedicamentoRepository;
 import br.medtec.services.MedicamentoService;
+import br.medtec.utils.GenericsResource;
 import br.medtec.utils.JsonUtils;
 import br.medtec.utils.ResponseUtils;
 import br.medtec.utils.UtilString;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,7 +19,7 @@ import java.util.List;
 @Path("/medicamento")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class MedicamentoResource {
+public class MedicamentoResource extends GenericsResource {
 
     @Inject
     MedicamentoService medicamentoService;
@@ -26,22 +28,26 @@ public class MedicamentoResource {
     MedicamentoRepository medicamentoRepository;
 
     @POST
+    @RolesAllowed({"user", "admin"})
     public Response cadastrarMedicamento(String json) {
+        // fazer usuario cadastrar
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
-        medicamentoService.cadastrarMedicamento(medicamentoDTO);
-        return ResponseUtils.created(medicamentoDTO);
+        return ResponseUtils.created(medicamentoService.cadastrarMedicamento(medicamentoDTO));
     }
 
     @PUT
+    @RolesAllowed({"user", "admin"})
     public Response atualizarMedicamento(String json) {
+        // fazer usuario atualizar
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
-        medicamentoService.atualizarMedicamento(medicamentoDTO);
-        return ResponseUtils.ok(medicamentoDTO);
+        return ResponseUtils.ok(medicamentoService.atualizarMedicamento(medicamentoDTO));
     }
 
     @DELETE
     @Path("{oid}")
+    @RolesAllowed({"user", "admin"})
     public Response deletarMedicamento(@PathParam("oid") String oid) {
+        // fazer usuario deletar
         medicamentoService.deletarMedicamento(oid);
         return ResponseUtils.deleted();
     }

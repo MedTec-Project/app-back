@@ -8,7 +8,8 @@ import java.util.List;
 public class MedicamentoDTO {
     private String oid;
     private String nome;
-    private String dosagem;
+    private Double dosagem;
+    private Integer tipoDosagem;
     private String descricao;
     private Integer numeroRegistro;
     private String oidFabricante;

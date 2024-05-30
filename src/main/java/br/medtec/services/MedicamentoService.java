@@ -10,6 +10,7 @@ import br.medtec.utils.UtilString;
 import br.medtec.utils.Validcoes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class MedicamentoService extends GenericsService<Medicamento> {
@@ -17,6 +18,8 @@ public class MedicamentoService extends GenericsService<Medicamento> {
     @Inject
     MedicamentoRepository medicamentoRepository;
 
+
+    @Transactional
     public Medicamento cadastrarMedicamento(MedicamentoDTO medicamentoDTO) {
         validarMedicamento(medicamentoDTO);
 
@@ -26,6 +29,7 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         return medicamento;
     }
 
+    @Transactional
     public Medicamento atualizarMedicamento(MedicamentoDTO medicamentoDTO) {
         validarMedicamento(medicamentoDTO);
 
@@ -34,6 +38,7 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         return (Medicamento) merge(medicamento);
     }
 
+    @Transactional
     public void deletarMedicamento(String oid) {
         Medicamento medicamento = medicamentoRepository.findByOid(oid);
         if (medicamento != null) {
@@ -41,6 +46,7 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         }
     }
 
+    @Transactional
     public Medicamento montarMedicamento(MedicamentoDTO medicamentoDTO){
         Medicamento medicamento;
         if (UtilString.stringValida(medicamentoDTO.getOid())) {
@@ -53,6 +59,7 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         medicamento.setFormaFarmaceutica(Medicamento.FormaFarmaceutica.valueOf(medicamentoDTO.getFormaFarmaceutica()));
         medicamento.setOidFabricante(medicamentoDTO.getOidFabricante());
         medicamento.setDosagem(medicamentoDTO.getDosagem());
+        medicamento.setTipoDosagem(Medicamento.TipoDosagem.valueOf(medicamentoDTO.getTipoDosagem()));
 
         if (UtilColecao.colecaoValida(medicamentoDTO.getSintomas())) {
             medicamentoDTO.getSintomas().forEach(sintoma -> {
@@ -93,9 +100,10 @@ public class MedicamentoService extends GenericsService<Medicamento> {
         return medicamento;
     }
 
+    @Transactional
     public void validarMedicamento(MedicamentoDTO medicamentoDTO) {
         Validcoes validacoes = new Validcoes();
-        if (UtilString.stringValida(medicamentoDTO.getNome())) {
+        if (!UtilString.stringValida(medicamentoDTO.getNome())) {
            validacoes.add("Nome do medicamento é obrigatório");
         }
         if (Medicamento.CategoriaMedicamento.valueOf(medicamentoDTO.getCategoriaMedicamento()) == null) {
@@ -106,12 +114,12 @@ public class MedicamentoService extends GenericsService<Medicamento> {
             validacoes.add("Forma farmaceutica do medicamento é obrigatório");
         }
 
-        if (UtilString.stringValida(medicamentoDTO.getOidFabricante())) {
-            validacoes.add("Fabricante do medicamento é obrigatório");
+        if ((medicamentoDTO.getDosagem() == null) || (medicamentoDTO.getDosagem() == 0)) {
+            validacoes.add("Dosagem do medicamento é obrigatório");
         }
 
-        if (UtilString.stringValida(medicamentoDTO.getDosagem())) {
-            validacoes.add("Dosagem do medicamento é obrigatório");
+        if (Medicamento.TipoDosagem.valueOf(medicamentoDTO.getTipoDosagem()) == null) {
+            validacoes.add("Tipo de dosagem do medicamento é obrigatório");
         }
 
         validacoes.lancaErros();
