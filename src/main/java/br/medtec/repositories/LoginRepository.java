@@ -15,7 +15,7 @@ public class LoginRepository extends GenericRepository<Usuario> {
 
 
 
-    public Usuario findByEmailAndSenha(String email){
+    public Usuario findByEmail(String email){
         ConsultaBuilder consulta = createConsultaBuilder();
 
         consulta.select("u")
