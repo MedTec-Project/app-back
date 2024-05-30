@@ -6,6 +6,7 @@ import br.medtec.entity.Usuario;
 import br.medtec.services.LoginService;
 import br.medtec.utils.*;
 import com.google.gson.Gson;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -18,14 +19,14 @@ import java.net.URI;
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class LoginResource {
+public class LoginResource extends GenericsResource {
 
     @Inject
     LoginService loginService;
 
-
     @POST
     @Path("login")
+    @PermitAll
     public Response login(String json) {
         UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
         if (!loginService.verificaExiste(usuarioDTO, true)){
@@ -40,7 +41,7 @@ public class LoginResource {
     @Path("cadastrar")
     public Response cadastrar(String json) {
         UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
-        if (loginService.verificaExiste(usuarioDTO, false)){
+        if (loginService.verificaExiste(usuarioDTO, false)) {
             return ResponseUtils.badRequest("Esse email já está cadastrado");
         } else {
             Usuario usuario = loginService.criaUsuario(usuarioDTO);

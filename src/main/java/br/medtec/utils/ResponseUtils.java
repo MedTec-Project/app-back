@@ -31,4 +31,12 @@ public class ResponseUtils {
          public static Response internalServerError(String message, Exception ex) {
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
+
+        public static Response deleted(){
+            return Response.status(Response.Status.NO_CONTENT).build();
+        }
+
+        public static Response unauthorized(){
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 }

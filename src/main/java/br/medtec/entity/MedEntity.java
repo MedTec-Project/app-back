@@ -1,11 +1,14 @@
 package br.medtec.entity;
-
+import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.UUID;
 
 @MappedSuperclass
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Data
 public class MedEntity {
 
     @Id
@@ -35,10 +38,16 @@ public class MedEntity {
         if (this.dataCriacao == null) {
             this.dataCriacao = new Date();
         }
+
+        if (this.oidUsuarioCriacao == null) {
+            this.oidUsuarioCriacao = Sessao.getInstance().getOidUsuario();
+        }
+
     }
 
     @PreUpdate
     public void beforeUpdate(){
         this.dataAlteracao = new Date();
+//        this.oidUsuarioAlteracao = Sessao.getInstance().getOidUsuario();
     }
 }

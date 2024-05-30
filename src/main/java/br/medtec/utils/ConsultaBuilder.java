@@ -1,6 +1,7 @@
 package br.medtec.utils;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.exceptions.MEDExecption;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -10,13 +11,17 @@ import java.util.List;
 
 public class ConsultaBuilder {
 
-    @Inject
-    EntityManager entityManager;
     private final Consulta instance;
 
     public ConsultaBuilder(EntityManager entityManager){
         this.instance = new Consulta();
         this.instance.entityManager = entityManager;
+    }
+
+    public ConsultaBuilder(EntityManager entityManager, Boolean consultaNativa){
+        this.instance = new Consulta();
+        this.instance.entityManager = entityManager;
+        this.instance.consultaNativa = consultaNativa;
     }
 
     public ConsultaBuilder select(String sql){
@@ -50,11 +55,6 @@ public class ConsultaBuilder {
 
         return this;
     }
-    public ConsultaBuilder addSql(String sql){
-        this.instance.sql.append(sql);
-
-        return this;
-    }
 
     public ConsultaBuilder offset(Integer offset){
         this.instance.offset = offset;
@@ -69,17 +69,38 @@ public class ConsultaBuilder {
     }
 
 
-    public List executarConsulta() throws Exception {
-        Query query;
+    public <T> List<T> executarConsulta() {
+        return (List<T>) createQuery().getResultList();
+    }
 
+    public HashMap<String, Object> executarConsultaMap(){
+        Query query = createQuery();
+
+        List<Object[]> result = query.getResultList();
+        HashMap<String, Object> map = new HashMap<>();
+        if (UtilColecao.listaValida(result)) {
+            for (Object[] obj : result) {
+                map.put(obj[0].toString(), obj[1]);
+            }
+        }
+
+        return map;
+    }
+
+    private Query createQuery() {
+        Query query;
         StringBuilder sql = montaSql();
 
-            try {
+        try {
+            if (instance.consultaNativa) {
+                query = instance.entityManager.createNativeQuery(sql.toString());
+            } else {
                 query = instance.entityManager.createQuery(sql.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new Exception(e);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MEDExecption(e.getMessage());
+        }
 
         if ((instance.limit != null) && (instance.limit >= 1)) {
             query.setMaxResults(instance.limit);
@@ -91,8 +112,7 @@ public class ConsultaBuilder {
 
         setParams(query);
 
-
-        return query.getResultList();
+        return query;
     }
 
 
@@ -117,7 +137,6 @@ public class ConsultaBuilder {
         return this.instance.sql;
     }
 
-
     private void setParams(Query query){
         if (!this.instance.sqlParams.isEmpty()) {
           for (String chave : this.instance.sqlParams.keySet()) {
@@ -134,6 +153,8 @@ public class ConsultaBuilder {
         private final StringBuilder sqlWhere = new StringBuilder();
         private final StringBuilder sqlGroup = new StringBuilder();
         private final HashMap<String, Object> sqlParams = new HashMap<>();
+
+        private Boolean consultaNativa = false;
 
         private Integer limit = null;
         private Integer offset;

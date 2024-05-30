@@ -4,18 +4,26 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class EntityUtils {
+
     @Inject
     EntityManager manager;
 
-    public void persist(Object object){
-        getManager().persist(object);
+    public EntityManager getManager(){
+        return manager;
     }
 
-    public void remove(Object object){
+    public void setManager(EntityManager manager){
+        this.manager = manager;
+    }
+
+    public <T> T persist(T object){
+        getManager().persist(object);
+        return object;
+    }
+
+    public <T> void remove(T object){
         getManager().remove(object);
     }
 
@@ -23,7 +31,4 @@ public class EntityUtils {
         return getManager().merge(object);
     }
 
-    public <T> Object findByOid(Class<T> object, String oid){
-        return getManager().find(object, oid);
-    }
 }

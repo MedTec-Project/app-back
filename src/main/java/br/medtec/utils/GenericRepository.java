@@ -21,4 +21,12 @@ public abstract class GenericRepository<T> extends EntityUtils {
         return new ConsultaBuilder(entityManager);
     }
 
+    public ConsultaBuilder createConsultaNativa() {
+        return new ConsultaBuilder(entityManager, true);
+    }
+
+    public T findByOid(String oid) {
+          return entityManager.find(clazz, oid);
+    }
+
 }

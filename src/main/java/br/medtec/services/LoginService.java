@@ -4,13 +4,9 @@ import br.medtec.dto.UsuarioDTO;
 import br.medtec.entity.Usuario;
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.repositories.LoginRepository;
-import br.medtec.utils.GenericsService;
-import br.medtec.utils.JWTUtils;
-import br.medtec.utils.UtilString;
-import br.medtec.utils.Validcoes;
+import br.medtec.utils.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
@@ -33,11 +29,7 @@ public class LoginService extends GenericsService<Usuario> {
     public Usuario criaUsuario(UsuarioDTO usuario){
         if (usuario != null) {
             validarUsuario(usuario);
-            Usuario usuarioLogin = new Usuario();
-            usuarioLogin.setEmail(usuario.getEmail());
-            usuarioLogin.setSenha(usuario.getSenha());
-            usuarioLogin.setNome(usuario.getNome());
-            usuarioLogin.setTelefone(usuario.getTelefone());
+            Usuario usuarioLogin = usuario.toEntity();
             persist(usuarioLogin);
             return usuarioLogin;
         }
@@ -47,12 +39,16 @@ public class LoginService extends GenericsService<Usuario> {
     @Transactional
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
-            Usuario usuarioLogin = loginRepository.findByEmailAndSenha(usuarioDTO.getEmail());
-            return verificarSenha ? usuarioLogin != null && usuarioLogin.getSenha().equals(usuarioDTO.getSenha()) : usuarioLogin != null;
+            Usuario usuarioLogin = loginRepository.findByEmail(usuarioDTO.getEmail());
+            if (usuarioLogin == null) {
+                return false;
+            }
+            return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
         }
         return null;
     }
 
+    @Transactional
     public void validarUsuario(UsuarioDTO usuarioDTO){
         Validcoes validcoes = new Validcoes();
 
