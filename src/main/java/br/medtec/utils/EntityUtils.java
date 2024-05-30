@@ -10,6 +10,14 @@ public class EntityUtils {
     @Inject
     EntityManager manager;
 
+    public EntityManager getManager(){
+        return manager;
+    }
+
+    public void setManager(EntityManager manager){
+        this.manager = manager;
+    }
+
     public <T> T persist(T object){
         getManager().persist(object);
         return object;
@@ -23,7 +31,4 @@ public class EntityUtils {
         return getManager().merge(object);
     }
 
-    public <T> Object findByOid(Class<T> object, String oid){
-        return getManager().find(object, oid);
-    }
 }

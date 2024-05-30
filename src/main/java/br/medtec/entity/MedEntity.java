@@ -1,5 +1,5 @@
 package br.medtec.entity;
-
+import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,10 +38,16 @@ public class MedEntity {
         if (this.dataCriacao == null) {
             this.dataCriacao = new Date();
         }
+
+        if (this.oidUsuarioCriacao == null) {
+            this.oidUsuarioCriacao = Sessao.getInstance().getOidUsuario();
+        }
+
     }
 
     @PreUpdate
     public void beforeUpdate(){
         this.dataAlteracao = new Date();
+//        this.oidUsuarioAlteracao = Sessao.getInstance().getOidUsuario();
     }
 }

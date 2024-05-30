@@ -16,23 +16,27 @@ public class Medicamento extends MedEntity {
     private String nome;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oid_fabricante")
+    @JoinColumn(name = "oid_fabricante", insertable = false, updatable = false)
     private Fabricante fabricante;
 
     @Column(name = "oid_fabricante")
     private String oidFabricante;
 
     @Column(name = "dosagem")
-    private String dosagem;
+    private Double dosagem;
+
+    @Column(name = "tipoDosagem")
+    @Enumerated(EnumType.ORDINAL)
+    private TipoDosagem tipoDosagem;
 
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "categoria_medicamento")
+    @Column(name = "categoria_medicamento", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private CategoriaMedicamento categoriaMedicamento ;
 
-    @Column(name = "forma_farmaceutica")
+    @Column(name = "forma_farmaceutica", nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private FormaFarmaceutica formaFarmaceutica;
 
@@ -50,8 +54,6 @@ public class Medicamento extends MedEntity {
             {@JoinColumn(name="oid_medicamento")}, inverseJoinColumns=
             {@JoinColumn(name="oid_sintoma")})
     private List<Sintoma> efeitosColaterais;
-
-
 
     public enum CategoriaMedicamento {
         ANALGESICO(0,"Analgesico"),
@@ -101,6 +103,36 @@ public class Medicamento extends MedEntity {
             for (FormaFarmaceutica tipo : tipos) {
                 if (Integer.valueOf(tipo.ordinal()).equals(valor)) {
                     return tipo;
+                }
+            }
+            return null;
+        }
+
+
+        @Override
+        public String toString() {
+            return this.descricao;
+        }
+    }
+
+    public enum TipoDosagem {
+        ML(0, "ML"),
+        MG(1,"MG"),
+        G(2,"G");
+
+        private final String descricao;
+        private Integer value;
+
+        TipoDosagem(Integer value, String descricao) {
+            this.value = value;
+            this.descricao = descricao;
+        }
+
+        public static TipoDosagem valueOf(Integer valor) {
+            TipoDosagem[] tipos = TipoDosagem.values();
+            for (TipoDosagem tipo : tipos) {
+                if (Integer.valueOf(tipo.ordinal()).equals(valor)) {
+                       return tipo;
                 }
             }
             return null;

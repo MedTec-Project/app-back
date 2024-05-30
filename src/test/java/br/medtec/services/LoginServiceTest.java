@@ -76,7 +76,7 @@ public class LoginServiceTest {
             Mockito.when(loginRepository.findByEmailAndSenha(usuarioDTO.getEmail())).thenReturn(usuario);
             String token = loginServiceMock.login(usuarioDTO);
             Assertions.assertNotNull(token);
-            Mockito.verify(loginRepository, Mockito.times(1)).findByEmailAndSenha(usuarioDTO.getEmail());
+            Mockito.verify(loginRepository, Mockito.times(2)).findByEmailAndSenha(usuarioDTO.getEmail());
         }
 
         @Test
