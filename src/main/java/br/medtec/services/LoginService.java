@@ -39,8 +39,10 @@ public class LoginService extends GenericsService<Usuario> {
     @Transactional
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
-            Usuario usuarioLogin = loginRepository.findByEmailAndSenha(usuarioDTO.getEmail());
-            usuarioDTO.setOid(usuarioLogin.getOid());
+            Usuario usuarioLogin = loginRepository.findByEmail(usuarioDTO.getEmail());
+            if (usuarioLogin == null) {
+                return false;
+            }
             return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
         }
         return null;
