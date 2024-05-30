@@ -5,7 +5,6 @@ import br.medtec.entity.Usuario;
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.exceptions.MEDValidationExecption;
 import br.medtec.repositories.LoginRepository;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Teste Usuario (Cadastro e Login)")
 public class LoginServiceTest {
+
     @InjectMocks
     LoginService loginServiceMock;
 
