@@ -1,8 +1,7 @@
-package br.medtec.repositories;
+package br.medtec.medicamento;
 
 import br.medtec.entity.Medicamento;
 import br.medtec.entity.Sintoma;
-import br.medtec.entity.Usuario;
 import br.medtec.utils.ConsultaBuilder;
 import br.medtec.utils.GenericRepository;
 import br.medtec.utils.UtilString;

@@ -1,20 +1,23 @@
-package br.medtec.services;
+package br.medtec.usuario;
 
-import br.medtec.dto.UsuarioDTO;
-import br.medtec.entity.Usuario;
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.repositories.LoginRepository;
 import br.medtec.utils.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class LoginService extends GenericsService<Usuario> {
+public class LoginService {
 
     @Inject
-    LoginRepository loginRepository;
+    JpaUsuarioRepository usarioRepository;
 
+    private final UsuarioRepository usuarioRepository;
+
+    @Inject
+    public LoginService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Transactional
     public String login(UsuarioDTO usuarioDTO){
@@ -30,7 +33,7 @@ public class LoginService extends GenericsService<Usuario> {
         if (usuario != null) {
             validarUsuario(usuario);
             Usuario usuarioLogin = usuario.toEntity();
-            persist(usuarioLogin);
+            usuarioRepository.save(usuarioLogin);
             return usuarioLogin;
         }
         return null;
@@ -39,7 +42,7 @@ public class LoginService extends GenericsService<Usuario> {
     @Transactional
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
-            Usuario usuarioLogin = loginRepository.findByEmail(usuarioDTO.getEmail());
+            Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
             if (usuarioLogin == null) {
                 return false;
             }

@@ -1,10 +1,11 @@
 package br.medtec.services;
 
-import br.medtec.dto.UsuarioDTO;
-import br.medtec.entity.Usuario;
+import br.medtec.usuario.JpaUsuarioRepository;
+import br.medtec.usuario.UsuarioDTO;
+import br.medtec.usuario.LoginService;
+import br.medtec.usuario.Usuario;
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.repositories.LoginRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +26,7 @@ public class LoginServiceTest {
     LoginService loginServiceMock;
 
     @Mock
-    LoginRepository loginRepository;
+    JpaUsuarioRepository usuarioRepository;
 
     @Mock
     EntityManager entityManager;
@@ -58,7 +59,7 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Verifica Usuario Existe")
         void verificaUsuarioExisteComSucesso() {
-            Mockito.when(loginRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
+            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
             Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO, true);
             Assertions.assertTrue(resultado);
         }
@@ -73,16 +74,16 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Login com sucesso")
         void loginComSucesso(){
-            Mockito.when(loginRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
+            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
             String token = loginServiceMock.login(usuarioDTO);
             Assertions.assertNotNull(token);
-            Mockito.verify(loginRepository, Mockito.times(1)).findByEmail(usuarioDTO.getEmail());
+            Mockito.verify(usuarioRepository, Mockito.times(1)).findByEmail(usuarioDTO.getEmail());
         }
 
         @Test
         @DisplayName("Login com falha (usuario não existe)")
         void loginUsuarioNaoExiste(){
-            Mockito.when(loginRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
+            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
             Assertions.assertThrows(MEDBadRequestExecption.class, () -> {
                 loginServiceMock.login(usuarioDTO);
             });
@@ -143,7 +144,7 @@ public class LoginServiceTest {
                loginServiceMock.criaUsuario(usuarioDTO);
            });
 
-           Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+           Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
 
         }
 
@@ -165,7 +166,7 @@ public class LoginServiceTest {
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
         }
 
         @Test
@@ -187,7 +188,7 @@ public class LoginServiceTest {
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
 
         }
 
@@ -210,7 +211,7 @@ public class LoginServiceTest {
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
 
         }
 
@@ -228,7 +229,7 @@ public class LoginServiceTest {
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
 
         }
 
@@ -251,7 +252,7 @@ public class LoginServiceTest {
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(loginRepository, Mockito.never()).persist(Mockito.any());
+            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
 
         }
     }

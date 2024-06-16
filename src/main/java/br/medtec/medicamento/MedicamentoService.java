@@ -1,9 +1,8 @@
-package br.medtec.services;
+package br.medtec.medicamento;
 
 import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
 import br.medtec.entity.Sintoma;
-import br.medtec.repositories.MedicamentoRepository;
 import br.medtec.utils.GenericsService;
 import br.medtec.utils.UtilColecao;
 import br.medtec.utils.UtilString;

@@ -1,9 +1,7 @@
-package br.medtec.resources;
+package br.medtec.medicamento;
 
 import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
-import br.medtec.repositories.MedicamentoRepository;
-import br.medtec.services.MedicamentoService;
 import br.medtec.utils.GenericsResource;
 import br.medtec.utils.JsonUtils;
 import br.medtec.utils.ResponseUtils;
@@ -30,7 +28,6 @@ public class MedicamentoResource extends GenericsResource {
     @POST
     @RolesAllowed({"user", "admin"})
     public Response cadastrarMedicamento(String json) {
-        // fazer usuario cadastrar
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
         return ResponseUtils.created(medicamentoService.cadastrarMedicamento(medicamentoDTO));
     }
@@ -38,7 +35,6 @@ public class MedicamentoResource extends GenericsResource {
     @PUT
     @RolesAllowed({"user", "admin"})
     public Response atualizarMedicamento(String json) {
-        // fazer usuario atualizar
         MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
         return ResponseUtils.ok(medicamentoService.atualizarMedicamento(medicamentoDTO));
     }
@@ -47,7 +43,6 @@ public class MedicamentoResource extends GenericsResource {
     @Path("{oid}")
     @RolesAllowed({"user", "admin"})
     public Response deletarMedicamento(@PathParam("oid") String oid) {
-        // fazer usuario deletar
         medicamentoService.deletarMedicamento(oid);
         return ResponseUtils.deleted();
     }

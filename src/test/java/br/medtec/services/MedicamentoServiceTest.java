@@ -3,14 +3,14 @@ package br.medtec.services;
 import br.medtec.dto.MedicamentoDTO;
 import br.medtec.entity.Medicamento;
 import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.repositories.MedicamentoRepository;
+import br.medtec.medicamento.MedicamentoRepository;
+import br.medtec.medicamento.MedicamentoService;
 import br.medtec.utils.EntityUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
