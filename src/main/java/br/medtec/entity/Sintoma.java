@@ -1,6 +1,7 @@
 package br.medtec.entity;
 
 
+import br.medtec.medicamento.Medicamento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;

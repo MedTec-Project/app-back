@@ -1,12 +1,8 @@
-package br.medtec.services;
+package br.medtec.unit;
 
-import br.medtec.usuario.JpaUsuarioRepository;
-import br.medtec.usuario.UsuarioDTO;
-import br.medtec.usuario.LoginService;
-import br.medtec.usuario.Usuario;
+import br.medtec.usuario.*;
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.exceptions.MEDValidationExecption;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,10 +22,8 @@ public class LoginServiceTest {
     LoginService loginServiceMock;
 
     @Mock
-    JpaUsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
-    @Mock
-    EntityManager entityManager;
 
 
     @BeforeEach
@@ -45,6 +39,7 @@ public class LoginServiceTest {
 
         @BeforeEach
         void setup(){
+            MockitoAnnotations.openMocks(this);
             usuarioDTO = new UsuarioDTO();
             usuarioDTO.setOid("123");
             usuarioDTO.setEmail("richard.fernandes@gmail.com");
@@ -83,7 +78,6 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Login com falha (usuario não existe)")
         void loginUsuarioNaoExiste(){
-            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
             Assertions.assertThrows(MEDBadRequestExecption.class, () -> {
                 loginServiceMock.login(usuarioDTO);
             });

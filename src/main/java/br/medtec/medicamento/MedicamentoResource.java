@@ -1,7 +1,5 @@
 package br.medtec.medicamento;
 
-import br.medtec.dto.MedicamentoDTO;
-import br.medtec.entity.Medicamento;
 import br.medtec.utils.GenericsResource;
 import br.medtec.utils.JsonUtils;
 import br.medtec.utils.ResponseUtils;

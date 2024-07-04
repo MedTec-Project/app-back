@@ -8,11 +8,7 @@ import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class LoginService {
-
-    @Inject
-    JpaUsuarioRepository usarioRepository;
-
-    private final UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Inject
     public LoginService(UsuarioRepository usuarioRepository) {
@@ -21,10 +17,10 @@ public class LoginService {
 
     @Transactional
     public String login(UsuarioDTO usuarioDTO){
-        if (!verificaExiste(usuarioDTO, true)){
-            throw new MEDBadRequestExecption("Email ou Senha Incorreto");
-        } else {
+        if (verificaExiste(usuarioDTO, true)){
             return JWTUtils.gerarToken(usuarioDTO);
+        } else {
+            throw new MEDBadRequestExecption("Email ou Senha Incorreto");
         }
     }
 
@@ -44,7 +40,7 @@ public class LoginService {
         if (usuarioDTO != null) {
             Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
             if (usuarioLogin == null) {
-                return false;
+                throw new MEDBadRequestExecption("Usuário não encontrado");
             }
             return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
         }

@@ -1,30 +1,32 @@
 package br.medtec.medicamento;
 
-import br.medtec.dto.MedicamentoDTO;
-import br.medtec.entity.Medicamento;
-import br.medtec.entity.Sintoma;
-import br.medtec.utils.GenericsService;
-import br.medtec.utils.UtilColecao;
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.UtilString;
 import br.medtec.utils.Validcoes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import java.util.Optional;
+
 @ApplicationScoped
-public class MedicamentoService extends GenericsService<Medicamento> {
+public class MedicamentoService {
 
+
+    public MedicamentoRepository medicamentoRepository;
     @Inject
-    MedicamentoRepository medicamentoRepository;
-
+    public MedicamentoService(MedicamentoRepository medicamentoRepository) {
+        this.medicamentoRepository = medicamentoRepository;
+    }
 
     @Transactional
     public Medicamento cadastrarMedicamento(MedicamentoDTO medicamentoDTO) {
         validarMedicamento(medicamentoDTO);
 
-        Medicamento medicamento = montarMedicamento(medicamentoDTO);
+        Medicamento medicamento = medicamentoDTO.toEntity();
 
-        persist(medicamento);
+        medicamentoRepository.save(medicamento);
+
         return medicamento;
     }
 
@@ -32,71 +34,20 @@ public class MedicamentoService extends GenericsService<Medicamento> {
     public Medicamento atualizarMedicamento(MedicamentoDTO medicamentoDTO) {
         validarMedicamento(medicamentoDTO);
 
-        Medicamento medicamento = montarMedicamento(medicamentoDTO);
+        Optional<Medicamento> medicamento = medicamentoRepository.findByOid(medicamentoDTO.getOid());
 
-        return (Medicamento) merge(medicamento);
+        if (medicamento.isEmpty()) {
+            throw new MEDBadRequestExecption("Medicamento não encontrado");
+        }
+
+        Medicamento medicamentoAtualizado = medicamentoDTO.toEntity(medicamento.get());
+
+        return medicamentoRepository.update(medicamentoAtualizado);
     }
 
     @Transactional
     public void deletarMedicamento(String oid) {
-        Medicamento medicamento = medicamentoRepository.findByOid(oid);
-        if (medicamento != null) {
-            remove(medicamento);
-        }
-    }
-
-    @Transactional
-    public Medicamento montarMedicamento(MedicamentoDTO medicamentoDTO){
-        Medicamento medicamento;
-        if (UtilString.stringValida(medicamentoDTO.getOid())) {
-            medicamento = medicamentoRepository.findByOid(medicamentoDTO.getOid());
-        } else {
-            medicamento = new Medicamento();
-        }
-        medicamento.setNome(medicamentoDTO.getNome());
-        medicamento.setCategoriaMedicamento(Medicamento.CategoriaMedicamento.valueOf(medicamentoDTO.getCategoriaMedicamento()));
-        medicamento.setFormaFarmaceutica(Medicamento.FormaFarmaceutica.valueOf(medicamentoDTO.getFormaFarmaceutica()));
-        medicamento.setOidFabricante(medicamentoDTO.getOidFabricante());
-        medicamento.setDosagem(medicamentoDTO.getDosagem());
-        medicamento.setTipoDosagem(Medicamento.TipoDosagem.valueOf(medicamentoDTO.getTipoDosagem()));
-
-        if (UtilColecao.colecaoValida(medicamentoDTO.getSintomas())) {
-            medicamentoDTO.getSintomas().forEach(sintoma -> {
-                Sintoma sintomaMedicamento;
-                if (sintoma.getOid() != null) {
-                    sintomaMedicamento = medicamentoRepository.findSintomaByOid(sintoma.getOid());
-                } else {
-                    sintomaMedicamento = new Sintoma();
-                }
-                sintomaMedicamento.setNome(sintoma.getNome());
-
-                medicamento.getSintomas().add(sintomaMedicamento);
-            });
-
-            medicamento.getSintomas().removeIf(sintoma -> medicamentoDTO.getSintomas().stream().noneMatch(sintomaDTO -> sintomaDTO.getOid().equals(sintoma.getOid())));
-        } else {
-            medicamento.setSintomas(null);
-        }
-
-        if (UtilColecao.colecaoValida(medicamentoDTO.getEfeitosColaterais())) {
-            medicamentoDTO.getEfeitosColaterais().forEach(efeitoColateral -> {
-                Sintoma efeitoColateralMedicamento;
-                if (efeitoColateral.getOid() != null) {
-                    efeitoColateralMedicamento = medicamentoRepository.findSintomaByOid(efeitoColateral.getOid());
-                } else {
-                    efeitoColateralMedicamento = new Sintoma();
-                }
-                efeitoColateralMedicamento.setNome(efeitoColateral.getNome());
-
-                medicamento.getEfeitosColaterais().add(efeitoColateralMedicamento);
-            });
-
-            medicamento.getEfeitosColaterais().removeIf(efeitoColateral -> medicamentoDTO.getEfeitosColaterais().stream().noneMatch(efeitoColateralDTO -> efeitoColateralDTO.getOid().equals(efeitoColateral.getOid())));
-        } else {
-            medicamento.setEfeitosColaterais(null);
-        }
-
-        return medicamento;
+        medicamentoRepository.findByOid(oid).ifPresent(medicamentoRepository::delete);
     }
 
     @Transactional
