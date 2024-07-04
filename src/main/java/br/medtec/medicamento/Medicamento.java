@@ -1,5 +1,8 @@
-package br.medtec.entity;
+package br.medtec.medicamento;
 
+import br.medtec.entity.Fabricante;
+import br.medtec.entity.MedEntity;
+import br.medtec.entity.Sintoma;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -69,6 +72,9 @@ public class Medicamento extends MedEntity {
         }
 
         public static CategoriaMedicamento valueOf(Integer valor) {
+            if (valor == null) {
+                return null;
+            }
             CategoriaMedicamento[] tipos = CategoriaMedicamento.values();
             for (CategoriaMedicamento tipo : tipos) {
                 if (Integer.valueOf(tipo.ordinal()).equals(valor)) {
