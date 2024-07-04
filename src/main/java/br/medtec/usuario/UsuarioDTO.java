@@ -1,6 +1,5 @@
-package br.medtec.dto;
+package br.medtec.usuario;
 
-import br.medtec.entity.Usuario;
 import lombok.Data;
 
 @Data

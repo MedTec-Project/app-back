@@ -1,9 +1,8 @@
-package br.medtec.entity;
+package br.medtec.usuario;
 
-import br.medtec.dto.UsuarioDTO;
+import br.medtec.entity.Paciente;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,10 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @Table(name = "usuario")
-public class Usuario extends MedEntity {
-
-    @Column(name = "nome", nullable = false)
-    private String nome;
+public class Usuario extends Paciente {
 
     @Column(name = "email", nullable = false, updatable = false, unique = true)
     private String email;
@@ -23,11 +19,9 @@ public class Usuario extends MedEntity {
     @Column(name = "senha", nullable = false)
     private String senha;
 
-    @Column(name = "telefone", unique = true)
-    private String telefone;
-
     @Column(name = "administrador")
     private Boolean administrador;
+
 
 
     public Boolean verificaSenha(String senha){
@@ -37,9 +31,9 @@ public class Usuario extends MedEntity {
 
     public UsuarioDTO toDTO(){
         UsuarioDTO usuarioDTO = new UsuarioDTO();
-        usuarioDTO.setNome(this.nome);
+        usuarioDTO.setNome(this.getNome());
         usuarioDTO.setEmail(this.email);
-        usuarioDTO.setTelefone(this.telefone);
+        usuarioDTO.setTelefone(this.getTelefone());
         usuarioDTO.setAdministrador(this.administrador);
         return usuarioDTO;
     }

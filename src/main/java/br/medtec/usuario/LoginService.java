@@ -1,27 +1,26 @@
-package br.medtec.services;
+package br.medtec.usuario;
 
-import br.medtec.dto.UsuarioDTO;
-import br.medtec.entity.Usuario;
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.repositories.LoginRepository;
 import br.medtec.utils.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 @ApplicationScoped
-public class LoginService extends GenericsService<Usuario> {
+public class LoginService {
+    private UsuarioRepository usuarioRepository;
 
     @Inject
-    LoginRepository loginRepository;
-
+    public LoginService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Transactional
     public String login(UsuarioDTO usuarioDTO){
-        if (!verificaExiste(usuarioDTO, true)){
-            throw new MEDBadRequestExecption("Email ou Senha Incorreto");
-        } else {
+        if (verificaExiste(usuarioDTO, true)){
             return JWTUtils.gerarToken(usuarioDTO);
+        } else {
+            throw new MEDBadRequestExecption("Email ou Senha Incorreto");
         }
     }
 
@@ -30,7 +29,7 @@ public class LoginService extends GenericsService<Usuario> {
         if (usuario != null) {
             validarUsuario(usuario);
             Usuario usuarioLogin = usuario.toEntity();
-            persist(usuarioLogin);
+            usuarioRepository.save(usuarioLogin);
             return usuarioLogin;
         }
         return null;
@@ -39,9 +38,9 @@ public class LoginService extends GenericsService<Usuario> {
     @Transactional
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
-            Usuario usuarioLogin = loginRepository.findByEmail(usuarioDTO.getEmail());
+            Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
             if (usuarioLogin == null) {
-                return false;
+                throw new MEDBadRequestExecption("Usuário não encontrado");
             }
             return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
         }

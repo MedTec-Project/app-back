@@ -1,20 +1,12 @@
-package br.medtec.resources;
+package br.medtec.usuario;
 
 
-import br.medtec.dto.UsuarioDTO;
-import br.medtec.entity.Usuario;
-import br.medtec.services.LoginService;
 import br.medtec.utils.*;
-import com.google.gson.Gson;
 import jakarta.annotation.security.PermitAll;
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.net.URI;
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -48,5 +40,4 @@ public class LoginResource extends GenericsResource {
             return ResponseUtils.created(usuario);
         }
     }
-
 }

@@ -1,19 +1,16 @@
-package br.medtec.repositories;
+package br.medtec.usuario;
 
-import br.medtec.entity.Usuario;
+import br.medtec.repositories.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
-import br.medtec.utils.GenericRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
 
 @ApplicationScoped
-public class LoginRepository extends GenericRepository<Usuario> {
+public class JpaUsuarioRepository extends JpaGenericRepository<Usuario> implements UsuarioRepository {
 
-    public LoginRepository(){
+    public JpaUsuarioRepository(){
         super(Usuario.class);
     }
-
-
 
     public Usuario findByEmail(String email){
         ConsultaBuilder consulta = createConsultaBuilder();
