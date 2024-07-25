@@ -14,6 +14,7 @@ public class MedicamentoService {
 
 
     public MedicamentoRepository medicamentoRepository;
+
     @Inject
     public MedicamentoService(MedicamentoRepository medicamentoRepository) {
         this.medicamentoRepository = medicamentoRepository;
