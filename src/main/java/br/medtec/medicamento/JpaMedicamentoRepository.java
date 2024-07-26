@@ -1,45 +1,46 @@
-package br.medtec.repositories;
+package br.medtec.medicamento;
 
-import br.medtec.entity.Medicamento;
 import br.medtec.entity.Sintoma;
-import br.medtec.entity.Usuario;
+import br.medtec.repositories.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
-import br.medtec.utils.GenericRepository;
 import br.medtec.utils.UtilString;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 
 @ApplicationScoped
-public class MedicamentoRepository extends GenericRepository<Medicamento> {
+public class JpaMedicamentoRepository extends JpaGenericRepository<Medicamento> implements MedicamentoRepository {
 
-    public MedicamentoRepository(){
+    public JpaMedicamentoRepository() {
         super(Medicamento.class);
     }
 
-    public List<Medicamento> findAll(String nome, String oidFabricante, Integer categoriaMedicamento){
+    @Override
+    public List<Medicamento> findAll(String nome, String oidFabricante, Integer categoriaMedicamento) {
         ConsultaBuilder consulta = createConsultaBuilder();
         consulta.select("m");
 
-            if (UtilString.stringValida(nome)) {
-                consulta.where("m.nome like :nome")
+        if (UtilString.stringValida(nome)) {
+            consulta.where("m.nome like :nome")
                         .param("nome", "%" + nome + "%");
-            }
+        }
 
-            if (UtilString.stringValida(oidFabricante)) {
-                consulta.where("m.oidFabricante = :oidFabricante")
+        if (UtilString.stringValida(oidFabricante)) {
+            consulta.where("m.oidFabricante = :oidFabricante")
                         .param("oidFabricante", oidFabricante);
-            }
+        }
 
-            if (categoriaMedicamento != null && Medicamento.CategoriaMedicamento.valueOf(categoriaMedicamento) != null) {
+        if (Medicamento.CategoriaMedicamento.valueOf(categoriaMedicamento) != null) {
                 consulta.where("m.categoriaMedicamento = :categoriaMedicamento")
                         .param("categoriaMedicamento", categoriaMedicamento);
-            }
+        }
 
-            return consulta.executarConsulta();
+        return consulta.executarConsulta();
+
     }
 
-    public Sintoma findSintomaByOid(String oid){
+    @Override
+    public Sintoma findSintomaByOid(String oid) {
         ConsultaBuilder consulta = createConsultaBuilder();
         return (Sintoma) consulta.select("s")
                 .from("Sintoma s")
@@ -47,8 +48,4 @@ public class MedicamentoRepository extends GenericRepository<Medicamento> {
                 .param("oid", oid)
                 .primeiroRegistro();
     }
-
-
-
-
 }

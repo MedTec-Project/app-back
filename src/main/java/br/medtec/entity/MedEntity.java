@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.UUID;
 
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
 public class MedEntity {
 
