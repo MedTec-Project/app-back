@@ -1,11 +1,13 @@
 package br.medtec.entity;
 
+import br.medtec.medico.Medico;
 import br.medtec.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
+
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
