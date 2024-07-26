@@ -7,9 +7,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -54,18 +56,16 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Verifica Usuario Existe")
         void verificaUsuarioExisteComSucesso() {
-            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
+            when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
             Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO, true);
-            Assertions.assertTrue(resultado);
+            assertTrue(resultado);
         }
 
         @Test
         @DisplayName("Verifica Usuario Não Existente")
         void verificaUsuarioExisteComFalha() {
-
-            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
-
-            Assertions.assertThrows(MEDBadRequestExecption.class, () -> {
+          when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
+          assertThrows(MEDBadRequestExecption.class, () -> {
                 loginServiceMock.verificaExiste(usuarioDTO, true);
             });
         }
@@ -73,16 +73,16 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Login com sucesso")
         void loginComSucesso(){
-            Mockito.when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
+            when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
             String token = loginServiceMock.login(usuarioDTO);
-            Assertions.assertNotNull(token);
-            Mockito.verify(usuarioRepository, Mockito.times(1)).findByEmail(usuarioDTO.getEmail());
+            assertNotNull(token);
+            verify(usuarioRepository, times(1)).findByEmail(usuarioDTO.getEmail());
         }
 
         @Test
         @DisplayName("Login com falha (usuario não existe)")
         void loginUsuarioNaoExiste(){
-            Assertions.assertThrows(MEDBadRequestExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 loginServiceMock.login(usuarioDTO);
             });
         }
@@ -117,11 +117,11 @@ public class LoginServiceTest {
             usuario.setTelefone(usuarioDTO.getTelefone());
             Usuario usuarioCadastrado = loginServiceMock.criaUsuario(usuarioDTO);
 
-            Assertions.assertNotNull(usuarioCadastrado);
-            Assertions.assertEquals(usuario.getEmail(), usuarioCadastrado.getEmail());
-            Assertions.assertEquals(usuario.getNome(), usuarioCadastrado.getNome());
-            Assertions.assertEquals(usuario.getSenha(), usuarioCadastrado.getSenha());
-            Assertions.assertEquals(usuario.getTelefone(), usuarioCadastrado.getTelefone());
+            assertNotNull(usuarioCadastrado);
+            assertEquals(usuario.getEmail(), usuarioCadastrado.getEmail());
+            assertEquals(usuario.getNome(), usuarioCadastrado.getNome());
+            assertEquals(usuario.getSenha(), usuarioCadastrado.getSenha());
+            assertEquals(usuario.getTelefone(), usuarioCadastrado.getTelefone());
 
 
         }
@@ -129,64 +129,64 @@ public class LoginServiceTest {
         @Test
         @DisplayName("Usuario sem email")
         void cadastraUsuarioComFalhaSemEmail(){
-           Assertions.assertThrows(MEDValidationExecption.class, () -> {
+           assertThrows(MEDValidationExecption.class, () -> {
                usuarioDTO.setEmail(null);
                loginServiceMock.criaUsuario(usuarioDTO);
            });
-           Assertions.assertThrows(MEDValidationExecption.class, () -> {
+           assertThrows(MEDValidationExecption.class, () -> {
                usuarioDTO.setEmail("");
                loginServiceMock.criaUsuario(usuarioDTO);
            });
-           Assertions.assertThrows(MEDValidationExecption.class, () -> {
+           assertThrows(MEDValidationExecption.class, () -> {
                usuarioDTO.setEmail("   ");
                loginServiceMock.criaUsuario(usuarioDTO);
            });
 
-           Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+           verify(usuarioRepository, never()).save(any());
 
         }
 
         @Test
         @DisplayName("Usuario sem senha")
         void cadastraUsuarioComFalhaSemSenha(){
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setSenha(null);
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setSenha("");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setSenha("   ");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+            verify(usuarioRepository, never()).save(any());
         }
 
         @Test
         @DisplayName("Usuario sem nome")
         void cadastraUsuarioComFalhaSemNome(){
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setNome(null);
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setNome("");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setNome("   ");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+            verify(usuarioRepository, never()).save(any());
 
         }
 
@@ -194,22 +194,22 @@ public class LoginServiceTest {
         @DisplayName("Usuario sem telefone")
         void cadastraUsuarioComFalhaSemTelefone(){
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setTelefone(null);
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setTelefone("");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setTelefone("   ");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+            verify(usuarioRepository, never()).save(any());
 
         }
 
@@ -217,17 +217,17 @@ public class LoginServiceTest {
         @DisplayName("Usuario telefone invalido")
         void cadastraUsuarioComFalhaTelefoneInvalido(){
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setTelefone("123456789");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setTelefone("123456789111");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+            verify(usuarioRepository, never()).save(any());
 
         }
 
@@ -235,22 +235,22 @@ public class LoginServiceTest {
         @DisplayName("Usuario email invalido")
         void cadastraUsuarioComFalhaEmailInvalido(){
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setEmail("teste");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setEmail("teste@");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Assertions.assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDValidationExecption.class, () -> {
                 usuarioDTO.setEmail("teste@.com");
                 loginServiceMock.criaUsuario(usuarioDTO);
             });
 
-            Mockito.verify(usuarioRepository, Mockito.never()).save(Mockito.any());
+            verify(usuarioRepository, never()).save(any());
 
         }
     }
