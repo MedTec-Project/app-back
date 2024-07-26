@@ -1,5 +1,7 @@
-package br.medtec.entity;
+package br.medtec.medico;
 
+import br.medtec.entity.Paciente;
+import br.medtec.entity.Pessoa;
 import jakarta.persistence.*;
 
 @Entity

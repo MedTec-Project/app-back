@@ -53,7 +53,6 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setTipoDosagem(1);
             medicamentoDTO.setOidFabricante("123");
             medicamento = medicamentoDTO.toEntity();
-
         }
 
         @Test
