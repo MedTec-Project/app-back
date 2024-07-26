@@ -58,12 +58,7 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setDosagem(1.0);
             medicamentoDTO.setTipoDosagem(1);
             medicamentoDTO.setOidFabricante("123");
-            medicamento = new Medicamento();
-            medicamento.setNome("Dorflex");
-            medicamento.setCategoriaMedicamento(Medicamento.CategoriaMedicamento.ANALGESICO);
-            medicamento.setFormaFarmaceutica(Medicamento.FormaFarmaceutica.COMPRIMIDO);
-            medicamento.setDosagem(1.0);
-            medicamento.setOidFabricante("123");
+            medicamento = medicamentoDTO.toEntity();
 
             entityUtils.setManager(entityManager);
         }
@@ -72,13 +67,9 @@ public class MedicamentoServiceTest {
         @DisplayName("Cadastrar medicamento com sucesso")
         void cadastrarMedicamentoComSucesso() {
             medicamento = medicamentoService.cadastrarMedicamento(medicamentoDTO);
+
             Assertions.assertNotNull(medicamento);
-            Assertions.assertEquals(medicamentoDTO.getNome(), medicamento.getNome());
-            Assertions.assertEquals(Medicamento.CategoriaMedicamento.valueOf(medicamentoDTO.getCategoriaMedicamento()), medicamento.getCategoriaMedicamento());
-            Assertions.assertEquals(Medicamento.FormaFarmaceutica.valueOf(medicamentoDTO.getFormaFarmaceutica()), medicamento.getFormaFarmaceutica());
-            Assertions.assertEquals(medicamentoDTO.getDosagem(), medicamento.getDosagem());
-            Assertions.assertEquals(Medicamento.TipoDosagem.valueOf(medicamentoDTO.getTipoDosagem()), medicamento.getTipoDosagem());
-            Assertions.assertEquals(medicamentoDTO.getOidFabricante(), medicamento.getOidFabricante());
+            Assertions.assertEquals(medicamentoDTO.toEntity(), medicamento);
         }
 
         @Test
