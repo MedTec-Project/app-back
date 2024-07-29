@@ -4,9 +4,11 @@ import br.medtec.entity.Sintoma;
 import br.medtec.repositories.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import br.medtec.utils.UtilString;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 
+@ApplicationScoped
 public class JpaMedicamentoRepository extends JpaGenericRepository<Medicamento> implements MedicamentoRepository {
 
     public JpaMedicamentoRepository() {
