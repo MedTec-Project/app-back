@@ -25,15 +25,13 @@ public class MedicamentoResource extends GenericsResource {
 
     @POST
     @RolesAllowed({"user", "admin"})
-    public Response cadastrarMedicamento(String json) {
-        MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
+    public Response cadastrarMedicamento(MedicamentoDTO medicamentoDTO) {
         return ResponseUtils.created(medicamentoService.cadastrarMedicamento(medicamentoDTO));
     }
 
     @PUT
     @RolesAllowed({"user", "admin"})
-    public Response atualizarMedicamento(String json) {
-        MedicamentoDTO medicamentoDTO = JsonUtils.fromJson(json, MedicamentoDTO.class);
+    public Response atualizarMedicamento(MedicamentoDTO medicamentoDTO) {
         return ResponseUtils.ok(medicamentoService.atualizarMedicamento(medicamentoDTO));
     }
 
