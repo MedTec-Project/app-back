@@ -14,8 +14,7 @@ public class LoginResourceIT {
     @DisplayName("Cadastro")
     public class CadastroTest {
 
-
-        private String JSON_BODY = """
+        private final String JSON_BODY = """
                 {
                     "email": "teste@gmail.com",
                     "senha": "123456",

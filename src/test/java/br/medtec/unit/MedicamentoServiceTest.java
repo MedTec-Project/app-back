@@ -5,8 +5,6 @@ import br.medtec.medicamento.Medicamento;
 import br.medtec.exceptions.MEDValidationExecption;
 import br.medtec.medicamento.MedicamentoRepository;
 import br.medtec.medicamento.MedicamentoService;
-import br.medtec.utils.EntityUtils;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +28,7 @@ public class MedicamentoServiceTest {
     MedicamentoRepository medicamentoRepository;
 
 
-    @BeforeEach
+    @BeforeAll
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
@@ -158,7 +156,7 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setDosagem(2.0);
             medicamentoDTO.setTipoDosagem(2);
             medicamentoDTO.setOidFabricante("1234");
-            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(Optional.of(medicamento));
+            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(medicamento);
             when(medicamentoRepository.update(medicamento)).thenReturn(medicamento);
 
             medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO);
@@ -193,10 +191,9 @@ public class MedicamentoServiceTest {
         @Test
         @DisplayName("Deletar medicamento com sucesso")
         void deletarMedicamentoComSucesso() {
-            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(Optional.of(medicamento));
-            doNothing().when(medicamentoRepository).delete(medicamento);
+            doNothing().when(medicamentoRepository).deleteByOid(medicamentoDTO.getOid());
             medicamentoService.deletarMedicamento(medicamentoDTO.getOid());
-            verify(medicamentoRepository, times(1)).delete(medicamento);
+            verify(medicamentoRepository, times(1)).deleteByOid(medicamentoDTO.getOid());
         }
 
     }
