@@ -1,4 +1,5 @@
 package br.medtec.entity;
+import br.medtec.exceptions.MEDExecption;
 import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,6 +28,9 @@ public class MedEntity {
     @Column(name = "data_alteracao")
     private Date dataAlteracao;
 
+    @Version
+    private Integer versao;
+
     @PrePersist
     public void beforePersist() {
 
@@ -39,7 +43,7 @@ public class MedEntity {
         }
 
         if (this.oidUsuarioCriacao == null) {
-            this.oidUsuarioCriacao = Sessao.getInstance().getOidUsuario();
+            this.oidUsuarioCriacao = this.getOidUsuario();
         }
 
     }
@@ -47,6 +51,16 @@ public class MedEntity {
     @PreUpdate
     public void beforeUpdate(){
         this.dataAlteracao = new Date();
-//        this.oidUsuarioAlteracao = Sessao.getInstance().getOidUsuario();
+        this.oidUsuarioAlteracao = this.getOidUsuario();
+    }
+
+    private String getOidUsuario() {
+        if (this.oidUsuarioCriacao == null && "user".equals(Sessao.getTipoUsuario())) {
+            return Sessao.getOidUsuario();
+        } else if ("admin".equals(Sessao.getTipoUsuario())) {
+            return null;
+        } else {
+            throw new MEDExecption("Oid do usuário não encontrado");
+        }
     }
 }
