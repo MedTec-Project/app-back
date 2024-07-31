@@ -13,7 +13,7 @@ import java.util.Optional;
 public class MedicamentoService {
 
 
-    public MedicamentoRepository medicamentoRepository;
+    MedicamentoRepository medicamentoRepository;
 
     @Inject
     public MedicamentoService(MedicamentoRepository medicamentoRepository) {
@@ -35,20 +35,16 @@ public class MedicamentoService {
     public Medicamento atualizarMedicamento(MedicamentoDTO medicamentoDTO) {
         validarMedicamento(medicamentoDTO);
 
-        Optional<Medicamento> medicamento = medicamentoRepository.findByOid(medicamentoDTO.getOid());
+        Medicamento medicamento = medicamentoRepository.findByOid(medicamentoDTO.getOid());
 
-        if (medicamento.isEmpty()) {
-            throw new MEDBadRequestExecption("Medicamento não encontrado");
-        }
-
-        Medicamento medicamentoAtualizado = medicamentoDTO.toEntity(medicamento.get());
+        Medicamento medicamentoAtualizado = medicamentoDTO.toEntity(medicamento);
 
         return medicamentoRepository.update(medicamentoAtualizado);
     }
 
     @Transactional
     public void deletarMedicamento(String oid) {
-        medicamentoRepository.findByOid(oid).ifPresent(medicamentoRepository::delete);
+        medicamentoRepository.deleteByOid(oid);
     }
 
     @Transactional
