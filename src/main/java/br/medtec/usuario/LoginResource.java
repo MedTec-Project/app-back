@@ -7,6 +7,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 @Path("/")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,8 +20,13 @@ public class LoginResource extends GenericsResource {
     @POST
     @Path("login")
     @PermitAll
-    public Response login(String json) {
-        UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
+    @Schema(example = """
+            {
+                "email": fernandesrichard312@gmail.com",
+                "senha": "123456"
+            }
+            """)
+    public Response login(UsuarioDTO usuarioDTO) {
         if (!loginService.verificaExiste(usuarioDTO, true)){
             return ResponseUtils.badRequest("Email ou Senha Incorreto");
         } else {
@@ -31,8 +37,9 @@ public class LoginResource extends GenericsResource {
 
     @POST
     @Path("cadastrar")
-    public Response cadastrar(String json) {
-        UsuarioDTO usuarioDTO = JsonUtils.fromJson(json, UsuarioDTO.class);
+    @PermitAll
+    @Schema(hidden = true)
+    public Response cadastrar(UsuarioDTO usuarioDTO) {
         if (loginService.verificaExiste(usuarioDTO, false)) {
             return ResponseUtils.badRequest("Esse email já está cadastrado");
         } else {
