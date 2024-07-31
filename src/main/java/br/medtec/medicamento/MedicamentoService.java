@@ -1,13 +1,11 @@
 package br.medtec.medicamento;
 
-import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.UtilString;
 import br.medtec.utils.Validcoes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
-import java.util.Optional;
 
 @ApplicationScoped
 public class MedicamentoService {

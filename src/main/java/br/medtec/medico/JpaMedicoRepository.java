@@ -1,6 +1,5 @@
 package br.medtec.medico;
 
-import br.medtec.interfaces.GenericRepository;
 import br.medtec.repositories.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import jakarta.enterprise.context.ApplicationScoped;

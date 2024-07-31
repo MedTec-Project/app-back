@@ -4,14 +4,11 @@ import br.medtec.utils.JWTUtils;
 import br.medtec.utils.Sessao;
 import br.medtec.utils.UtilString;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.Provider;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import java.io.IOException;
 
 @Provider
 public class HeaderFilter implements ContainerRequestFilter {

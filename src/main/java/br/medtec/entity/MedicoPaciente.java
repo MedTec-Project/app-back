@@ -1,9 +1,7 @@
 package br.medtec.entity;
 
-import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.medico.Medico;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

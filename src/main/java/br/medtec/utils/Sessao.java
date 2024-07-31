@@ -2,17 +2,15 @@ package br.medtec.utils;
 
 import lombok.Setter;
 
+@Setter
 public class Sessao {
 
     private static Sessao instance;
 
-    @Setter
     private String oidUsuario;
 
-    @Setter
     private String tipoUsuario;
 
-    @Setter
     private String token;
 
 

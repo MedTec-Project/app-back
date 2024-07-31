@@ -3,13 +3,11 @@ package br.medtec.repositories;
 import br.medtec.exceptions.MEDExecption;
 import br.medtec.interfaces.GenericRepository;
 import br.medtec.utils.ConsultaBuilder;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
-import java.util.Optional;
 
 public class JpaGenericRepository<T> implements GenericRepository<T> {
 
