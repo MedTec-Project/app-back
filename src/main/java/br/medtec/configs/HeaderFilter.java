@@ -29,6 +29,7 @@ public class HeaderFilter implements ContainerRequestFilter {
 
             Sessao.getInstance().setOidUsuario(jwtUtils.getClaim("oidUsuario"));
             Sessao.getInstance().setToken(token);
+            Sessao.getInstance().setTipoUsuario(jwtUtils.getClaim("tipoUsuario"));
 
         }
 
