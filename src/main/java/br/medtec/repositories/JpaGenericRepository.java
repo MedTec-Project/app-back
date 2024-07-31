@@ -1,5 +1,6 @@
 package br.medtec.repositories;
 
+import br.medtec.exceptions.MEDExecption;
 import br.medtec.interfaces.GenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,16 +16,19 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
     @Inject
     EntityManager em;
 
-    private Class<T> entityClass;
+    private final Class<T> entityClass;
 
     public JpaGenericRepository(Class<T> clazz) {
         this.entityClass = clazz;
     }
 
     @Override
-    public Optional<T> findByOid(String oid) {
+    public T findByOid(String oid) {
         T entity = em.find(entityClass, oid);
-        return entity != null ? Optional.of(entity) : Optional.empty();
+        if (entity == null) {
+            throw new MEDExecption(entityClass.getSimpleName() + " não encontrado(a)");
+        }
+        return entity;
     }
 
     @Override
@@ -48,6 +52,8 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
         T entity = em.find(entityClass, oid);
         if (entity != null) {
             em.remove(entity);
+        } else {
+            throw new MEDExecption(entityClass.getSimpleName() + " não encontrado(a)");
         }
     }
 
@@ -62,6 +68,14 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
                 "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value", entityClass);
         query.setParameter("value", value);
         return query.getResultList();
+    }
+
+    @Override
+    public boolean existsByAttribute(String atributeName, Object value) {
+        TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(e) FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value", Long.class);
+        query.setParameter("value", value);
+        return query.getSingleResult() > 0;
     }
 
     public ConsultaBuilder createConsultaBuilder() {
