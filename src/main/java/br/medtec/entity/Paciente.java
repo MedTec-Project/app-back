@@ -1,5 +1,6 @@
 package br.medtec.entity;
 
+import br.medtec.medico.Medico;
 import br.medtec.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class Paciente extends Pessoa {
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario cuidador;
 
-    @OneToMany(mappedBy = "paciente", targetEntity = Medico.class, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "pacientes")
     List<Medico> medicos;
 
 

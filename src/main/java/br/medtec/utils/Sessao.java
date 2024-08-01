@@ -1,18 +1,16 @@
 package br.medtec.utils;
 
-import lombok.Getter;
 import lombok.Setter;
 
+@Setter
 public class Sessao {
 
     private static Sessao instance;
 
-    @Setter
-    @Getter
     private String oidUsuario;
 
-    @Setter
-    @Getter
+    private String tipoUsuario;
+
     private String token;
 
 
@@ -25,5 +23,17 @@ public class Sessao {
             instance = new Sessao();
         }
         return instance;
+    }
+
+    public static String getOidUsuario() {
+        return getInstance().oidUsuario;
+    }
+
+    public static String getTipoUsuario() {
+        return getInstance().tipoUsuario;
+    }
+
+    public static String getToken() {
+        return getInstance().token;
     }
 }

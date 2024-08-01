@@ -1,4 +1,8 @@
 package br.medtec.medico;
 
-public interface MedicoRepository {
+import br.medtec.interfaces.GenericRepository;
+
+public interface MedicoRepository extends GenericRepository<Medico> {
+     Boolean existsByCrm(String crm);
+
 }
