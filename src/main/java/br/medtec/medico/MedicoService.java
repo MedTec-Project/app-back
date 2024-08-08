@@ -33,9 +33,9 @@ public class MedicoService {
     }
 
     @Transactional
-    public Medico atualizarMedico(MedicoDTO medicoDTO) {
+    public Medico atualizarMedico(MedicoDTO medicoDTO, String oid) {
 //        validarMedicamento(medicoDTO);
-        Medico medico = medicoRepository.findByOid(medicoDTO.getOid());
+        Medico medico = medicoRepository.findByOid(oid);
         Medico medicoAtualizado = medicoDTO.toEntity(medico);
         return medicoRepository.update(medicoAtualizado);
     }
@@ -43,7 +43,6 @@ public class MedicoService {
     @Transactional
     public Medico buscarMedico(String oid) {
         Medico medico = medicoRepository.findByOid(oid);
-
 
         if (Sessao.getOidUsuario().equals(medico.getOidUsuarioCriacao())) {
             return medico;
