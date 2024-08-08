@@ -8,10 +8,14 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
 import java.util.List;
 
-@Path("/medicamento")
+@Path("/medico")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class MedicoResource extends GenericsResource {
@@ -24,19 +28,23 @@ public class MedicoResource extends GenericsResource {
 
     @POST
     @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Cadastrar Medico")
     public Response cadastrar(MedicoDTO medicoDTO) {
         return ResponseUtils.created(medicoService.criarMedico(medicoDTO));
     }
 
     @PUT
+    @Path("{oid}")
     @RolesAllowed({"user", "admin"})
-    public Response atualizar(MedicoDTO medicoDTO) {
-        return ResponseUtils.ok(medicoService.atualizarMedico(medicoDTO));
+    @Operation(summary = "Atualizar Medico")
+    public Response atualizar(MedicoDTO medicoDTO, @PathParam("oid") String oid) {
+        return ResponseUtils.ok(medicoService.atualizarMedico(medicoDTO, oid));
     }
 
     @DELETE
     @Path("{oid}")
     @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Deletar Medico")
     public Response deletar(@PathParam("oid") String oid) {
        try {
             medicoRepository.deleteByOid(oid);
@@ -49,6 +57,8 @@ public class MedicoResource extends GenericsResource {
     @GET
     @Path("{oid}")
     @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Buscar Medico")
+    @APIResponse(responseCode = "200", description = "Medicamento encontrado", content = @Content(schema = @Schema(implementation = MedicoDTO.class)))
     public Response buscar(@PathParam("oid") String oid) {
         if (UtilString.stringValida(oid)) {
             return ResponseUtils.ok(medicoService.buscarMedico(oid));
@@ -59,6 +69,7 @@ public class MedicoResource extends GenericsResource {
 
     @GET
     @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Listar Medico")
     public Response listar(@QueryParam("nome") String nomeMedicamento,
                                        @QueryParam("oidFabricante") String oidFabricante,
                                        @QueryParam("categoria") Integer categoriaMedicamento) {

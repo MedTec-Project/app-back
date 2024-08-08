@@ -5,17 +5,32 @@ import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
 
 @Data
 public class MedicoDTO {
+
+    @Schema(hidden = true)
     private String oid;
+
+    @Schema(example = "Richard")
     private String nome;
+
+    @Schema(example = "fernandesrichard312@gmail.com")
     private String emailContato;
+
+    @Schema(example = "Fernandes")
     private String sobrenome;
+
+    @Schema(example = "999999999")
     private String telefone;
+
+    @Schema(example = "12345678901")
     private String cpf;
+
+    @Schema(example = "123456")
     private String crm;
 
     public Medico toEntity() {

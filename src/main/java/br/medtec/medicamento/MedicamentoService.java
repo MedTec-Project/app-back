@@ -30,10 +30,10 @@ public class MedicamentoService {
     }
 
     @Transactional
-    public Medicamento atualizarMedicamento(MedicamentoDTO medicamentoDTO) {
+    public Medicamento atualizarMedicamento(MedicamentoDTO medicamentoDTO, String oid) {
         validarMedicamento(medicamentoDTO);
 
-        Medicamento medicamento = medicamentoRepository.findByOid(medicamentoDTO.getOid());
+        Medicamento medicamento = medicamentoRepository.findByOid(oid);
 
         Medicamento medicamentoAtualizado = medicamentoDTO.toEntity(medicamento);
 
