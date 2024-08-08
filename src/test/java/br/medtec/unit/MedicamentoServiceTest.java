@@ -158,7 +158,7 @@ public class MedicamentoServiceTest {
             when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(medicamento);
             when(medicamentoRepository.update(medicamento)).thenReturn(medicamento);
 
-            medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO);
+            medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO, medicamentoDTO.getOid());
 
             assertNotNull(medicamento);
             assertEquals(medicamentoDTO.toEntity(), medicamento);

@@ -87,7 +87,7 @@ public class MedicoServiceTest {
         void atualizarMedicoComSucesso() {
             when(medicoRepository.findByOid(anyString())).thenReturn(medico);
             when(medicoRepository.update(any())).thenReturn(medico);
-            medico = medicoService.atualizarMedico(medicoDTO);
+            medico = medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid());
             assertEquals(medico, medicoDTO.toEntity());
             verify(medicoRepository, times(1)).update(medico);
         }
@@ -96,7 +96,7 @@ public class MedicoServiceTest {
         @DisplayName("Atualizar medico com oid inexistente")
         void atualizarMedicoComOidInexistente() {
             when(medicoRepository.findByOid(anyString())).thenThrow(new MEDBadRequestExecption("Medico não encontrado"));
-            assertThrows(MEDBadRequestExecption.class, () -> medicoService.atualizarMedico(medicoDTO));
+            assertThrows(MEDBadRequestExecption.class, () -> medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid()));
             verify(medicoRepository, times(0)).update(any());
         }
     }

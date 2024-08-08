@@ -6,6 +6,7 @@ import br.medtec.entity.Sintoma;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
 
