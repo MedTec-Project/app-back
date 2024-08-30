@@ -36,15 +36,17 @@ public class LoginService {
     }
 
     @Transactional
+    // TODO Mais de uma responsabilidade
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
             Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
             if (usuarioLogin == null) {
-                throw new MEDBadRequestExecption("Usuário não encontrado");
+                return false;
+            } else {
+                return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
             }
-            return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
         }
-        return null;
+        throw new MEDBadRequestExecption("Usuario Invalido");
     }
 
     @Transactional
