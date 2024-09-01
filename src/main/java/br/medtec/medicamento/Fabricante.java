@@ -1,6 +1,6 @@
-package br.medtec.entity;
+package br.medtec.medicamento;
 
-import br.medtec.medicamento.Medicamento;
+import br.medtec.generic.MedEntity;
 import jakarta.persistence.*;
 
 import java.util.List;

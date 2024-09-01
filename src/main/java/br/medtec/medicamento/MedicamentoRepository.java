@@ -1,7 +1,6 @@
 package br.medtec.medicamento;
 
-import br.medtec.entity.Sintoma;
-import br.medtec.interfaces.GenericRepository;
+import br.medtec.generic.GenericRepository;
 
 import java.util.List;
 

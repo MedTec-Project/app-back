@@ -1,5 +1,6 @@
 package br.medtec.entity;
 
+import br.medtec.generic.MedEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 

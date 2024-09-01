@@ -1,13 +1,10 @@
 package br.medtec.medico;
 
 import br.medtec.entity.Paciente;
-import br.medtec.entity.Pessoa;
-import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.utils.UtilString;
+import br.medtec.usuario.Pessoa;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
 

@@ -1,12 +1,9 @@
 package br.medtec.medicamento;
 
-import br.medtec.medicamento.Medicamento;
-import br.medtec.entity.Sintoma;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 public class MedicamentoDTO {

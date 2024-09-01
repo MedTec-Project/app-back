@@ -1,6 +1,6 @@
 package br.medtec.usuario;
 
-import br.medtec.repositories.JpaGenericRepository;
+import br.medtec.generic.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 

@@ -1,7 +1,6 @@
-package br.medtec.repositories;
+package br.medtec.generic;
 
 import br.medtec.exceptions.MEDExecption;
-import br.medtec.interfaces.GenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

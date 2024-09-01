@@ -1,6 +1,7 @@
 package br.medtec.entity;
 
 import br.medtec.medico.Medico;
+import br.medtec.usuario.Pessoa;
 import br.medtec.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Data;

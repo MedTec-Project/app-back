@@ -1,4 +1,4 @@
-package br.medtec.entity;
+package br.medtec.generic;
 import br.medtec.exceptions.MEDExecption;
 import br.medtec.utils.Sessao;
 import jakarta.persistence.*;

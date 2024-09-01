@@ -1,6 +1,7 @@
-package br.medtec.entity;
+package br.medtec.medico;
 
-import br.medtec.medico.Medico;
+import br.medtec.generic.MedEntity;
+import br.medtec.entity.Paciente;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

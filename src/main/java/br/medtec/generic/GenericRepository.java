@@ -1,4 +1,4 @@
-package br.medtec.interfaces;
+package br.medtec.generic;
 
 import java.util.List;
 
