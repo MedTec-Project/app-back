@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/main/java/br/medtec/generics/GenericRepository.java
 package br.medtec.generics;
+========
+package br.medtec.generic;
+>>>>>>>> 2cb6c86 (refactor(estrutura): refatorado as estrutura das pasta para minimizar a quantidade de pastas.):src/main/java/br/medtec/generic/GenericRepository.java
 
 import java.util.List;
 

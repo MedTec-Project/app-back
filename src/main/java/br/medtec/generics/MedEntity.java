@@ -1,5 +1,10 @@
+<<<<<<<< HEAD:src/main/java/br/medtec/generics/MedEntity.java
 package br.medtec.generics;
 import br.medtec.exceptions.MEDBadRequestExecption;
+========
+package br.medtec.generic;
+import br.medtec.exceptions.MEDExecption;
+>>>>>>>> 2cb6c86 (refactor(estrutura): refatorado as estrutura das pasta para minimizar a quantidade de pastas.):src/main/java/br/medtec/generic/MedEntity.java
 import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
 import lombok.Data;
