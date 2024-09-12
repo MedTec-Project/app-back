@@ -5,9 +5,11 @@ import br.medtec.utils.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
-public class LoginService {
+@Slf4j
+public class LoginService extends GenericsService {
     private UsuarioRepository usuarioRepository;
 
     @Inject
@@ -20,23 +22,20 @@ public class LoginService {
         if (verificaExiste(usuarioDTO, true)){
             return JWTUtils.gerarToken(usuarioDTO);
         } else {
+            log.error("Email ou Senha Incorreto {}", usuarioDTO.getEmail());
             throw new MEDBadRequestExecption("Email ou Senha Incorreto");
         }
     }
 
     @Transactional
     public Usuario criaUsuario(UsuarioDTO usuario){
-        if (usuario != null) {
-            validarUsuario(usuario);
-            Usuario usuarioLogin = usuario.toEntity();
-            usuarioRepository.save(usuarioLogin);
-            return usuarioLogin;
-        }
-        return null;
+       validarUsuario(usuario);
+       Usuario usuarioLogin = usuario.toEntity();
+       usuarioRepository.save(usuarioLogin);
+       return usuarioLogin;
     }
 
     @Transactional
-    // TODO Mais de uma responsabilidade
     public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
         if (usuarioDTO != null) {
             Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
@@ -46,12 +45,17 @@ public class LoginService {
                 return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
             }
         }
+        log.error("Usuário não encontrado {}", usuarioDTO.getEmail());
         throw new MEDBadRequestExecption("Usuario Invalido");
     }
 
     @Transactional
     public void validarUsuario(UsuarioDTO usuarioDTO){
         Validcoes validcoes = new Validcoes();
+
+        if (usuarioDTO == null) {
+            validcoes.add("Usuario não pode ser nulo");
+        }
 
         if (!UtilString.stringValida(usuarioDTO.getEmail()) || !UtilString.validarEmail(usuarioDTO.getEmail())) {
             validcoes.add("Email Invalido");
