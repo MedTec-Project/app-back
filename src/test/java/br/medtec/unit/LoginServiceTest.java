@@ -65,9 +65,8 @@ public class LoginServiceTest {
         @DisplayName("Verifica Usuario Não Existente")
         void verificaUsuarioExisteComFalha() {
           when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
-          assertThrows(MEDBadRequestExecption.class, () -> {
-                loginServiceMock.verificaExiste(usuarioDTO, true);
-            });
+            Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO, true);
+            assertFalse(resultado);
         }
 
         @Test

@@ -36,17 +36,17 @@ public class LoginService extends GenericsService {
     }
 
     @Transactional
-    public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha) {
-        if (usuarioDTO == null) {
-            throw new MEDBadRequestExecption("Usuário não pode ser nulo");
+    public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
+        if (usuarioDTO != null) {
+            Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
+            if (usuarioLogin == null) {
+                return false;
+            } else {
+                return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
+            }
         }
-
-        Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
-        if (usuarioLogin == null) {
-            log.error("Usuário não encontrado {}", usuarioDTO.getEmail());
-            throw new MEDBadRequestExecption("Usuário não encontrado");
-        }
-        return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
+        log.error("Usuário não encontrado {}", usuarioDTO.getEmail());
+        throw new MEDBadRequestExecption("Usuario Invalido");
     }
 
     @Transactional
