@@ -24,4 +24,4 @@ COPY --from=build /app/target/quarkus-app/quarkus/ /app/quarkus/
 ENTRYPOINT ["java", "-jar", "/app/quarkus-run.jar"]
 
 # Expose the port the application runs on
-EXPOSE 9191
+EXPOSE 9000
