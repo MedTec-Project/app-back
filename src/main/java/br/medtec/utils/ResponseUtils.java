@@ -16,20 +16,20 @@ public class ResponseUtils {
             return Response.status(Response.Status.NOT_FOUND).entity(object).build();
         }
 
-        public static Response badRequest(Object object){
+        public static Response objectbadRequest(Object object){
             return Response.status(Response.Status.BAD_REQUEST).entity(object).build();
         }
 
         public static Response badRequest(String message){
-            return Response.status(Response.Status.BAD_REQUEST).entity(message).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(new Mensagem(message)).build();
         }
 
         public static Response forbidden(Object object){
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-         public static Response internalServerError(String message, Exception ex) {
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+         public static Response internalServerError(String message) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new Mensagem(message)).build();
         }
 
         public static Response deleted(){
