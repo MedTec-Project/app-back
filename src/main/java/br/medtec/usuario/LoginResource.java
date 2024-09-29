@@ -1,6 +1,7 @@
 package br.medtec.usuario;
 
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.*;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
@@ -28,11 +29,10 @@ public class LoginResource extends GenericsResource {
         try {
             String token = loginService.login(usuarioDTO);
             return ResponseUtils.ok(token);
-        } catch (Exception e) {
+        } catch (MEDBadRequestExecption e) {
             log.error("Erro ao logar {}", e.getMessage());
             return ResponseUtils.badRequest(e.getMessage());
         }
-
     }
 
     @POST
