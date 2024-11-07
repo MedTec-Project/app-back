@@ -2,6 +2,8 @@ package br.medtec.utils;
 
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Setter
 public class Sessao {
 
@@ -26,7 +28,7 @@ public class Sessao {
     }
 
     public static String getOidUsuario() {
-        return getInstance().oidUsuario;
+        return Objects.requireNonNullElse(getInstance().oidUsuario, "user");
     }
 
     public static String getTipoUsuario() {

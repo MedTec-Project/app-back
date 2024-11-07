@@ -8,6 +8,7 @@ import jakarta.persistence.Query;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ConsultaBuilder {
 
@@ -122,7 +123,7 @@ public class ConsultaBuilder {
             List<?> result = executarConsulta();
             return !UtilColecao.listaValida(result) ? null : result.get(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
         }
         return null;
     }

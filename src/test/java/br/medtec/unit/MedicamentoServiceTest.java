@@ -194,6 +194,29 @@ public class MedicamentoServiceTest {
             medicamentoService.deletarMedicamento(medicamentoDTO.getOid());
             verify(medicamentoRepository, times(1)).deleteByOid(medicamentoDTO.getOid());
         }
+    }
+
+    @Nested
+    @Order(4)
+    @DisplayName("Buscar medicamentos")
+    class BuscarMedicamentoTest {
+        Medicamento medicamento;
+
+        MedicamentoDTO medicamentoDTO;
+
+        @BeforeEach
+        void setup() {
+            medicamentoDTO = new MedicamentoDTO();
+            medicamentoDTO.setOid("123");
+            medicamentoDTO.setNome("Dorflex");
+            medicamentoDTO.setCategoriaMedicamento(1);
+            medicamentoDTO.setFormaFarmaceutica(1);
+            medicamentoDTO.setDosagem(1.0);
+            medicamentoDTO.setTipoDosagem(1);
+            medicamentoDTO.setOidFabricante("123");
+
+            medicamento = medicamentoDTO.toEntity();
+        }
 
     }
 }

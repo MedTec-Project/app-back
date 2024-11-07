@@ -14,7 +14,7 @@ public class MedEntity {
     @Id
     private String oid;
 
-    @Column (name = "oid_usuario_criacao", updatable = false)
+    @Column (name = "oid_usuario_criacao", nullable = false, updatable = false)
     private String oidUsuarioCriacao;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
@@ -55,12 +55,6 @@ public class MedEntity {
     }
 
     private String getOidUsuario() {
-        if (this.oidUsuarioCriacao == null && "user".equals(Sessao.getTipoUsuario())) {
-            return Sessao.getOidUsuario();
-        } else if ("admin".equals(Sessao.getTipoUsuario())) {
-            return null;
-        } else {
-            throw new MEDExecption("Oid do usuário não encontrado");
-        }
+        return Sessao.getOidUsuario();
     }
 }
