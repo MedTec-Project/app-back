@@ -1,6 +1,9 @@
 package br.medtec.unit;
 
-import br.medtec.usuario.*;
+import br.medtec.features.usuario.LoginService;
+import br.medtec.features.usuario.Usuario;
+import br.medtec.features.usuario.UsuarioDTO;
+import br.medtec.features.usuario.UsuarioRepository;
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.exceptions.MEDValidationExecption;
 import org.junit.jupiter.api.*;

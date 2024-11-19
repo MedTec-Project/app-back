@@ -1,10 +1,10 @@
 package br.medtec.unit;
 
-import br.medtec.medicamento.MedicamentoDTO;
-import br.medtec.medicamento.Medicamento;
+import br.medtec.features.medicamento.MedicamentoDTO;
+import br.medtec.features.medicamento.Medicamento;
 import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.medicamento.MedicamentoRepository;
-import br.medtec.medicamento.MedicamentoService;
+import br.medtec.features.medicamento.MedicamentoRepository;
+import br.medtec.features.medicamento.MedicamentoService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

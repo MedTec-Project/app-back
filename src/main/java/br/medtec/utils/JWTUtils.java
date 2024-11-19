@@ -1,5 +1,5 @@
 package br.medtec.utils;
-import br.medtec.usuario.UsuarioDTO;
+import br.medtec.features.usuario.UsuarioDTO;
 import io.smallrye.jwt.auth.principal.DefaultJWTParser;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
 import io.smallrye.jwt.auth.principal.JWTParser;

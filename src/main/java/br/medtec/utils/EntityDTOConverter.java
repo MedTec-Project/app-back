@@ -1,7 +1,4 @@
 package br.medtec.utils;
-
-import lombok.Getter;
-import lombok.Setter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,53 +68,4 @@ public class EntityDTOConverter {
             }
             return entityList;
         }
-
-        public static void main(String[] args) {
-            // Exemplo de uso
-            UsuarioEntity usuarioEntity = new UsuarioEntity(1, "João Silva", "joao.silva@email.com");
-            UsuarioDto usuarioDto = convertToDto(usuarioEntity, UsuarioDto.class);
-            System.out.println("DTO: " + usuarioDto);
-
-            UsuarioEntity usuarioEntityConverted = convertToEntity(usuarioDto, UsuarioEntity.class);
-            System.out.println("Entidade: " + usuarioEntityConverted);
-        }
-
-    @Setter
-    @Getter
-    static
-    class UsuarioEntity {
-        // Getters e setters
-        private int id;
-        private String nome;
-        private String email;
-
-        public UsuarioEntity() {}
-
-        public UsuarioEntity(int id, String nome, String email) {
-            this.id = id;
-            this.nome = nome;
-            this.email = email;
-        }
-
-        @Override
-        public String toString() {
-            return "UsuarioEntity{id=" + id + ", nome='" + nome + '\'' + ", email='" + email + '\'' + '}';
-        }
-    }
-
-    @Setter
-    @Getter
-    static
-    class UsuarioDto {
-        // Getters e setters
-        private int id;
-        private String nome;
-        private String email;
-
-        @Override
-        public String toString() {
-            return "UsuarioDto{id=" + id + ", nome='" + nome + '\'' + ", email='" + email + '\'' + '}';
-        }
-    }
-
 }

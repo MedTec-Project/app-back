@@ -1,7 +1,10 @@
 package br.medtec.unit;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.medico.*;
+import br.medtec.features.medico.Medico;
+import br.medtec.features.medico.MedicoDTO;
+import br.medtec.features.medico.MedicoRepository;
+import br.medtec.features.medico.MedicoService;
 import br.medtec.utils.Sessao;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
