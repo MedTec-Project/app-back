@@ -22,8 +22,6 @@ public class Usuario extends Paciente {
     @Column(name = "administrador")
     private Boolean administrador;
 
-
-
     public Boolean verificaSenha(String senha){
         return this.senha.equals(senha);
     }

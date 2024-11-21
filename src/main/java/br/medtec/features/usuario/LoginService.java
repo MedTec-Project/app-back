@@ -19,6 +19,9 @@ public class LoginService {
     public String login(UsuarioDTO usuarioDTO){
         if (verificaExiste(usuarioDTO)){
             Usuario usuario = usuarioRepository.findByEmail(usuarioDTO.getEmail());
+            if (!usuario.verificaSenha(usuarioDTO.getSenha())){
+                throw new MEDBadRequestExecption("Email ou Senha Incorreto");
+            }
             return JWTUtils.gerarToken(usuario);
         } else {
             throw new MEDBadRequestExecption("Email ou Senha Incorreto");

@@ -1,9 +1,11 @@
 package br.medtec.generics;
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
@@ -51,6 +53,13 @@ public class MedEntity {
     public void beforeUpdate(){
         this.dataAlteracao = new Date();
         this.oidUsuarioAlteracao = this.getOidUsuario();
+    }
+
+    public void validarUsuario() {
+        if (this.oidUsuarioCriacao != null && this.oidUsuarioCriacao.equals("user") || !Objects.equals(this.oidUsuarioCriacao, this.getOidUsuario())) {
+            throw new MEDBadRequestExecption("Usuario não tem permissão para alterar");
+        }
+
     }
 
     private String getOidUsuario() {
