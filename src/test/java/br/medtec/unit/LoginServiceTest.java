@@ -54,13 +54,18 @@ public class LoginServiceTest {
 
             usuario = new Usuario();
             usuario.setSenha("31232132132");
+            usuario.setEmail("richard.fernandes@gmail.com");
+            usuario.setTelefone("12345678911");
+            usuario.setNome("Richard");
+            usuario.setOid("123");
+            usuario.setAdministrador(false);
         }
 
         @Test
         @DisplayName("Verifica Usuario Existe")
         void verificaUsuarioExisteComSucesso() {
             when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
-            Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO, true);
+            Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO);
             assertTrue(resultado);
         }
 
@@ -68,9 +73,8 @@ public class LoginServiceTest {
         @DisplayName("Verifica Usuario Não Existente")
         void verificaUsuarioExisteComFalha() {
           when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(null);
-          assertThrows(MEDBadRequestExecption.class, () -> {
-                loginServiceMock.verificaExiste(usuarioDTO, true);
-            });
+            Boolean resultado = loginServiceMock.verificaExiste(usuarioDTO);
+            assertFalse(resultado);
         }
 
         @Test
@@ -79,7 +83,7 @@ public class LoginServiceTest {
             when(usuarioRepository.findByEmail(usuarioDTO.getEmail())).thenReturn(usuario);
             String token = loginServiceMock.login(usuarioDTO);
             assertNotNull(token);
-            verify(usuarioRepository, times(1)).findByEmail(usuarioDTO.getEmail());
+            verify(usuarioRepository, times(2)).findByEmail(usuarioDTO.getEmail());
         }
 
         @Test

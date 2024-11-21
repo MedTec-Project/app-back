@@ -17,8 +17,9 @@ public class LoginService {
 
     @Transactional
     public String login(UsuarioDTO usuarioDTO){
-        if (verificaExiste(usuarioDTO, true)){
-            return JWTUtils.gerarToken(usuarioDTO);
+        if (verificaExiste(usuarioDTO)){
+            Usuario usuario = usuarioRepository.findByEmail(usuarioDTO.getEmail());
+            return JWTUtils.gerarToken(usuario);
         } else {
             throw new MEDBadRequestExecption("Email ou Senha Incorreto");
         }
@@ -36,13 +37,10 @@ public class LoginService {
     }
 
     @Transactional
-    public Boolean verificaExiste(UsuarioDTO usuarioDTO, Boolean verificarSenha){
+    public Boolean verificaExiste(UsuarioDTO usuarioDTO){
         if (usuarioDTO != null) {
             Usuario usuarioLogin = usuarioRepository.findByEmail(usuarioDTO.getEmail());
-            if (usuarioLogin == null) {
-                throw new MEDBadRequestExecption("Usuário não encontrado");
-            }
-            return verificarSenha ? usuarioLogin.verificaSenha(usuarioDTO.getSenha()) : true;
+            return usuarioLogin != null;
         }
         return null;
     }

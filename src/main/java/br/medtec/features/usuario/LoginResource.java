@@ -23,7 +23,7 @@ public class LoginResource extends GenericsResource {
     @PermitAll
     @Operation(summary = "Login")
     public Response login(UsuarioLoginDTO usuarioDTO) {
-        if (!loginService.verificaExiste(usuarioDTO, true)){
+        if (!loginService.verificaExiste(usuarioDTO)){
             return ResponseUtils.badRequest("Email ou Senha Incorreto");
         } else {
             return ResponseUtils.ok(loginService.login(usuarioDTO));
@@ -37,7 +37,7 @@ public class LoginResource extends GenericsResource {
     @Schema(hidden = true)
     @Operation(summary = "Cadastrar Usuário")
     public Response cadastrar(UsuarioDTO usuarioDTO) {
-        if (loginService.verificaExiste(usuarioDTO, false)) {
+        if (loginService.verificaExiste(usuarioDTO)) {
             return ResponseUtils.badRequest("Esse email já está cadastrado");
         } else {
             Usuario usuario = loginService.criaUsuario(usuarioDTO);

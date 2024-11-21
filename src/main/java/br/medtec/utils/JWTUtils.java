@@ -1,4 +1,5 @@
 package br.medtec.utils;
+import br.medtec.features.usuario.Usuario;
 import br.medtec.features.usuario.UsuarioDTO;
 import io.smallrye.jwt.auth.principal.DefaultJWTParser;
 import io.smallrye.jwt.auth.principal.JWTAuthContextInfo;
@@ -20,22 +21,22 @@ public class JWTUtils {
 
    JWTParser jwtParser;
 
-    public static String gerarToken(UsuarioDTO usuarioDTO){
+    public static String gerarToken(Usuario usuarioDTO){
         Date data = new Date();
         long tempo = data.getTime();
         long exp = tempo + 1000L *60*60*24*30;
         return gerarToken(usuarioDTO, exp);
     }
 
-    public static String gerarToken(UsuarioDTO usuarioDTO, long tempo){
+    public static String gerarToken(Usuario usuario, long tempo){
         Date data = new Date();
         long exp = data.getTime() + tempo;
         return Jwt.issuer("https://medtec.com.br/issuer")
-                .upn(usuarioDTO.getEmail())
-                .groups(BooleanUtils.isTrue(usuarioDTO.getAdministrador()) ? "admin" : "user")
-                .claim("nome", usuarioDTO.getNome())
-                .claim("telefone", usuarioDTO.getTelefone())
-                .claim("oidUsuario", usuarioDTO.getOid())
+                .upn(usuario.getEmail())
+                .groups(BooleanUtils.isTrue(usuario.getAdministrador()) ? "admin" : "user")
+                .claim("nome", usuario.getNome())
+                .claim("telefone", usuario.getTelefone())
+                .claim("oidUsuario", usuario.getOid())
                 .expiresAt(exp)
                 .sign();
     }
