@@ -46,7 +46,6 @@ public class JWTUtils {
             JsonWebToken jwt = jwtParser.parse(Sessao.getInstance().getToken());
             return jwt.getClaim(claim);
         } catch (ParseException e) {
-            e.printStackTrace();
             return null;
         }
     }
