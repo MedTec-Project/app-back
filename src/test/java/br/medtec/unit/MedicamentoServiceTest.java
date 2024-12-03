@@ -1,10 +1,10 @@
 package br.medtec.unit;
 
-import br.medtec.medicamento.MedicamentoDTO;
-import br.medtec.medicamento.Medicamento;
+import br.medtec.features.medicamento.MedicamentoDTO;
+import br.medtec.features.medicamento.Medicamento;
 import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.medicamento.MedicamentoRepository;
-import br.medtec.medicamento.MedicamentoService;
+import br.medtec.features.medicamento.MedicamentoRepository;
+import br.medtec.features.medicamento.MedicamentoService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -193,6 +193,29 @@ public class MedicamentoServiceTest {
             doNothing().when(medicamentoRepository).deleteByOid(medicamentoDTO.getOid());
             medicamentoService.deletarMedicamento(medicamentoDTO.getOid());
             verify(medicamentoRepository, times(1)).deleteByOid(medicamentoDTO.getOid());
+        }
+    }
+
+    @Nested
+    @Order(4)
+    @DisplayName("Buscar medicamentos")
+    class BuscarMedicamentoTest {
+        Medicamento medicamento;
+
+        MedicamentoDTO medicamentoDTO;
+
+        @BeforeEach
+        void setup() {
+            medicamentoDTO = new MedicamentoDTO();
+            medicamentoDTO.setOid("123");
+            medicamentoDTO.setNome("Dorflex");
+            medicamentoDTO.setCategoriaMedicamento(1);
+            medicamentoDTO.setFormaFarmaceutica(1);
+            medicamentoDTO.setDosagem(1.0);
+            medicamentoDTO.setTipoDosagem(1);
+            medicamentoDTO.setOidFabricante("123");
+
+            medicamento = medicamentoDTO.toEntity();
         }
 
     }

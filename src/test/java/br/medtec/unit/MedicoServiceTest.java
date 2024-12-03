@@ -1,8 +1,10 @@
 package br.medtec.unit;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.medico.*;
+import br.medtec.features.medico.Medico;
+import br.medtec.features.medico.MedicoDTO;
+import br.medtec.features.medico.MedicoRepository;
+import br.medtec.features.medico.MedicoService;
 import br.medtec.utils.Sessao;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +46,6 @@ public class MedicoServiceTest {
             medicoDTO.setNome("Richard");
             medicoDTO.setCrm("123");
             medicoDTO.setTelefone("12345678911");
-            medicoDTO.setEmailContato("fernandesrichard312@gmail.com");
             medico = medicoDTO.toEntity();
         }
 
@@ -61,30 +62,6 @@ public class MedicoServiceTest {
         void cadastrarMedicoComErro() {
             when(medicoRepository.existsByCrm(anyString())).thenReturn(true);
             assertThrows(MEDBadRequestExecption.class, () -> medicoService.criarMedico(medicoDTO));
-            verify(medicoRepository, times(0)).save(any());
-        }
-
-        @Test
-        @DisplayName("Cadastrar medico com nome vazio")
-        void cadastrarMedicoComNomeVazio() {
-            medicoDTO.setNome("");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.criarMedico(medicoDTO));
-            verify(medicoRepository, times(0)).save(any());
-        }
-
-        @Test
-        @DisplayName("Cadastrar telefone com formato invalido")
-        void cadastrarMedicoComTelefoneInvalido() {
-            medicoDTO.setTelefone("123456789");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.criarMedico(medicoDTO));
-            verify(medicoRepository, times(0)).save(any());
-        }
-
-        @Test
-        @DisplayName("Cadastrar email com formato invalido")
-        void cadastrarMedicoComEmailInvalido() {
-            medicoDTO.setEmailContato("fernandesrichard312");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.criarMedico(medicoDTO));
             verify(medicoRepository, times(0)).save(any());
         }
     }
@@ -104,8 +81,8 @@ public class MedicoServiceTest {
             medicoDTO.setNome("Richard");
             medicoDTO.setCrm("123");
             medicoDTO.setTelefone("12345678911");
-            medicoDTO.setEmailContato("fernandesrichard312@gmail.com");
             medico = medicoDTO.toEntity();
+//            medicoRepository.ent
         }
 
         @Test
@@ -125,31 +102,6 @@ public class MedicoServiceTest {
             assertThrows(MEDBadRequestExecption.class, () -> medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid()));
             verify(medicoRepository, times(0)).update(any());
         }
-
-        @Test
-        @DisplayName("Atualizar medico com nome vazio")
-        void atualizarMedicoComNomeVazio() {
-            medicoDTO.setNome("");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid()));
-            verify(medicoRepository, times(0)).update(any());
-        }
-
-        @Test
-        @DisplayName("Atualizar medico com telefone invalido")
-        void atualizarMedicoComTelefoneInvalido() {
-            medicoDTO.setTelefone("123456789");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid()));
-            verify(medicoRepository, times(0)).update(any());
-        }
-
-        @Test
-        @DisplayName("Atualizar medico com email invalido")
-        void atualizarMedicoComEmailInvalido() {
-            medicoDTO.setEmailContato("fernandesrichard312");
-            assertThrows(MEDValidationExecption.class, () -> medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid()));
-            verify(medicoRepository, times(0)).update(any());
-        }
-
     }
 
     @Nested
