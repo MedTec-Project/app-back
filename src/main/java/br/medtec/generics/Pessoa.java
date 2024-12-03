@@ -1,6 +1,9 @@
 package br.medtec.generics;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.utils.UtilString;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,6 +15,7 @@ import lombok.EqualsAndHashCode;
 public abstract class Pessoa extends MedEntity {
 
     @Column(name = "nome", nullable = false)
+    @NotNull
     private String nome;
 
     @Column(name = "email_contato")
@@ -25,4 +29,5 @@ public abstract class Pessoa extends MedEntity {
 
     @Column(name = "cpf")
     private String cpf;
+
 }

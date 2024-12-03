@@ -124,8 +124,8 @@ public class ConsultaBuilder {
             return !UtilColecao.listaValida(result) ? null : result.get(0);
         } catch (Exception e) {
             Logger.getLogger(this.getClass().getName()).severe(e.getMessage());
+            throw new MEDExecption(e.getMessage());
         }
-        return null;
     }
 
 
