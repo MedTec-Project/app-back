@@ -1,6 +1,7 @@
 package br.medtec.features.usuario;
 
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.*;
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
@@ -23,7 +24,11 @@ public class LoginResource extends GenericsResource {
     @PermitAll
     @Operation(summary = "Login")
     public Response login(UsuarioLoginDTO usuarioDTO) {
-        return ResponseUtils.ok(loginService.login(usuarioDTO));
+        try {
+            return ResponseUtils.ok(loginService.login(usuarioDTO));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
     }
 
     @POST
@@ -32,11 +37,15 @@ public class LoginResource extends GenericsResource {
     @Schema(hidden = true)
     @Operation(summary = "Cadastrar Usuário")
     public Response cadastrar(UsuarioDTO usuarioDTO) {
-        if (loginService.verificaExiste(usuarioDTO)) {
-            return ResponseUtils.badRequest("Esse email já está cadastrado");
-        } else {
-            Usuario usuario = loginService.criaUsuario(usuarioDTO);
-            return ResponseUtils.created(usuario);
+        try {
+            if (loginService.verificaExiste(usuarioDTO)) {
+                return ResponseUtils.badRequest("Esse email já está cadastrado");
+            } else {
+                Usuario usuario = loginService.criaUsuario(usuarioDTO);
+                return ResponseUtils.created(usuario);
+            }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 }
