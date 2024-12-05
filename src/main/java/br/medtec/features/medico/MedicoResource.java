@@ -83,15 +83,17 @@ public class MedicoResource extends GenericsResource {
     @GET
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Listar Medico")
-    public Response listar(@QueryParam("nome") String nomeMedicamento,
-                                       @QueryParam("oidFabricante") String oidFabricante,
-                                       @QueryParam("categoria") Integer categoriaMedicamento) {
+    public Response listar() {
 
-        List<Medico> medicamentos = medicoRepository.findAll();
-        if (medicamentos != null) {
-            return ResponseUtils.ok(medicamentos);
-        } else {
-            return ResponseUtils.ok("Nenhum medico encontrado");
+        try {
+            List<Medico> medicos = medicoRepository.findAll();
+            if (medicos != null) {
+                return ResponseUtils.ok(medicos);
+            } else {
+                return ResponseUtils.ok("Nenhum medico encontrado");
+            }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package br.medtec.features.medicamento;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.*;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -28,7 +29,11 @@ public class MedicamentoResource extends GenericsResource {
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Cadastrar Medicamento")
     public Response cadastrarMedicamento(MedicamentoDTO medicamentoDTO) {
-        return ResponseUtils.created(medicamentoService.cadastrarMedicamento(medicamentoDTO));
+        try {
+            return ResponseUtils.created(medicamentoService.cadastrarMedicamento(medicamentoDTO));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
     }
 
     @PUT
@@ -36,7 +41,11 @@ public class MedicamentoResource extends GenericsResource {
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Atualizar Medicamento")
     public Response atualizarMedicamento(MedicamentoDTO medicamentoDTO, @PathParam("oid") String oid) {
-        return ResponseUtils.ok(medicamentoService.atualizarMedicamento(medicamentoDTO, oid));
+        try {
+            return ResponseUtils.ok(medicamentoService.atualizarMedicamento(medicamentoDTO, oid));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
     }
 
     @DELETE
@@ -44,8 +53,12 @@ public class MedicamentoResource extends GenericsResource {
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Deletar Medicamento")
     public Response deletarMedicamento(@PathParam("oid") String oid) {
-        medicamentoService.deletarMedicamento(oid);
-        return ResponseUtils.deleted();
+        try {
+            medicamentoService.deletarMedicamento(oid);
+            return ResponseUtils.deleted();
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
     }
 
     @GET
@@ -53,12 +66,16 @@ public class MedicamentoResource extends GenericsResource {
     @Operation(summary = "Buscar Medicamento")
     @APIResponse(responseCode = "200", description = "Medicamento encontrado", content = @Content(schema = @Schema(implementation = MedicamentoDTO.class)))
     public Response buscarMedicamento(@PathParam("oid") String oid) {
-        if (UtilString.stringValida(oid)) {
-            Medicamento medicamento = medicamentoRepository.findByOid(oid);
-            medicamento.validarUsuario();
-            return ResponseUtils.ok(medicamento);
-        } else {
-            return ResponseUtils.badRequest("Oid inválido");
+        try {
+            if (UtilString.stringValida(oid)) {
+                Medicamento medicamento = medicamentoRepository.findByOid(oid);
+                medicamento.validarUsuario();
+                return ResponseUtils.ok(medicamento);
+            } else {
+                return ResponseUtils.badRequest("Oid inválido");
+            }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 
@@ -69,11 +86,15 @@ public class MedicamentoResource extends GenericsResource {
                                        @QueryParam("oidFabricante") String oidFabricante,
                                        @QueryParam("categoria") Integer categoriaMedicamento) {
 
-        List<Medicamento> medicamentos = medicamentoRepository.findAll(nomeMedicamento, oidFabricante, categoriaMedicamento);
-        if (UtilColecao.listaValida(medicamentos)) {
-           return ResponseUtils.ok(medicamentos);
-        } else {
-            return ResponseUtils.badRequest("Nenhum medicamento encontrado");
+        try {
+            List<Medicamento> medicamentos = medicamentoRepository.findAll(nomeMedicamento, oidFabricante, categoriaMedicamento);
+            if (UtilColecao.listaValida(medicamentos)) {
+                return ResponseUtils.ok(medicamentos);
+            } else {
+                return ResponseUtils.badRequest("Nenhum medicamento encontrado");
+            }
+        }   catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 }
