@@ -5,6 +5,7 @@ import br.medtec.exceptions.MEDExecption;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import org.hibernate.Session;
 
 import java.util.HashMap;
 import java.util.List;
@@ -90,13 +91,17 @@ public class ConsultaBuilder {
 
     private Query createQuery() {
         Query query;
-        StringBuilder sql = montaSql();
+        Session session = (Session) this.instance.entityManager.getDelegate();
+        if (this.instance.verificarUsuario && !this.instance.consultaNativa) {
+            session.enableFilter("usuario").setParameter("oidusuariocriacao", Sessao.getOidUsuario());
+        }
+            StringBuilder sql = montaSql();
 
         try {
             if (instance.consultaNativa) {
-                query = instance.entityManager.createNativeQuery(sql.toString());
+                query = session.createNativeQuery(sql.toString());
             } else {
-                query = instance.entityManager.createQuery(sql.toString());
+                query = session.createQuery(sql.toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +115,7 @@ public class ConsultaBuilder {
         if ((instance.offset != null) && (instance.offset >= 0)) {
             query.setFirstResult(instance.offset);
         }
+
 
         setParams(query);
 
@@ -146,6 +152,10 @@ public class ConsultaBuilder {
         }
     }
 
+    public void verificarUsuario() {
+        this.instance.verificarUsuario = true;
+    }
+
     private class Consulta {
         private EntityManager entityManager;
         private final StringBuilder sql = new StringBuilder();
@@ -156,6 +166,7 @@ public class ConsultaBuilder {
         private final HashMap<String, Object> sqlParams = new HashMap<>();
 
         private Boolean consultaNativa = false;
+        private Boolean verificarUsuario = false;
 
         private Integer limit = null;
         private Integer offset;

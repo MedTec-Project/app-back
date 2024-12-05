@@ -34,7 +34,7 @@ public class MedicamentoService {
         validarMedicamento(medicamentoDTO);
 
         Medicamento medicamento = medicamentoRepository.findByOid(oid);
-
+        medicamento.validarUsuario();
         Medicamento medicamentoAtualizado = medicamentoDTO.toEntity(medicamento);
 
         return medicamentoRepository.update(medicamentoAtualizado);
@@ -42,7 +42,9 @@ public class MedicamentoService {
 
     @Transactional
     public void deletarMedicamento(String oid) {
-        medicamentoRepository.deleteByOid(oid);
+       Medicamento medicamento = medicamentoRepository.findByOid(oid);
+       medicamento.validarUsuario();
+       medicamentoRepository.delete(medicamento);
     }
 
     @Transactional

@@ -54,7 +54,9 @@ public class MedicamentoResource extends GenericsResource {
     @APIResponse(responseCode = "200", description = "Medicamento encontrado", content = @Content(schema = @Schema(implementation = MedicamentoDTO.class)))
     public Response buscarMedicamento(@PathParam("oid") String oid) {
         if (UtilString.stringValida(oid)) {
-            return ResponseUtils.ok(medicamentoRepository.findByOid(oid));
+            Medicamento medicamento = medicamentoRepository.findByOid(oid);
+            medicamento.validarUsuario();
+            return ResponseUtils.ok(medicamento);
         } else {
             return ResponseUtils.badRequest("Oid inválido");
         }
