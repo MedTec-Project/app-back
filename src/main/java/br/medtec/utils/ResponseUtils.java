@@ -12,6 +12,10 @@ public class ResponseUtils {
             return Response.status(Response.Status.OK).entity(object).build();
         }
 
+    public static Response ok(String mensagem){
+        return Response.status(Response.Status.OK).entity(new Mensagem(mensagem)).build();
+    }
+
         public static Response notFound(Object object){
             return Response.status(Response.Status.NOT_FOUND).entity(object).build();
         }

@@ -25,7 +25,6 @@ public class ComorbidadeResource {
         return Response.ok().build();
     }
 
-
     @GET
     @Path("{oid}")
     public Response buscarComorbidadePorId(String oid) {

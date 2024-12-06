@@ -1,5 +1,6 @@
 package br.medtec.utils;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.exceptions.MEDValidationExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class Validcoes {
 
     public void lancaErros(){
         if(!validacoes.isEmpty()){
-            throw new MEDValidationExecption(this);
+            throw new MEDBadRequestExecption(this);
         }
     }
 }

@@ -3,12 +3,27 @@ import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.Sessao;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.Filters;
+import org.hibernate.annotations.ParamDef;
 
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
+@FilterDef(
+        name = "usuario",
+        parameters = {@ParamDef(
+                name = "oidusuariocriacao",
+                type = String.class
+        )}
+)
+@Filters({@Filter(
+        name = "usuario",
+        condition = "oid_usuario_criacao in (:oidusuariocriacao)"
+)})
 @Data
 public class MedEntity {
 
@@ -56,8 +71,9 @@ public class MedEntity {
     }
 
     public void validarUsuario() {
-        if (this.oidUsuarioCriacao != null && this.oidUsuarioCriacao.equals("user") || !Objects.equals(this.oidUsuarioCriacao, this.getOidUsuario())) {
-            throw new MEDBadRequestExecption("Usuario não tem permissão para alterar");
+        if ((!Objects.equals(Sessao.getTipoUsuario(), "admin")) &&
+                ((this.oidUsuarioCriacao != null && this.oidUsuarioCriacao.equals("user")) || (!Objects.equals(this.oidUsuarioCriacao, this.getOidUsuario())))) {
+            throw new MEDBadRequestExecption("Usuario não tem permissão para esse recurso");
         }
 
     }

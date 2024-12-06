@@ -1,5 +1,6 @@
 package br.medtec.features.medico;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.GenericsResource;
 import br.medtec.utils.ResponseUtils;
 import br.medtec.utils.UtilString;
@@ -33,7 +34,7 @@ public class MedicoResource extends GenericsResource {
     public Response cadastrar(MedicoDTO medicoDTO) {
         try {
             return ResponseUtils.created(medicoService.criarMedico(medicoDTO));
-        } catch (Exception e) {
+        } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());
         }
     }
@@ -45,7 +46,7 @@ public class MedicoResource extends GenericsResource {
     public Response atualizar(MedicoDTO medicoDTO, @PathParam("oid") String oid) {
         try {
             return ResponseUtils.ok(medicoService.atualizarMedico(medicoDTO, oid));
-        } catch (Exception e) {
+        } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());
         }
     }
@@ -55,9 +56,9 @@ public class MedicoResource extends GenericsResource {
     @Operation(summary = "Deletar Medico")
     public Response deletar(@PathParam("oid") String oid) {
        try {
-            medicoRepository.deleteByOid(oid);
+            medicoService.deletarMedico(oid);
             return ResponseUtils.deleted();
-        } catch (Exception e) {
+        } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());
        }
     }
@@ -68,25 +69,31 @@ public class MedicoResource extends GenericsResource {
     @Operation(summary = "Buscar Medico")
     @APIResponse(responseCode = "200", description = "Medicamento encontrado", content = @Content(schema = @Schema(implementation = MedicoDTO.class)))
     public Response buscar(@PathParam("oid") String oid) {
-        if (UtilString.stringValida(oid)) {
-            return ResponseUtils.ok(medicoService.buscarMedico(oid));
-        } else {
-            return ResponseUtils.badRequest("Medicamento não encontrado");
+        try {
+            if (UtilString.stringValida(oid)) {
+                return ResponseUtils.ok(medicoService.buscarMedico(oid));
+            } else {
+                return ResponseUtils.badRequest("Medicamento não encontrado");
+            }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 
     @GET
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Listar Medico")
-    public Response listar(@QueryParam("nome") String nomeMedicamento,
-                                       @QueryParam("oidFabricante") String oidFabricante,
-                                       @QueryParam("categoria") Integer categoriaMedicamento) {
+    public Response listar() {
 
-        List<Medico> medicamentos = medicoRepository.findAll();
-        if (medicamentos != null) {
-            return ResponseUtils.ok(medicamentos);
-        } else {
-            return ResponseUtils.badRequest("Nenhum medico encontrado");
+        try {
+            List<Medico> medicos = medicoRepository.findAll();
+            if (medicos != null) {
+                return ResponseUtils.ok(medicos);
+            } else {
+                return ResponseUtils.ok("Nenhum medico encontrado");
+            }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
         }
     }
 }

@@ -40,8 +40,16 @@ public class MedicoService {
     public Medico atualizarMedico(MedicoDTO medicoDTO, String oid) {
         validarMedico(medicoDTO);
         Medico medico = medicoRepository.findByOid(oid);
+        medico.validarUsuario();
         Medico medicoAtualizado = medicoDTO.toEntity(medico);
         return medicoRepository.update(medicoAtualizado);
+    }
+
+    @Transactional
+    public void deletarMedico(String oid) {
+        Medico medico = medicoRepository.findByOid(oid);
+        medico.validarUsuario();
+        medicoRepository.delete(medico);
     }
 
     @Transactional
@@ -59,7 +67,7 @@ public class MedicoService {
     public void validarMedico(MedicoDTO medicoDTO) {
         Validcoes validcoes = new Validcoes(this);
         if (medicoDTO == null) {
-            validcoes.add("Medico não pode ser nulo");
+            throw new MEDBadRequestExecption("Médico Não Informado");
         }
 
         if (!UtilString.stringValida(medicoDTO.getNome())) {
