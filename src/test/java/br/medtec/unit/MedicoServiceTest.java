@@ -74,6 +74,7 @@ public class MedicoServiceTest {
 
         MedicoDTO medicoDTO;
 
+
         @BeforeEach
         void setup() {
             medicoDTO = new MedicoDTO();
@@ -82,6 +83,8 @@ public class MedicoServiceTest {
             medicoDTO.setCrm("123");
             medicoDTO.setTelefone("12345678911");
             medico = medicoDTO.toEntity();
+            medico.setOidUsuarioCriacao("teste");
+            Sessao.getInstance().setOidUsuario("teste");
 //            medicoRepository.ent
         }
 
@@ -91,7 +94,9 @@ public class MedicoServiceTest {
             when(medicoRepository.findByOid(anyString())).thenReturn(medico);
             when(medicoRepository.update(any())).thenReturn(medico);
             medico = medicoService.atualizarMedico(medicoDTO, medicoDTO.getOid());
-            assertEquals(medico, medicoDTO.toEntity());
+            Medico medico1 = medicoDTO.toEntity();
+            medico1.setOidUsuarioCriacao("teste");
+            assertEquals(medico, medico1);
             verify(medicoRepository, times(1)).update(medico);
         }
 

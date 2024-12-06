@@ -2,9 +2,10 @@ package br.medtec.unit;
 
 import br.medtec.features.medicamento.MedicamentoDTO;
 import br.medtec.features.medicamento.Medicamento;
-import br.medtec.exceptions.MEDValidationExecption;
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.medicamento.MedicamentoRepository;
 import br.medtec.features.medicamento.MedicamentoService;
+import br.medtec.utils.Sessao;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -64,17 +65,17 @@ public class MedicamentoServiceTest {
         @DisplayName("Cadastrar medicamento com nome vazio")
         void cadastrarMedicamentoComNomeVazio() {
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setNome("");
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setNome(null);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setNome(" ");
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
@@ -83,12 +84,12 @@ public class MedicamentoServiceTest {
         @Test
         @DisplayName("Cadastrar medicamento com categoria vazia")
         void cadastrarMedicamentoComCategoriaVazia() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setCategoriaMedicamento(null);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setCategoriaMedicamento(999);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
@@ -97,12 +98,12 @@ public class MedicamentoServiceTest {
         @Test
         @DisplayName("Cadastrar medicamento com forma farmaceutica vazia")
         void cadastrarMedicamentoComFormaFarmaceuticaVazia() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setFormaFarmaceutica(null);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setFormaFarmaceutica(999);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
@@ -111,12 +112,12 @@ public class MedicamentoServiceTest {
         @Test
         @DisplayName("Cadastrar medicamento com dosagem vazia")
         void cadastrarMedicamentoComDosagemVazia() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setDosagem(null);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicamentoDTO.setDosagem(0.0);
                 medicamentoService.cadastrarMedicamento(medicamentoDTO);
             });
@@ -143,6 +144,8 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setOidFabricante("123");
 
             medicamento = medicamentoDTO.toEntity();
+            medicamento.setOidUsuarioCriacao("teste");
+            Sessao.getInstance().setOidUsuario("teste");
         }
 
         @Test
@@ -161,7 +164,9 @@ public class MedicamentoServiceTest {
             medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO, medicamentoDTO.getOid());
 
             assertNotNull(medicamento);
-            assertEquals(medicamentoDTO.toEntity(), medicamento);
+            Medicamento medicamento1 = medicamentoDTO.toEntity();
+            medicamento1.setOidUsuarioCriacao(medicamento.getOidUsuarioCriacao());
+            assertEquals(medicamento1, medicamento);
         }
     }
 
@@ -185,14 +190,16 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setOidFabricante("123");
 
             medicamento = medicamentoDTO.toEntity();
+            medicamento.setOidUsuarioCriacao("teste");
+            Sessao.getInstance().setOidUsuario("teste");
         }
 
         @Test
         @DisplayName("Deletar medicamento com sucesso")
         void deletarMedicamentoComSucesso() {
-            doNothing().when(medicamentoRepository).deleteByOid(medicamentoDTO.getOid());
+            when(medicamentoRepository.findByOid(anyString())).thenReturn(medicamento);
             medicamentoService.deletarMedicamento(medicamentoDTO.getOid());
-            verify(medicamentoRepository, times(1)).deleteByOid(medicamentoDTO.getOid());
+            verify(medicamentoRepository, times(1)).delete(medicamento);
         }
     }
 
