@@ -1,19 +1,16 @@
 package br.medtec.unit;
 
-import br.medtec.medicamento.MedicamentoDTO;
-import br.medtec.medicamento.Medicamento;
+import br.medtec.features.medicamento.MedicamentoDTO;
+import br.medtec.features.medicamento.Medicamento;
 import br.medtec.exceptions.MEDValidationExecption;
-import br.medtec.medicamento.MedicamentoRepository;
-import br.medtec.medicamento.MedicamentoService;
-import br.medtec.utils.EntityUtils;
-import jakarta.persistence.EntityManager;
+import br.medtec.features.medicamento.MedicamentoRepository;
+import br.medtec.features.medicamento.MedicamentoService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +27,7 @@ public class MedicamentoServiceTest {
     MedicamentoRepository medicamentoRepository;
 
 
-    @BeforeEach
+    @BeforeAll
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
@@ -158,10 +155,10 @@ public class MedicamentoServiceTest {
             medicamentoDTO.setDosagem(2.0);
             medicamentoDTO.setTipoDosagem(2);
             medicamentoDTO.setOidFabricante("1234");
-            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(Optional.of(medicamento));
+            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(medicamento);
             when(medicamentoRepository.update(medicamento)).thenReturn(medicamento);
 
-            medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO);
+            medicamento = medicamentoService.atualizarMedicamento(medicamentoDTO, medicamentoDTO.getOid());
 
             assertNotNull(medicamento);
             assertEquals(medicamentoDTO.toEntity(), medicamento);
@@ -193,10 +190,32 @@ public class MedicamentoServiceTest {
         @Test
         @DisplayName("Deletar medicamento com sucesso")
         void deletarMedicamentoComSucesso() {
-            when(medicamentoRepository.findByOid(medicamentoDTO.getOid())).thenReturn(Optional.of(medicamento));
-            doNothing().when(medicamentoRepository).delete(medicamento);
+            doNothing().when(medicamentoRepository).deleteByOid(medicamentoDTO.getOid());
             medicamentoService.deletarMedicamento(medicamentoDTO.getOid());
-            verify(medicamentoRepository, times(1)).delete(medicamento);
+            verify(medicamentoRepository, times(1)).deleteByOid(medicamentoDTO.getOid());
+        }
+    }
+
+    @Nested
+    @Order(4)
+    @DisplayName("Buscar medicamentos")
+    class BuscarMedicamentoTest {
+        Medicamento medicamento;
+
+        MedicamentoDTO medicamentoDTO;
+
+        @BeforeEach
+        void setup() {
+            medicamentoDTO = new MedicamentoDTO();
+            medicamentoDTO.setOid("123");
+            medicamentoDTO.setNome("Dorflex");
+            medicamentoDTO.setCategoriaMedicamento(1);
+            medicamentoDTO.setFormaFarmaceutica(1);
+            medicamentoDTO.setDosagem(1.0);
+            medicamentoDTO.setTipoDosagem(1);
+            medicamentoDTO.setOidFabricante("123");
+
+            medicamento = medicamentoDTO.toEntity();
         }
 
     }

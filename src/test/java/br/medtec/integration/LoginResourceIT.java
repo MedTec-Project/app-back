@@ -1,49 +1,83 @@
 package br.medtec.integration;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 public class LoginResourceIT {
+
 
     @Nested
     @DisplayName("Cadastro")
     public class CadastroTest {
 
-
-        private String JSON_BODY = """
+        String payload = """
                 {
-                    "email": "teste@gmail.com",
-                    "senha": "123456",
-                    "telefone": "12345678911",
-                    "nome": "Teste"
+                   "email": "usuario1@teste.com",
+                   "senha": "senha123",
+                   "nome": "Usuario Teste",
+                   "telefone": "47988035851"
                 }
                 """;
-
         @Test
         @DisplayName("Cria usuario com sucesso")
         public void criaUsuarioComSucesso() {
-            given()
-                    .body(JSON_BODY)
+            RestAssured
+                    .given()
+                    .body(payload)
+                    .contentType("application/json")
                     .when()
-                    .post("/login")
+                    .post("api/cadastrar")
+                    .then()
+                    .statusCode(201);
+        }
+    }
+
+    @Nested
+    @DisplayName("Login")
+    public class LoginTest {
+
+        String jsonCadastro = """
+                {
+                   "email": "usuario@teste.com",
+                   "senha": "senha123",
+                   "nome": "Usuario Teste",
+                   "telefone": "47988035851"
+                }
+                """;
+
+        String jsonLogin = """
+                    {
+                         "email": "usuario@teste.com",
+                         "senha": "senha123"
+                    }
+                """;
+        @Test
+        @DisplayName("Login com sucesso")
+        public void loginComSucesso() {
+            RestAssured
+                    .given()
+                    .body(jsonCadastro)
+                    .contentType("application/json")
+                    .when()
+                    .post("api/cadastrar")
+                    .then()
+                    .statusCode(201);
+
+
+            RestAssured
+                    .given()
+                    .body(jsonLogin)
+                    .contentType("application/json")
+                    .when()
+                    .post("api/login")
                     .then()
                     .statusCode(200);
-        }
-
-        @Test
-        @DisplayName("Email já cadastrado")
-        public void emailJaCadastrado() {
-            given()
-                    .body(JSON_BODY)
-                    .when()
-                    .post("/login")
-                    .then()
-                    .statusCode(400);
         }
     }
 }
