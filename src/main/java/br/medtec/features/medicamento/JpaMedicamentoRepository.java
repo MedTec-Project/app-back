@@ -1,5 +1,6 @@
 package br.medtec.features.medicamento;
 
+import br.medtec.features.symptom.Symptom;
 import br.medtec.generics.JpaGenericRepository;
 import br.medtec.utils.ConsultaBuilder;
 import br.medtec.utils.UtilString;
@@ -39,10 +40,10 @@ public class JpaMedicamentoRepository extends JpaGenericRepository<Medicamento> 
     }
 
     @Override
-    public Sintoma findSintomaByOid(String oid) {
+    public Symptom findSintomaByOid(String oid) {
         ConsultaBuilder consulta = createConsultaBuilder();
-        return (Sintoma) consulta.select("s")
-                .from("Sintoma s")
+        return (Symptom) consulta.select("s")
+                .from("Symptom s")
                 .where("s.oid = :oid")
                 .param("oid", oid)
                 .primeiroRegistro();

@@ -1,6 +1,7 @@
-package br.medtec.features.medicamento;
+package br.medtec.features.symptom;
 
 
+import br.medtec.features.medicamento.Medicamento;
 import br.medtec.generics.MedEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,14 +15,14 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Table(name = "sintoma")
-public class Sintoma extends MedEntity {
+@Table(name = "symptom")
+public class Symptom extends MedEntity {
 
-    @Column(name = "nome")
-    private String nome;
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany(mappedBy = "sintomas")
-    private List<Medicamento> medicamentos;
+    private List<Medicamento> medicines;
 
 //    @ManyToMany(mappedBy = "efeitosColaterais")
 //    private List<Medicamento> medicamentosEfeitoColateral;

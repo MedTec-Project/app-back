@@ -1,0 +1,18 @@
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Diarreia', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Hipertrofia', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Hemorragia', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Infecção', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Lesão', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Necrose', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Obesidade', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Osteoporose', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Pânico', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Renal', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Síndrome de Down', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Síndrome de Parkinson', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Síndrome de Tourette', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Síndrome do Parkinson', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Síndrome do Tourette', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Traumatismo', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Tumor', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
+INSERT INTO symptom (name, data_criacao, oid_usuario_criacao, oid) VALUES ('Vômito', CURRENT_TIMESTAMP, 'user', RANDOM_UUID());
