@@ -1,5 +1,6 @@
 package br.medtec.features.medicamento;
 
+import br.medtec.features.symptom.Symptom;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -65,7 +66,7 @@ public class MedicamentoDTO {
 
 
     @Data
-    @Schema(name = "Sintoma")
+    @Schema(name = "Symptom")
     public static class SintomaDTO {
 
         @Schema(hidden = true)
@@ -74,9 +75,9 @@ public class MedicamentoDTO {
         @Schema(example = "Dor de cabeça")
         private String nome;
 
-        public Sintoma toEntity() {
-            Sintoma sintoma = new Sintoma();
-            sintoma.setNome(this.nome);
+        public Symptom toEntity() {
+            Symptom sintoma = new Symptom();
+            sintoma.setName(this.nome);
             return sintoma;
         }
     }

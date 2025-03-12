@@ -1,5 +1,6 @@
 package br.medtec.features.medicamento;
 
+import br.medtec.features.symptom.Symptom;
 import br.medtec.generics.MedEntity;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -48,13 +49,13 @@ public class Medicamento extends MedEntity {
     @JoinTable(name="sintoma_medicamento", joinColumns=
             {@JoinColumn(name="oid_medicamento")}, inverseJoinColumns=
             {@JoinColumn(name="oid_sintoma")})
-    private List<Sintoma> sintomas;
+    private List<Symptom> sintomas;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name="efeito_colateral", joinColumns=
             {@JoinColumn(name="oid_medicamento")}, inverseJoinColumns=
             {@JoinColumn(name="oid_sintoma")})
-    private List<Sintoma> efeitosColaterais;
+    private List<Symptom> efeitosColaterais;
 
     public enum CategoriaMedicamento {
         ANALGESICO(0,"Analgesico"),
