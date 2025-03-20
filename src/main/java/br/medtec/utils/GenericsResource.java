@@ -12,7 +12,7 @@ public class GenericsResource {
 
     public String criaSessao() {
         JsonWebToken jwt = (JsonWebToken) securityContext.getUserPrincipal();
-       Sessao.getInstance().setOidUsuario(jwt.getClaim("oidUsuario"));
+       UserSession.getInstance().setOidUser(jwt.getClaim("oidUsuario"));
         return jwt.getClaim("oidUsuario");
     }
 
