@@ -45,6 +45,10 @@ public class Medicine extends BaseEntity {
     @Column(name = "registration_number")
     private Integer registrationNumber;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name="symptom_medicine", joinColumns=
             {@JoinColumn(name="medicine_oid")}, inverseJoinColumns=
@@ -58,16 +62,22 @@ public class Medicine extends BaseEntity {
     private List<Symptom> sideEffects;
 
     public enum MedicineCategory {
-        ANALGESIC(0,"Analgesic"),
-        ANTIBIOTIC(1, "Antibiotic"),
-        ANTIALERGIC(2, "Antiallergic");
+        ANALGESIC(0,"Analgésico"),
+        ANTIBIOTIC(1, "Antibiótico"),
+        ANTIALERGIC(2, "Antialérgico");
 
         private final String description;
         private Integer value;
+        private final String color;
 
         MedicineCategory(Integer value, String description) {
+            this(value, description, "#007bff");
+        }
+
+        MedicineCategory(Integer value, String description, String color) {
             this.value = value;
             this.description = description;
+            this.color = color;
         }
 
         public static MedicineCategory valueOf(Integer value) {

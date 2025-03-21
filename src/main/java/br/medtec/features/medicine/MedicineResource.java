@@ -1,6 +1,7 @@
 package br.medtec.features.medicine;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.image.ImageService;
 import br.medtec.utils.*;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -24,6 +25,9 @@ public class MedicineResource extends GenericsResource {
 
     @Inject
     MedicineRepository medicineRepository;
+
+    @Inject
+    ImageService imageService;
 
     @POST
     @Operation(summary = "Register Medicine")
@@ -87,8 +91,9 @@ public class MedicineResource extends GenericsResource {
                                   @QueryParam("category") Integer medicineCategory) {
 
         try {
-            List<Medicine> medicines = medicineRepository.findAll(medicineName, oidManufacturer, medicineCategory);
+            List<MedicineDTO> medicines = medicineRepository.findAll(medicineName, oidManufacturer, medicineCategory);
             if (UtilCollection.isValidList(medicines)) {
+                medicines.forEach(medicine -> medicine.setImageBase64(imageService.getImage(medicine.getImagePath())));
                 return ResponseUtils.ok(medicines);
             } else {
                 return ResponseUtils.badRequest("Nenhum medicamento encontrado");

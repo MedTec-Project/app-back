@@ -1,10 +1,12 @@
 package br.medtec.features.medicine;
 
 import br.medtec.features.symptom.Symptom;
+import io.netty.handler.codec.http.multipart.FileUpload;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 public class MedicineDTO {
@@ -21,6 +23,8 @@ public class MedicineDTO {
     @Schema(example = "1")
     private Integer dosageType;
 
+    private String dosageTypeName;
+
     @Schema(example = "Analgesic")
     private String description;
 
@@ -33,8 +37,17 @@ public class MedicineDTO {
     @Schema(example = "1")
     private Integer medicineCategory;
 
+    private String medicineCategoryName;
+
     @Schema(example = "1")
     private Integer pharmaceuticalForm;
+
+    private String pharmaceuticalFormName;
+
+    @Schema(description = "Imagem do medicamento em base64")
+    private String imageBase64;
+
+    private String imagePath;
 
     private List<SymptomDTO> symptoms;
 
@@ -43,6 +56,16 @@ public class MedicineDTO {
     public MedicineDTO() {
         this.symptoms = List.of();
         this.sideEffects = List.of();
+    }
+
+    public MedicineDTO(String oid, String name, Double dosage, Medicine.DosageType dosageType, Medicine.PharmaceuticalForm pharmaceuticalForm, String imagePath, Medicine.MedicineCategory medicineCategory) {
+        this.oid = oid;
+        this.name = name;
+        this.dosage = dosage;
+        this.dosageTypeName = dosageType == null ? null : dosageType.name();
+        this.pharmaceuticalFormName = pharmaceuticalForm == null ? null : pharmaceuticalForm.name();
+        this.imagePath = imagePath;
+        this.medicineCategoryName = medicineCategory == null ? null : medicineCategory.name();
     }
 
     public Medicine toEntity() {

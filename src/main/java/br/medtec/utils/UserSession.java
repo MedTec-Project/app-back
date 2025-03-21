@@ -26,7 +26,7 @@ public class UserSession {
     }
 
     public static String getOidUser() {
-        return Objects.requireNonNullElse(getInstance().oidUser, "user");
+            return Objects.requireNonNullElse(getInstance().oidUser, "user");
     }
 
     public static String getUserType() {

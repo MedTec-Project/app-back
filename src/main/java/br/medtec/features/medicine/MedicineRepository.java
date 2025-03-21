@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MedicineRepository extends GenericRepository<Medicine> {
 
-    List<Medicine> findAll(String name, String oidManufacturer, Integer medicineCategory);
+    List<MedicineDTO> findAll(String name, String oidManufacturer, Integer medicineCategory);
     Symptom findSymptomByOid(String oid);
 }

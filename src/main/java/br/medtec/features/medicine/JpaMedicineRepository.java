@@ -16,9 +16,10 @@ public class JpaMedicineRepository extends JpaGenericRepository<Medicine> implem
     }
 
     @Override
-    public List<Medicine> findAll(String name, String manufacturerOid, Integer medicineCategory) {
+    public List<MedicineDTO> findAll(String name, String manufacturerOid, Integer medicineCategory) {
         QueryBuilder query = createQueryBuilder();
-        query.select("m");
+        query.select("new br.medtec.features.medicine.MedicineDTO(m.oid, m.name, m.dosage, m.dosageType, m.pharmaceuticalForm, m.imagePath, m.medicineCategory)");
+        query.from("Medicine m");
 
         if (StringUtil.isValidString(name)) {
             query.where("m.name like :name")

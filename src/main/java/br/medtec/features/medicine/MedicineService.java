@@ -1,5 +1,6 @@
 package br.medtec.features.medicine;
 
+import br.medtec.features.image.ImageService;
 import br.medtec.utils.StringUtil;
 import br.medtec.utils.Validations;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -11,9 +12,12 @@ public class MedicineService {
 
     private final MedicineRepository medicineRepository;
 
+    private final ImageService imageService;
+
     @Inject
-    public MedicineService(MedicineRepository medicineRepository) {
+    public MedicineService(MedicineRepository medicineRepository, ImageService imageService) {
         this.medicineRepository = medicineRepository;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -21,6 +25,8 @@ public class MedicineService {
         validateMedicine(medicineDTO);
 
         Medicine medicine = medicineDTO.toEntity();
+
+        medicine.setImagePath(imageService.saveImage(medicineDTO.getImageBase64(), medicineDTO.getName()));
 
         medicineRepository.save(medicine);
 
