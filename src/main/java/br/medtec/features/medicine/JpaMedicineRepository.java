@@ -18,7 +18,7 @@ public class JpaMedicineRepository extends JpaGenericRepository<Medicine> implem
     @Override
     public List<MedicineDTO> findAll(String name, String manufacturerOid, Integer medicineCategory) {
         QueryBuilder query = createQueryBuilder();
-        query.select("new br.medtec.features.medicine.MedicineDTO(m.oid, m.name, m.dosage, m.dosageType, m.pharmaceuticalForm, m.imagePath, m.medicineCategory)");
+        query.select("new br.medtec.features.medicine.MedicineDTO(m.oid, m.name, m.dosage, m.dosageType, m.pharmaceuticalForm, m.imagePath, m.medicineCategory, m.content)");
         query.from("Medicine m");
 
         if (StringUtil.isValidString(name)) {

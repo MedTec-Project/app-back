@@ -5,6 +5,7 @@ import br.medtec.generics.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class Medicine extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private PharmaceuticalForm pharmaceuticalForm;
 
+    @Column(name = "content")
+    private Double content;
+
     @Column(name = "registration_number")
     private Integer registrationNumber;
 
@@ -62,12 +66,26 @@ public class Medicine extends BaseEntity {
     private List<Symptom> sideEffects;
 
     public enum MedicineCategory {
-        ANALGESIC(0,"Analgésico"),
-        ANTIBIOTIC(1, "Antibiótico"),
-        ANTIALERGIC(2, "Antialérgico");
+        ANALGESIC(0, "Analgésico", "#009688"),
+        ANTIBIOTIC(1, "Antibiótico", "#ff6600"),
+        ANTIALERGIC(2, "Antialérgico", "#ffc107"),
+        ANTIINFLAMMATORY(3, "Antiinflamatório", "#e91e63"),
+        ANTIVIRAL(4, "Antiviral", "#3f51b5"),
+        ANXIOLYTIC(5, "Ansiolítico", "#9c27b0"),
+        HYPNOTIC(6, "Hipnótico / Sedativo", "#673ab7"),
+        ANTIDEPRESSANT(7, "Antidepressivo", "#2196f3"),
+        ANTIHYPERTENSIVE(8, "Antihipertensivo", "#4caf50"),
+        ANTIDIABETIC(9, "Antidiabético", "#8bc34a"),
+        ANTICOAGULANT(10, "Anticoagulante / Antiagregante", "#f44336"),
+        ANTIEMETIC(11, "Antiemético", "#ff9800"),
+        LAXATIVE(12, "Laxante", "#795548"),
+        ANTIPSYCHOTIC(13, "Antipsicótico", "#607d8b"),
+        CONTRACEPTIVE(14, "Anticoncepcional", "#c2185b"),
+        ANTINEOPLASTIC(15, "Antineoplásico / Quimioterápico", "#b71c1c");
 
         private final String description;
         private Integer value;
+        @Getter
         private final String color;
 
         MedicineCategory(Integer value, String description) {

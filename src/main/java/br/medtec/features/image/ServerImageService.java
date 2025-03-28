@@ -38,7 +38,7 @@ public class ServerImageService implements ImageService {
                 fos.write(imageBytes);
             }
 
-            return "/uploads/medicines/" + imageName;
+            return "uploads/medicines/" + imageName;
         } catch (IOException e) {
             log.error("Erro ao salvar imagem", e);
             throw new MEDExecption("Não foi possível salvar a imagem");
@@ -48,10 +48,12 @@ public class ServerImageService implements ImageService {
     @Override
     public String getImage(String imagePath) {
         try {
-            return Files.readString(Path.of(UPLOAD_DIR + imagePath));
+            byte[] imageBytes = Files.readAllBytes(Path.of(imagePath));
+            return Base64.getEncoder().encodeToString(imageBytes);
         } catch (IOException e) {
             log.error("Erro ao ler imagem", e);
             throw new MEDExecption("Não foi possível ler a imagem");
         }
     }
+
 }

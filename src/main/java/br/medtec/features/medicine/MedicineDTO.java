@@ -39,10 +39,15 @@ public class MedicineDTO {
 
     private String medicineCategoryName;
 
+    private String medicineCategoryColor;
+
     @Schema(example = "1")
     private Integer pharmaceuticalForm;
 
     private String pharmaceuticalFormName;
+
+    @Schema(example = "20")
+    private Double content;
 
     @Schema(description = "Imagem do medicamento em base64")
     private String imageBase64;
@@ -58,14 +63,16 @@ public class MedicineDTO {
         this.sideEffects = List.of();
     }
 
-    public MedicineDTO(String oid, String name, Double dosage, Medicine.DosageType dosageType, Medicine.PharmaceuticalForm pharmaceuticalForm, String imagePath, Medicine.MedicineCategory medicineCategory) {
+    public MedicineDTO(String oid, String name, Double dosage, Medicine.DosageType dosageType, Medicine.PharmaceuticalForm pharmaceuticalForm, String imagePath, Medicine.MedicineCategory medicineCategory, Double content) {
         this.oid = oid;
         this.name = name;
         this.dosage = dosage;
         this.dosageTypeName = dosageType == null ? null : dosageType.name();
-        this.pharmaceuticalFormName = pharmaceuticalForm == null ? null : pharmaceuticalForm.name();
+        this.pharmaceuticalFormName = pharmaceuticalForm == null ? null : pharmaceuticalForm.toString();
         this.imagePath = imagePath;
-        this.medicineCategoryName = medicineCategory == null ? null : medicineCategory.name();
+        this.content = content;
+        this.medicineCategoryName = medicineCategory == null ? null : medicineCategory.toString();
+        this.medicineCategoryColor = medicineCategory == null ? null : medicineCategory.getColor();
     }
 
     public Medicine toEntity() {
@@ -84,6 +91,7 @@ public class MedicineDTO {
         medicine.setPharmaceuticalForm(Medicine.PharmaceuticalForm.valueOf(this.pharmaceuticalForm));
         medicine.setSideEffects(this.sideEffects.stream().map(SymptomDTO::toEntity).toList());
         medicine.setSymptoms(this.symptoms.stream().map(SymptomDTO::toEntity).toList());
+        medicine.setContent(this.content);
         return medicine;
     }
 

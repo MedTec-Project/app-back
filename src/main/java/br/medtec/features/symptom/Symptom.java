@@ -3,6 +3,8 @@ package br.medtec.features.symptom;
 
 import br.medtec.features.medicine.Medicine;
 import br.medtec.generics.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -22,6 +24,7 @@ public class Symptom extends BaseEntity {
     private String name;
 
     @ManyToMany(mappedBy = "symptoms")
+    @JsonbTransient
     private List<Medicine> medicines;
 
 //    @ManyToMany(mappedBy = "efeitosColaterais")
