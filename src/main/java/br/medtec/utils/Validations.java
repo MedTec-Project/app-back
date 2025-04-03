@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Validations {
 
@@ -29,7 +30,8 @@ public class Validations {
 
     public void throwErrors() {
         if (!validations.isEmpty()) {
-            throw new MEDBadRequestExecption(this);
+            String message = String.join(", ", validations);
+            throw new MEDBadRequestExecption(message);
         }
     }
 }

@@ -8,8 +8,4 @@ public class MEDBadRequestExecption extends WebApplicationException {
     public MEDBadRequestExecption(String message) {
         super(message);
     }
-
-    public MEDBadRequestExecption(Validations validations){
-        super(JsonUtils.toJson(validations.validations));
-    }
 }
