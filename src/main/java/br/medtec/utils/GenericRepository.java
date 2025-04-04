@@ -9,6 +9,7 @@ public abstract class GenericRepository<T> extends EntityUtils {
     EntityManager entityManager;
 
     Class<T> clazz;
+
     protected GenericRepository() {
         this.clazz = null;
     }
@@ -17,13 +18,9 @@ public abstract class GenericRepository<T> extends EntityUtils {
         this.clazz = clazz;
     }
 
-    public ConsultaBuilder createConsultaBuilder() {
-        return new ConsultaBuilder(entityManager);
-    }
+    public QueryBuilder createQueryBuilder() {  return new QueryBuilder(entityManager); }
 
-    public ConsultaBuilder createConsultaNativa() {
-        return new ConsultaBuilder(entityManager, true);
-    }
+    public QueryBuilder createQueryBuilderNativa() { return new QueryBuilder(entityManager, true); }
 
     public T findByOid(String oid) {
           return entityManager.find(clazz, oid);

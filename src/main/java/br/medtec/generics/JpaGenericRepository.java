@@ -1,7 +1,7 @@
 package br.medtec.generics;
 
 import br.medtec.exceptions.MEDExecption;
-import br.medtec.utils.ConsultaBuilder;
+import br.medtec.utils.QueryBuilder;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -75,12 +75,12 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
         return query.getSingleResult() > 0;
     }
 
-    public ConsultaBuilder createConsultaBuilder() {
-        return new ConsultaBuilder(em);
+    public QueryBuilder createQueryBuilder() {
+        return new QueryBuilder(em);
     }
 
-    public ConsultaBuilder createConsultaNativa() {
-        return new ConsultaBuilder(em, true);
+    public QueryBuilder createConsultaNativa() {
+        return new QueryBuilder(em, true);
     }
 
 

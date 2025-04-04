@@ -1,6 +1,6 @@
 package br.medtec.features.agendamento;
 
-import br.medtec.generics.MedEntity;
+import br.medtec.generics.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name = "agendamento")
 @Data
-public class Agendamento extends MedEntity {
+public class Agendamento extends BaseEntity {
 
     @Column(name = "oid_medicamento", nullable = false)
     private String oidMedicamento;
