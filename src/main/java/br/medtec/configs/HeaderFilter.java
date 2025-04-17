@@ -28,8 +28,8 @@ public class HeaderFilter implements ContainerRequestFilter {
             JWTAuthContextInfo jwtAuthContextInfo = JWTConfig.authContextInfo();
             JWTUtils jwtUtils = new JWTUtils(jwtAuthContextInfo);
 
-            String oidUsuario = jwtUtils.getClaim("oidUsuario");
-            String tipoUsuario = jwtUtils.getClaim("tipoUsuario");
+            String oidUsuario = jwtUtils.getClaim("oidUser");
+            String tipoUsuario = jwtUtils.getGroups() == null ? null : jwtUtils.getGroups().iterator().next();
 
             UserSession.getInstance().setOidUser(oidUsuario);
             UserSession.getInstance().setToken(token);

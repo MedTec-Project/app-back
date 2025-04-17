@@ -65,6 +65,9 @@ public class Medicine extends BaseEntity {
             {@JoinColumn(name="symptom_oid")})
     private List<Symptom> sideEffects;
 
+    @Transient
+    private String imageBase64;
+
     public enum MedicineCategory {
         ANALGESIC(0, "Analgésico", "#009688"),
         ANTIBIOTIC(1, "Antibiótico", "#ff6600"),
