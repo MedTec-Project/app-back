@@ -26,7 +26,7 @@ public class DoctorService {
         Doctor doctor = doctorDTO.toEntity();
 
         if (doctorRepository.existsByCrm(doctor.getCrm())) {
-            log.error("CRM já cadastrado {}", doctor.getCrm());
+            log.warn("CRM já cadastrado {}", doctor.getCrm());
             throw new MEDBadRequestExecption("CRM já cadastrado");
         }
 
@@ -57,7 +57,7 @@ public class DoctorService {
         if (UserSession.getOidUser().equals(doctor.getOidUserCreation())) {
             return doctor;
         } else {
-            log.error("Você {} não tem permissão para acessar este médico {}", UserSession.getOidUser(), oid);
+            log.warn("Você {} não tem permissão para acessar este médico {}", UserSession.getOidUser(), oid);
             throw new MEDBadRequestExecption("Você não tem permissão para acessar este recurso");
         }
     }

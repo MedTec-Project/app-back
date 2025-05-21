@@ -47,7 +47,7 @@ public class Medicine extends BaseEntity {
     private Double content;
 
     @Column(name = "registration_number")
-    private Integer registrationNumber;
+    private String registrationNumber;
 
     @Column(name = "image_path")
     private String imagePath;
