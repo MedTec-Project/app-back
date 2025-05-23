@@ -30,9 +30,7 @@ public class DoctorService {
             throw new MEDBadRequestExecption("CRM já cadastrado");
         }
 
-        doctorRepository.save(doctor);
-
-        return doctor;
+        return doctorRepository.save(doctor);
     }
 
     @Transactional

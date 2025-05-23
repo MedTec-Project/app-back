@@ -35,8 +35,9 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
     }
 
     @Override
-    public void save(T entity) {
+    public T save(T entity) {
         em.persist(entity);
+        return entity;
     }
 
     @Override

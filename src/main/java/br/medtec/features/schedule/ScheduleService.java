@@ -26,9 +26,7 @@ public class ScheduleService {
 
         Schedule schedule = scheduleDTO.toEntity();
 
-        scheduleRepository.save(schedule);
-
-        return schedule;
+        return scheduleRepository.save(schedule);
     }
 
     @Transactional

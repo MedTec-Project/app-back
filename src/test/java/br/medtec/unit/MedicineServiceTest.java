@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Medicine Tests")
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +28,6 @@ public class MedicineServiceTest {
 
     @Mock
     ImageService imageService;
-
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Nested
     @Order(1)
@@ -51,6 +45,7 @@ public class MedicineServiceTest {
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");
+            medicineDTO.setImageBase64("imageBase64");
             medicine = medicineDTO.toEntity();
         }
 
@@ -58,7 +53,10 @@ public class MedicineServiceTest {
         @DisplayName("Successfully register medicine")
         void registerMedicineSuccessfully() {
             when(imageService.saveImage(anyString(), anyString())).thenReturn("imageBase64");
+            when(medicineRepository.save(any(Medicine.class))).thenReturn(medicine);
+
             medicine = medicineService.registerMedicine(medicineDTO);
+
             assertNotNull(medicine);
             assertEquals(medicineDTO.toEntity(), medicine);
         }
@@ -154,9 +152,10 @@ public class MedicineServiceTest {
             medicineDTO.setDosage(2.0);
             medicineDTO.setDosageType(2);
             medicineDTO.setOidManufacturer("1234");
-
+            medicine = spy(medicine);
             when(medicineRepository.findByOid(medicineDTO.getOid())).thenReturn(medicine);
             when(medicineRepository.update(medicine)).thenReturn(medicine);
+            doNothing().when(medicine).validateUser();
 
             medicine = medicineService.updateMedicine(medicineDTO, medicineDTO.getOid());
 
@@ -189,9 +188,13 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Successfully delete medicine")
         void deleteMedicineSuccessfully() {
-            doNothing().when(medicineRepository).deleteByOid(medicineDTO.getOid());
-            medicineService.deleteMedicine(medicineDTO.getOid());
-            verify(medicineRepository, times(1)).deleteByOid(medicineDTO.getOid());
+            medicine = spy(medicine);
+           when(medicineRepository.findByOid(medicineDTO.getOid())).thenReturn(medicine);
+           doNothing().when(medicine).validateUser();
+
+           medicineService.deleteMedicine(medicineDTO.getOid());
+
+           verify(medicineRepository, times(1)).delete(medicine);
         }
     }
 
