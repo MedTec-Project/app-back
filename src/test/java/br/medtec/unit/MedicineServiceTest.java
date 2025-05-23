@@ -1,6 +1,7 @@
 package br.medtec.unit;
 
-import br.medtec.exceptions.MEDValidationExecption;
+import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.image.ImageService;
 import br.medtec.features.medicine.MedicineDTO;
 import br.medtec.features.medicine.Medicine;
 import br.medtec.features.medicine.MedicineRepository;
@@ -26,7 +27,10 @@ public class MedicineServiceTest {
     @Mock
     MedicineRepository medicineRepository;
 
-    @BeforeAll
+    @Mock
+    ImageService imageService;
+
+    @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
     }
@@ -53,6 +57,7 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Successfully register medicine")
         void registerMedicineSuccessfully() {
+            when(imageService.saveImage(anyString(), anyString())).thenReturn("imageBase64");
             medicine = medicineService.registerMedicine(medicineDTO);
             assertNotNull(medicine);
             assertEquals(medicineDTO.toEntity(), medicine);
@@ -61,17 +66,17 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty name")
         void registerMedicineWithEmptyName() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName("");
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName(" ");
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -80,12 +85,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty category")
         void registerMedicineWithEmptyCategory() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setMedicineCategory(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setMedicineCategory(999);
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -94,12 +99,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty pharmaceutical form")
         void registerMedicineWithEmptyPharmaceuticalForm() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setPharmaceuticalForm(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setPharmaceuticalForm(999);
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -108,12 +113,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty dosage")
         void registerMedicineWithEmptyDosage() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setDosage(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setDosage(0.0);
                 medicineService.registerMedicine(medicineDTO);
             });

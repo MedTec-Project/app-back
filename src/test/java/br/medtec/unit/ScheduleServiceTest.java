@@ -1,157 +1,131 @@
 package br.medtec.unit;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.features.schedule.Doctor;
-import br.medtec.features.schedule.DoctorDTO;
-import br.medtec.features.schedule.DoctorRepository;
-import br.medtec.features.schedule.DoctorService;
 import br.medtec.features.schedule.Schedule;
 import br.medtec.features.schedule.ScheduleDTO;
 import br.medtec.features.schedule.ScheduleRepository;
 import br.medtec.features.schedule.ScheduleService;
-import br.medtec.utils.UserSession;
+import br.medtec.utils.UtilDate;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@DisplayName("Schedule Tests")
-@ExtendWith(MockitoExtension.class)
+@DisplayName("ScheduleService Tests")
 public class ScheduleServiceTest {
 
     @InjectMocks
-    ScheduleService scheduleService;
+    private ScheduleService scheduleService;
 
     @Mock
-    ScheduleRepository scheduleRepository;
+    private ScheduleRepository scheduleRepository;
 
-    @BeforeAll
-    void setup() { MockitoAnnotations.openMocks(this); }
+    private ScheduleDTO validDTO;
 
-    @Nested
+    @BeforeEach
+    void init() {
+        validDTO = new ScheduleDTO();
+        validDTO.setOidMedicine("med-123");
+        validDTO.setOidDoctor("doc-456");
+        validDTO.setInitialDate("2025-05-22");
+        validDTO.setFinalDate("2025-05-30");
+        validDTO.setQuantity(3);
+        validDTO.setInterval(1);
+        validDTO.setReminder("Tomar com água");
+    }
+
+    @Test
     @Order(1)
-    @DisplayName("Register Schedule")
-    class RegisterScheduleTest {
+    @DisplayName("Should register schedule successfully")
+    void shouldRegisterSuccessfully() {
+        Schedule result = scheduleService.registerSchedule(validDTO);
 
-        Schedule schedule;
-        ScheduleDTO scheduleDTO;
-
-        @BeforeEach
-        void setup() {
-            scheduleDTO = new ScheduleDTO();
-            scheduleDTO.setName("Richard");
-            scheduleDTO.setCrm("123");
-            scheduleDTO.setPhone("12345678911");
-            schedule = scheduleDTO.toEntity();
-        }
-
-        @Test
-        @DisplayName("Successfully register schedule")
-        void registerScheduleSuccessfully() {
-            schedule = scheduleService.createSchedule(scheduleDTO);
-            assertEquals(schedule, scheduleDTO.toEntity());
-            verify(scheduleRepository, times(1)).save(schedule);
-        }
-
-        @Test
-        @DisplayName("Register schedule with existing CRM")
-        void registerScheduleWithExistingCrm() {
-            when(scheduleRepository.existsByCrm(anyString())).thenReturn(true);
-            assertThrows(MEDBadRequestExecption.class, () -> scheduleService.createSchedule(scheduleDTO));
-            verify(scheduleRepository, times(0)).save(any());
-        }
+        assertEquals("med-123", result.getOidMedicine());
+        assertEquals(UtilDate.getDateByString("2025-05-22"), result.getInitialDate());
+        verify(scheduleRepository, times(1)).save(any(Schedule.class));
     }
 
-    @Nested
+    @Test
     @Order(2)
-    @DisplayName("Update Schedule")
-    class UpdateScheduleTest {
-        Schedule schedule;
-        ScheduleDTO scheduleDTO;
-
-        @BeforeEach
-        void setup() {
-            scheduleDTO = new ScheduleDTO();
-            scheduleDTO.setOid("123");
-            scheduleDTO.setName("Richard");
-            scheduleDTO.setCrm("123");
-            scheduleDTO.setPhone("12345678911");
-            schedule = scheduleDTO.toEntity();
-        }
-
-        @Test
-        @DisplayName("Successfully update schedule")
-        void updateScheduleSuccessfully() {
-            when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
-            when(scheduleRepository.update(any())).thenReturn(schedule);
-            schedule = scheduleService.updateSchedule(scheduleDTO, scheduleDTO.getOid());
-            assertEquals(schedule, scheduleDTO.toEntity());
-            verify(scheduleRepository, times(1)).update(schedule);
-        }
-
-        @Test
-        @DisplayName("Update schedule with nonexistent OID")
-        void updateScheduleWithNonexistentOid() {
-            when(scheduleRepository.findByOid(anyString())).thenThrow(new MEDBadRequestExecption("Médico não encontrado"));
-            assertThrows(MEDBadRequestExecption.class, () -> scheduleService.updateSchedule(scheduleDTO, scheduleDTO.getOid()));
-            verify(scheduleRepository, times(0)).update(any());
-        }
+    @DisplayName("Should fail when medicine is null")
+    void shouldFailWhenMedicineIsNull() {
+        validDTO.setOidMedicine(null);
+        assertThrows(MEDBadRequestExecption.class,
+                () -> scheduleService.registerSchedule(validDTO));
     }
 
-    @Nested
+    @Test
     @Order(3)
-    @DisplayName("Find Schedule")
-    class FindScheduleTest {
-        Schedule schedule;
+    @DisplayName("Should fail when quantity is invalid")
+    void shouldFailWhenQuantityInvalid() {
+        validDTO.setQuantity(0);
+        assertThrows(MEDBadRequestExecption.class,
+                () -> scheduleService.registerSchedule(validDTO));
+    }
 
-        @BeforeEach
-        void setup() {
-            schedule = new Schedule();
-            schedule.setOid("123");
-            schedule.setName("Richard");
-            schedule.setCrm("123");
-            schedule.setPhone("12345678911");
-            schedule.setOidUserCreation("123");
-        }
+    @Test
+    @Order(4)
+    @DisplayName("Should fail when initial date is null")
+    void shouldFailWhenInitialDateNull() {
+        validDTO.setInitialDate(null);
+        assertThrows(MEDBadRequestExecption.class,
+                () -> scheduleService.registerSchedule(validDTO));
+    }
 
-        @Test
-        @DisplayName("Successfully find schedule")
-        void findScheduleSuccessfully() {
-            when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
-            UserSession.getInstance().setOidUser("123");
+    @Test
+    @Order(5)
+    @DisplayName("Should update schedule successfully")
+    void shouldUpdateSuccessfully() {
+        // Arrange: spy para manter valores e permitir mock de validateUser()
+        Schedule schedule = spy(validDTO.toEntity());
+        schedule.setOid("ag-001");
 
-            Schedule foundSchedule = scheduleService.findSchedule("123");
+        // Neutra validateUser()
+        doNothing().when(schedule).validateUser();
 
-            assertEquals(schedule, foundSchedule);
-            verify(scheduleRepository, times(1)).findByOid("123");
-        }
+        // **IMPORTANTE**: usar anyString() para cascar qualquer OID
+        when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
+        when(scheduleRepository.update(any(Schedule.class))).thenReturn(schedule);
 
-        @Test
-        @DisplayName("Find schedule with nonexistent OID")
-        void findScheduleWithNonexistentOid() {
-            when(scheduleRepository.findByOid(anyString())).thenThrow(new MEDBadRequestExecption("Médico não encontrado"));
+        // Act
+        Schedule updated = scheduleService.updateSchedule(validDTO, "ag-001");
 
-            assertThrows(MEDBadRequestExecption.class, () -> scheduleService.findSchedule("123"));
+        // Assert
+        assertNotNull(updated, "O retorno não deveria ser null");
+        assertEquals("med-123", updated.getOidMedicine());
+        assertEquals(UtilDate.getDateByString("2025-05-22"), updated.getInitialDate());
+        verify(scheduleRepository, times(1)).update(any(Schedule.class));
+    }
 
-            verify(scheduleRepository, times(1)).findByOid("123");
-        }
+    @Test
+    @Order(6)
+    @DisplayName("Should fail when updating invalid schedule")
+    void shouldFailOnUpdateWithValidationError() {
+        validDTO.setOidMedicine(null);
+        assertThrows(MEDBadRequestExecption.class,
+                () -> scheduleService.updateSchedule(validDTO, "ag-001"));
+    }
 
-        @Test
-        @DisplayName("Find schedule with OID different from logged-in user")
-        void findScheduleWithDifferentOidFromLoggedUser() {
-            when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
-            UserSession.getInstance().setOidUser("456");
+    @Test
+    @Order(7)
+    @DisplayName("Should delete schedule successfully")
+    void shouldDeleteSuccessfully() {
+        Schedule schedule = spy(validDTO.toEntity());
+        schedule.setOid("ag-001");
 
-            assertThrows(MEDBadRequestExecption.class, () -> scheduleService.findSchedule("123"));
+        doNothing().when(schedule).validateUser();
+        when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
 
-            verify(scheduleRepository, times(1)).findByOid("123");
-        }
+        scheduleService.deleteSchedule("ag-001");
+
+        verify(scheduleRepository, times(1)).delete(schedule);
     }
 }
