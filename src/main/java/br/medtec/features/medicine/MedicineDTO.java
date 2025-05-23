@@ -29,7 +29,7 @@ public class MedicineDTO {
     private String description;
 
     @Schema(example = "123456")
-    private Integer registrationNumber;
+    private String registrationNumber;
 
     @Schema(example = "bffe7665-344f-4d72-81bc-f30288e48f81")
     private String oidManufacturer;

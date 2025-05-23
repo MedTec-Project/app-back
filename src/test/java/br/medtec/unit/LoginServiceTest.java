@@ -1,7 +1,6 @@
 package br.medtec.unit;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.exceptions.MEDValidationExecption;
 import br.medtec.features.user.LoginService;
 import br.medtec.features.user.User;
 import br.medtec.features.user.UserDTO;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Test (Registration and Login)")
@@ -27,11 +25,6 @@ public class LoginServiceTest {
 
     @Mock
     UserRepository userRepository;
-
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @DisplayName("Login Test")
     @Nested
@@ -127,15 +120,15 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (No Email)")
         void registerUserFailureNoEmail() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail(null);
                 loginServiceMock.createUser(userDTO);
             });
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail("");
                 loginServiceMock.createUser(userDTO);
             });
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail("   ");
                 loginServiceMock.createUser(userDTO);
             });
@@ -146,17 +139,17 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (No Password)")
         void registerUserFailureNoPassword() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPassword(null);
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPassword("");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPassword("   ");
                 loginServiceMock.createUser(userDTO);
             });
@@ -167,17 +160,17 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (No Name)")
         void registerUserFailureNoName() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setName(null);
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setName("");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setName("   ");
                 loginServiceMock.createUser(userDTO);
             });
@@ -188,17 +181,17 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (No Phone)")
         void registerUserFailureNoPhone() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPhone(null);
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPhone("");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPhone("   ");
                 loginServiceMock.createUser(userDTO);
             });
@@ -209,12 +202,12 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (Invalid Phone)")
         void registerUserFailureInvalidPhone() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPhone("123456789");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setPhone("123456789111");
                 loginServiceMock.createUser(userDTO);
             });
@@ -225,17 +218,17 @@ public class LoginServiceTest {
         @Test
         @DisplayName("User Registration Failure (Invalid Email)")
         void registerUserFailureInvalidEmail() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail("teste");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail("teste@");
                 loginServiceMock.createUser(userDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 userDTO.setEmail("teste@.com");
                 loginServiceMock.createUser(userDTO);
             });

@@ -28,9 +28,7 @@ public class MedicineService {
 
         medicine.setImagePath(imageService.saveImage(medicineDTO.getImageBase64(), medicineDTO.getName()));
 
-        medicineRepository.save(medicine);
-
-        return medicine;
+        return medicineRepository.save(medicine);
     }
 
     @Transactional

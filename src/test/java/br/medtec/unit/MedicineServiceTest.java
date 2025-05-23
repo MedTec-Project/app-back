@@ -1,6 +1,7 @@
 package br.medtec.unit;
 
-import br.medtec.exceptions.MEDValidationExecption;
+import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.image.ImageService;
 import br.medtec.features.medicine.MedicineDTO;
 import br.medtec.features.medicine.Medicine;
 import br.medtec.features.medicine.MedicineRepository;
@@ -14,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Medicine Tests")
 @ExtendWith(MockitoExtension.class)
@@ -26,10 +26,8 @@ public class MedicineServiceTest {
     @Mock
     MedicineRepository medicineRepository;
 
-    @BeforeAll
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
+    @Mock
+    ImageService imageService;
 
     @Nested
     @Order(1)
@@ -47,13 +45,18 @@ public class MedicineServiceTest {
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");
+            medicineDTO.setImageBase64("imageBase64");
             medicine = medicineDTO.toEntity();
         }
 
         @Test
         @DisplayName("Successfully register medicine")
         void registerMedicineSuccessfully() {
+            when(imageService.saveImage(anyString(), anyString())).thenReturn("imageBase64");
+            when(medicineRepository.save(any(Medicine.class))).thenReturn(medicine);
+
             medicine = medicineService.registerMedicine(medicineDTO);
+
             assertNotNull(medicine);
             assertEquals(medicineDTO.toEntity(), medicine);
         }
@@ -61,17 +64,17 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty name")
         void registerMedicineWithEmptyName() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName("");
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setName(" ");
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -80,12 +83,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty category")
         void registerMedicineWithEmptyCategory() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setMedicineCategory(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setMedicineCategory(999);
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -94,12 +97,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty pharmaceutical form")
         void registerMedicineWithEmptyPharmaceuticalForm() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setPharmaceuticalForm(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setPharmaceuticalForm(999);
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -108,12 +111,12 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Register medicine with empty dosage")
         void registerMedicineWithEmptyDosage() {
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setDosage(null);
                 medicineService.registerMedicine(medicineDTO);
             });
 
-            assertThrows(MEDValidationExecption.class, () -> {
+            assertThrows(MEDBadRequestExecption.class, () -> {
                 medicineDTO.setDosage(0.0);
                 medicineService.registerMedicine(medicineDTO);
             });
@@ -149,9 +152,10 @@ public class MedicineServiceTest {
             medicineDTO.setDosage(2.0);
             medicineDTO.setDosageType(2);
             medicineDTO.setOidManufacturer("1234");
-
+            medicine = spy(medicine);
             when(medicineRepository.findByOid(medicineDTO.getOid())).thenReturn(medicine);
             when(medicineRepository.update(medicine)).thenReturn(medicine);
+            doNothing().when(medicine).validateUser();
 
             medicine = medicineService.updateMedicine(medicineDTO, medicineDTO.getOid());
 
@@ -184,9 +188,13 @@ public class MedicineServiceTest {
         @Test
         @DisplayName("Successfully delete medicine")
         void deleteMedicineSuccessfully() {
-            doNothing().when(medicineRepository).deleteByOid(medicineDTO.getOid());
-            medicineService.deleteMedicine(medicineDTO.getOid());
-            verify(medicineRepository, times(1)).deleteByOid(medicineDTO.getOid());
+            medicine = spy(medicine);
+           when(medicineRepository.findByOid(medicineDTO.getOid())).thenReturn(medicine);
+           doNothing().when(medicine).validateUser();
+
+           medicineService.deleteMedicine(medicineDTO.getOid());
+
+           verify(medicineRepository, times(1)).delete(medicine);
         }
     }
 

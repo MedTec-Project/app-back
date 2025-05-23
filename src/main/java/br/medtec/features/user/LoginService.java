@@ -26,7 +26,7 @@ public class LoginService extends GenericsService {
             }
             return JWTUtils.generateToken(user);
         } else {
-            log.error("Email ou Senha Incorreto {}", userDTO.getEmail());
+            log.warn("Email ou Senha Incorreto {}", userDTO.getEmail());
             throw new MEDBadRequestExecption("Email ou Senha Incorreto");
         }
     }

@@ -47,7 +47,7 @@ public class Medicine extends BaseEntity {
     private Double content;
 
     @Column(name = "registration_number")
-    private Integer registrationNumber;
+    private String registrationNumber;
 
     @Column(name = "image_path")
     private String imagePath;
@@ -64,6 +64,9 @@ public class Medicine extends BaseEntity {
             {@JoinColumn(name="medicine_oid")}, inverseJoinColumns=
             {@JoinColumn(name="symptom_oid")})
     private List<Symptom> sideEffects;
+
+    @Transient
+    private String imageBase64;
 
     public enum MedicineCategory {
         ANALGESIC(0, "Analgésico", "#009688"),

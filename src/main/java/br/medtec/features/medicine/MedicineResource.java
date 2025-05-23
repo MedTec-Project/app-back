@@ -74,7 +74,8 @@ public class MedicineResource extends GenericsResource {
             if (StringUtil.isValidString(oid)) {
                 Medicine medicine = medicineRepository.findByOid(oid);
                 medicine.validateUser();
-                return ResponseUtils.ok(medicine);
+                medicine.setImageBase64(imageService.getImage(medicine.getImagePath()));
+                return ResponseUtils.ok (medicine);
             } else {
                 return ResponseUtils.badRequest("Oid inválido");
             }
