@@ -43,6 +43,7 @@ public class ScheduleLogService {
         scheduleLog.setTaken(dateTaken);
         scheduleLog.setDateTaken(new Date());
         scheduleLog.setStatus(ScheduleStatus.TAKEN);
+        // TODO: register next schedule
 //        registerNextSchedule(oid, scheduleLog.getScheduleDate(), scheduleLog.getInterval());
 
 
