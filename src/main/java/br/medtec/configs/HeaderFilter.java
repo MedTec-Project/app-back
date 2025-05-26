@@ -42,15 +42,15 @@ public class HeaderFilter implements ContainerRequestFilter {
         }
     }
 
-    private boolean isUserAllowed(String userRole, ContainerRequestContext requestContext) {
-        Class<?> resourceClass = requestContext.getUriInfo().getMatchedResources().get(0).getClass();
-
-        RolesAllowed rolesAllowed = resourceClass.getAnnotation(RolesAllowed.class);
-
-        if (rolesAllowed != null) {
-            Set<String> allowedRoles = new HashSet<>(List.of(rolesAllowed.value()));
-            return allowedRoles.contains(userRole);
-        }
-        return true;
-    }
+//    private boolean isUserAllowed(String userRole, ContainerRequestContext requestContext) {
+//        Class<?> resourceClass = requestContext.getUriInfo().getMatchedResources().get(0).getClass();
+//
+//        RolesAllowed rolesAllowed = resourceClass.getAnnotation(RolesAllowed.class);
+//
+//        if (rolesAllowed != null) {
+//            Set<String> allowedRoles = new HashSet<>(List.of(rolesAllowed.value()));
+//            return allowedRoles.contains(userRole);
+//        }
+//        return true;
+//    }
 }

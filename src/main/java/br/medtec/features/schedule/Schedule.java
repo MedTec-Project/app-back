@@ -2,12 +2,14 @@ package br.medtec.features.schedule;
 
 import br.medtec.features.doctor.Doctor;
 import br.medtec.features.medicine.Medicine;
+import br.medtec.features.schedule.schedulelog.ScheduleLog;
 import br.medtec.generics.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -45,4 +47,7 @@ public class Schedule extends BaseEntity {
 
     @Column(name = "reminder")
     private String reminder;
+
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+    private List<ScheduleLog> scheduleLogs;
 }

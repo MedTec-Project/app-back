@@ -1,23 +1,36 @@
 package br.medtec.features.schedule;
 
 import br.medtec.features.image.ImageService;
-import br.medtec.features.schedule.Schedule;
-import br.medtec.features.schedule.ScheduleDTO;
-import br.medtec.features.schedule.ScheduleRepository;
+import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
+import br.medtec.features.schedule.schedulelog.ScheduleLogService;
 import br.medtec.utils.StringUtil;
+import br.medtec.features.schedule.schedulelog.ScheduleLogRepository;
 import br.medtec.utils.Validations;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 
 @ApplicationScoped
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    private final ScheduleLogRepository scheduleLogRepository;
+
+    private final ImageService imageService;
+
     @Inject
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    ScheduleLogService scheduleLogService;
+
+    @Inject
+    public ScheduleService(ScheduleRepository scheduleRepository,
+                           ScheduleLogRepository scheduleLogRepository,
+                           ImageService imageService) {
         this.scheduleRepository = scheduleRepository;
+        this.scheduleLogRepository = scheduleLogRepository;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -25,8 +38,11 @@ public class ScheduleService {
         validateSchedule(scheduleDTO);
 
         Schedule schedule = scheduleDTO.toEntity();
+        schedule = scheduleRepository.save(schedule);
 
-        return scheduleRepository.save(schedule);
+        scheduleLogService.registerNextSchedule(schedule.getOid(), schedule.getInitialDate(), schedule.getInterval());
+
+        return schedule;
     }
 
     @Transactional
@@ -50,6 +66,26 @@ public class ScheduleService {
     }
 
     @Transactional
+    public List<ScheduleLogDTO> getSchedulesToday() {
+        List<ScheduleLogDTO> schedulesToday = scheduleLogRepository.findToday();
+        schedulesToday.forEach(scheduleLogDTO -> scheduleLogDTO.setImageBase64(imageService.getImage(scheduleLogDTO.getImagePath())));
+        return schedulesToday;
+    }
+
+    @Transactional
+    public List<ScheduleLogDTO> getSchedulesGeneral() {
+        List<ScheduleLogDTO> schedulesGeneral = scheduleLogRepository.findGeneral();
+        schedulesGeneral.forEach(scheduleLogDTO -> scheduleLogDTO.setImageBase64(imageService.getImage(scheduleLogDTO.getImagePath())));
+        return schedulesGeneral;
+    }
+
+    @Transactional
+    public void markScheduleTaken(String oid, Boolean dateTaken) {
+        scheduleLogService.markScheduleTaken(oid, dateTaken);
+    }
+
+
+    @Transactional
     public void validateSchedule(ScheduleDTO scheduleDTO) {
         Validations validations = new Validations();
 
@@ -63,6 +99,10 @@ public class ScheduleService {
 
         if (scheduleDTO.getInitialDate() == null) {
             validations.add("Data Inicial Não Pode Ser Nula");
+        }
+
+        if (scheduleRepository.existsByAttribute("oidMedicine", scheduleDTO.getOidMedicine())) {
+            validations.add("Já Existe Um Agendamento Para Este Medicamento");
         }
 
         validations.throwErrors();

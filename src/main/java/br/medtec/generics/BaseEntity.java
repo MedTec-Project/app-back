@@ -10,6 +10,7 @@ import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.ParamDef;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

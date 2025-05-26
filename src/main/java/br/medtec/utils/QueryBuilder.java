@@ -4,12 +4,18 @@ import br.medtec.exceptions.MEDExecption;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.Session;
-
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class QueryBuilder {
 
     private final QueryInstance instance;
@@ -27,7 +33,11 @@ public class QueryBuilder {
 
     public QueryBuilder select(String sql){
         if (this.instance.sqlSelect.indexOf("SELECT") > 0){
-            this.instance.sqlSelect.append(",").append(sql);
+            if (this.instance.sqlSelect.toString().endsWith("(")) {
+                this.instance.sqlSelect.append(sql);
+            } else {
+                this.instance.sqlSelect.append(",").append(sql);
+            }
         } else {
             this.instance.sqlSelect.append("SELECT ").append(sql);
         }
@@ -68,7 +78,12 @@ public class QueryBuilder {
     }
 
     public <T> List<T> executeQuery() {
-        return (List<T>) createQuery().getResultList();
+        Query query = createQuery();
+        List<?> raw = query.getResultList();
+        if (instance.dtoClass != null && instance.nativeQuery) {
+            return (List<T>) mapToDto(raw);
+        }
+        return (List<T>) raw;
     }
 
     public HashMap<String, Object> executeQueryMap(){
@@ -86,14 +101,18 @@ public class QueryBuilder {
     private Query createQuery() {
         Query query;
         Session session = (Session) this.instance.entityManager.getDelegate();
-        if (this.instance.checkUser && !this.instance.nativeQuery) {
-            session.enableFilter("user").setParameter("oidUserCreation", UserSession.getOidUser());
+        if (BooleanUtils.isNotTrue(this.instance.notCheckUser) && BooleanUtils.isNotTrue(this.instance.nativeQuery)) {
+            session.enableFilter("user").setParameterList("oidUserCreation", List.of(UserSession.getOidUser(), "user"));
         }
         StringBuilder sql = buildSql();
 
         try {
             if (instance.nativeQuery) {
-                query = session.createNativeQuery(sql.toString());
+                if (instance.dtoClass != null) {
+                    query = session.createNativeQuery(sql.toString());
+                } else {
+                    query = session.createNativeQuery(sql.toString());
+                }
             } else {
                 query = session.createQuery(sql.toString());
             }
@@ -130,6 +149,7 @@ public class QueryBuilder {
         this.instance.sql.append(this.instance.sqlFrom);
         this.instance.sql.append(this.instance.sqlWhere);
         this.instance.sql.append(this.instance.sqlGroup);
+        this.instance.sql.append(this.instance.sqlOrderBy);
         return this.instance.sql;
     }
 
@@ -141,8 +161,36 @@ public class QueryBuilder {
         }
     }
 
-    public void checkUser() {
-        this.instance.checkUser = true;
+    public QueryBuilder transformDTO(Class<?> dtoClass){
+        this.instance.dtoClass = dtoClass;
+        return this;
+    }
+
+    private List<Object> mapToDto(List<?> raw) {
+        return raw.stream().map(row -> {
+            try {
+
+
+                Object[] cols = (Object[]) row;
+                for (int i = 0; i < cols.length; i++) {
+                    for (Object col : cols) {
+                        log.debug("Valor: {} Tipo: {}", col, col != null ? col.getClass() : "null");
+                    }
+                }
+                return instance.dtoClass.getConstructors()[0].newInstance(cols);
+            } catch (Exception e) {
+                throw new RuntimeException("Erro ao mapear DTO: " + e.getMessage(), e);
+            }
+        }).collect(Collectors.toList());
+    }
+
+    public void notCheckUser() {
+        this.instance.notCheckUser = true;
+    }
+
+    public QueryBuilder orderBy(String sql){
+        this.instance.sqlOrderBy.append(" ORDER BY ").append(sql);
+        return this;
     }
 
     private class QueryInstance {
@@ -152,13 +200,16 @@ public class QueryBuilder {
         private final StringBuilder sqlFrom = new StringBuilder();
         private final StringBuilder sqlWhere = new StringBuilder();
         private final StringBuilder sqlGroup = new StringBuilder();
+        private final StringBuilder sqlOrderBy = new StringBuilder();
         private final HashMap<String, Object> sqlParams = new HashMap<>();
 
         private Boolean nativeQuery = false;
-        private Boolean checkUser = false;
+        private Boolean notCheckUser = false;
 
         private Integer limit = null;
         private Integer offset;
+
+        private Class<?> dtoClass;
 
         private QueryInstance() {
         }
