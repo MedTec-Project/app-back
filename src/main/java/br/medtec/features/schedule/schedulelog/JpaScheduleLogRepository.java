@@ -18,16 +18,16 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
         QueryBuilder query = createConsultaNativa();
 
         query.transformDTO(ScheduleLogDTO.class)
-                .select("s.oid, s.oid_schedule, s.schedule_status, s.schedule_date, m.image_path, m.name AS medicine_name, m.dosage, m.dosage_type, m.pharmaceutical_form, m.content, m.medicine_category")
+                .select("s.oid, s.oid_schedule, s.taken, s.schedule_status, s.schedule_date, m.image_path, m.name AS medicine_name, m.dosage, m.dosage_type, m.pharmaceutical_form, m.content, m.medicine_category")
                 .from("""
-            schedule_log s
-            INNER JOIN (
-                SELECT oid_schedule, MAX(schedule_date) AS max_date
-                FROM schedule_log
-                WHERE CAST(schedule_date AS DATE) = CURRENT_DATE
-                GROUP BY oid_schedule
-            ) grouped ON s.oid_schedule = grouped.oid_schedule AND s.schedule_date = grouped.max_date
-         """)
+                           schedule_log s
+                           INNER JOIN (
+                               SELECT oid_schedule, MAX(schedule_date) AS max_date
+                               FROM schedule_log
+                               WHERE CAST(schedule_date AS DATE) = CURRENT_DATE
+                               GROUP BY oid_schedule
+                           ) grouped ON s.oid_schedule = grouped.oid_schedule AND s.schedule_date = grouped.max_date
+                        """)
                 .from("LEFT JOIN medicine m ON m.oid = (SELECT oid_medicine FROM schedule WHERE schedule.oid = s.oid_schedule LIMIT 1)")
                 .orderBy("s.schedule_date");
 
@@ -39,19 +39,42 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
         QueryBuilder query = createConsultaNativa();
 
         query.transformDTO(ScheduleLogDTO.class)
-                .select("s.oid, s.oid_schedule, s.schedule_status, s.schedule_date, m.image_path, m.name AS medicine_name, m.dosage, m.dosage_type, m.pharmaceutical_form, m.content, m.medicine_category")
+                .select("""
+                            t.oid, t.oid_schedule, t.taken, t.schedule_status, t.schedule_date, 
+                            t.image_path, t.name AS medicine_name, t.dosage, t.dosage_type, 
+                            t.pharmaceutical_form, t.content, t.medicine_category
+                        """)
                 .from("""
-            schedule_log s
-            INNER JOIN (
-                SELECT oid_schedule, MAX(schedule_date) AS max_date
-                FROM schedule_log
-                GROUP BY oid_schedule
-            ) grouped ON s.oid_schedule = grouped.oid_schedule AND s.schedule_date = grouped.max_date
-         """)
-                .from("LEFT JOIN medicine m ON m.oid = (SELECT oid_medicine FROM schedule WHERE schedule.oid = s.oid_schedule LIMIT 1)")
-                .orderBy("s.schedule_date")
+                            (
+                                SELECT
+                                    s.*,
+                                    m.image_path, m.name, m.dosage, m.dosage_type, 
+                                    m.pharmaceutical_form, m.content, m.medicine_category,
+                                    ROW_NUMBER() OVER (
+                                        PARTITION BY m.oid
+                                        ORDER BY (CASE WHEN s.taken = false THEN 0 ELSE 1 END), s.schedule_date ASC
+                                    ) as rn
+                                FROM schedule_log s
+                                INNER JOIN schedule sched ON sched.oid = s.oid_schedule
+                                INNER JOIN medicine m ON m.oid = sched.oid_medicine
+                            ) t
+                        """)
+                .where("t.rn = 1")
+                .orderBy("t.schedule_date")
                 .limit(40);
 
         return query.executeQuery();
+    }
+
+    @Override
+    public Integer getIntervalByOidScheduleLog(String oidScheduleLog) {
+        QueryBuilder query = createConsultaNativa();
+
+        query.select("(SELECT interval_medicine FROM schedule s WHERE s.oid = sl.oid_schedule)")
+                .from("schedule_log sl")
+                .where("sl.oid = :oid")
+                .param("oid", oidScheduleLog);
+
+        return (Integer) query.firstResult();
     }
 }

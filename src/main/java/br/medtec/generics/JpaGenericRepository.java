@@ -61,6 +61,14 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
     }
 
     @Override
+    public void deleteByAttribute(String atributeName, Object value) {
+        em.createQuery("DELETE FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value")
+                .setParameter("value", value)
+                .executeUpdate();
+        em.flush();
+    }
+
+    @Override
     public List<T> findByAttribute(String atributeName, Object value) {
         TypedQuery<T> query = em.createQuery(
                 "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value", entityClass);

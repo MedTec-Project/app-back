@@ -60,8 +60,20 @@ public class ScheduleResource {
     }
 
     @GET
+    @Path("{oid}")
+    @Operation(summary = "Find Schedule")
+    @APIResponse(responseCode = "200", description = "Schedule found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
+    public Response findSchedule(@PathParam("oid") String oid) {
+        try {
+            return ResponseUtils.ok(scheduleService.getSchedule(oid));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @GET
     @Path("today")
-    @Operation(summary = "Find Schedules")
+    @Operation(summary = "Get Today Schedules")
     @APIResponse(responseCode = "200", description = "Schedules found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
     public Response findSchedulesToday() {
         try {
@@ -74,7 +86,7 @@ public class ScheduleResource {
 
     @GET
     @Path("general")
-    @Operation(summary = "Find Schedules")
+    @Operation(summary = "Get All Schedules")
     @APIResponse(responseCode = "200", description = "Schedules found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
     public Response findSchedulesGeneral() {
         try {
@@ -89,9 +101,9 @@ public class ScheduleResource {
     @Path("{oid}/mark")
     @RolesAllowed({"user", "admin"})
     @Operation(summary = "Mark Schedule Taken")
-    public Response markScheduleTaken(@PathParam("oid") String oid, @QueryParam("dateTaken") Boolean dateTaken) {
+    public Response markScheduleTaken(@PathParam("oid") String oid, ScheduleTakenDTO scheduleTakenDTO) {
         try {
-            scheduleService.markScheduleTaken(oid, dateTaken);
+            scheduleService.markScheduleTaken(oid, scheduleTakenDTO.getTaken());
             return ResponseUtils.ok("Schedule marked as taken successfully.");
         } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());

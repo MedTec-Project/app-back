@@ -12,4 +12,10 @@ public class JpaScheduleRepository extends JpaGenericRepository<Schedule> implem
         super(Schedule.class);
     }
 
+    @Override
+    public void delete(Schedule schedule) {
+        super.deleteByAttribute("oidSchedule", schedule.getOid());
+        super.delete(schedule);
+    }
+
 }

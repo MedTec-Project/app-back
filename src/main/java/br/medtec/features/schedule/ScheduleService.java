@@ -10,6 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @ApplicationScoped
@@ -61,9 +62,12 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(String oid) {
         Schedule schedule = scheduleRepository.findByOid(oid);
+
         schedule.validateUser();
+
         scheduleRepository.delete(schedule);
     }
+
 
     @Transactional
     public List<ScheduleLogDTO> getSchedulesToday() {
@@ -80,8 +84,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void markScheduleTaken(String oid, Boolean dateTaken) {
-        scheduleLogService.markScheduleTaken(oid, dateTaken);
+    public void markScheduleTaken(String oid, Boolean taken) {
+        scheduleLogService.markScheduleTaken(oid, taken);
+    }
+
+    @Transactional
+    public ScheduleDTO getSchedule(String oid) {
+       Schedule schedule = scheduleRepository.findByOid(oid);
+       return schedule.toDTO();
     }
 
 

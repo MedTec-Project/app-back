@@ -26,11 +26,12 @@ public class ScheduleLogDTO {
     private Double content;
     private Medicine.MedicineCategory medicineCategory;
 
-    public ScheduleLogDTO(String oid, String oidSchedule, Byte status, Timestamp scheduleDate, String imagePath, String medicineName, Double dosage, Byte dosageType, Byte pharmaceuticalForm, Double content, Byte medicineCategory) {
+    public ScheduleLogDTO(String oid, String oidSchedule, Boolean taken, Byte status, Timestamp scheduleDate, String imagePath, String medicineName, Double dosage, Byte dosageType, Byte pharmaceuticalForm, Double content, Byte medicineCategory) {
         this.oid = oid;
         this.oidSchedule = oidSchedule;
         this.status = ScheduleStatus.fromValue(status);
         this.scheduleDate = scheduleDate;
+        this.taken = taken;
         this.imagePath = imagePath;
         this.medicineName = medicineName;
         this.dosage = dosage;

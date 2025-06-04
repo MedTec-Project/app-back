@@ -48,6 +48,9 @@ public class ServerImageService implements ImageService {
     @Override
     public String getImage(String imagePath) {
         try {
+            if (imagePath == null || imagePath.isEmpty()) {
+                return null;
+            }
             byte[] imageBytes = Files.readAllBytes(Path.of(imagePath));
             return Base64.getEncoder().encodeToString(imageBytes);
         } catch (IOException e) {

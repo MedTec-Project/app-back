@@ -5,6 +5,7 @@ import br.medtec.features.schedule.ScheduleStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -38,16 +39,13 @@ public class ScheduleLogService {
     }
 
     @Transactional
-    public void markScheduleTaken(String oid, Boolean dateTaken) {
+    public void markScheduleTaken(String oid, Boolean taken) {
         ScheduleLog scheduleLog = scheduleLogRepository.findByOid(oid);
-        scheduleLog.setTaken(dateTaken);
+        scheduleLog.setTaken(BooleanUtils.isTrue(taken));
         scheduleLog.setDateTaken(new Date());
-        scheduleLog.setStatus(ScheduleStatus.TAKEN);
-        // TODO: register next schedule
-//        registerNextSchedule(oid, scheduleLog.getScheduleDate(), scheduleLog.getInterval());
-
-
-        scheduleLogRepository.save(scheduleLog);
+        scheduleLog.setStatus(BooleanUtils.isTrue(taken) ? ScheduleStatus.TAKEN : ScheduleStatus.NOT_TAKEN);
+        registerNextSchedule(scheduleLog.getOidSchedule(), scheduleLog.getDateTaken(), scheduleLogRepository.getIntervalByOidScheduleLog(oid));
+        scheduleLogRepository.update(scheduleLog);
     }
 
 

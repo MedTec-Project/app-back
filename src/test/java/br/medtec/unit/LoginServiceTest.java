@@ -34,7 +34,6 @@ public class LoginServiceTest {
 
         @BeforeEach
         void setup() {
-            MockitoAnnotations.openMocks(this);
             userDTO = new UserDTO();
             userDTO.setOid("123");
             userDTO.setEmail("richard.fernandes@gmail.com");

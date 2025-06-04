@@ -4,6 +4,9 @@ import br.medtec.features.doctor.Doctor;
 import br.medtec.features.medicine.Medicine;
 import br.medtec.features.schedule.schedulelog.ScheduleLog;
 import br.medtec.generics.BaseEntity;
+import br.medtec.utils.UtilDate;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,5 +52,25 @@ public class Schedule extends BaseEntity {
     private String reminder;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
+    @JsonbTransient
     private List<ScheduleLog> scheduleLogs;
+
+    public ScheduleDTO toDTO() {
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        scheduleDTO.setOid(this.getOid());
+        scheduleDTO.setOidMedicine(this.getOidMedicine());
+        scheduleDTO.setOidDoctor(this.getOidDoctor());
+        scheduleDTO.setInitialDate(UtilDate.formatDate(this.getInitialDate()));
+        scheduleDTO.setFinalDate(UtilDate.formatDate(this.getFinalDate()));
+        scheduleDTO.setQuantity(this.getQuantity());
+        scheduleDTO.setInterval(this.getInterval());
+        scheduleDTO.setReminder(this.getReminder());
+        if (this.getMedicine() != null) {
+            scheduleDTO.setNameMedicine(this.getMedicine().getName());
+            scheduleDTO.setDosageMedicine(this.getMedicine().getDosage());
+            scheduleDTO.setDosageTypeNameMedicine(this.getMedicine().getDosageType());
+        }
+        return scheduleDTO;
+    }
+
 }
