@@ -52,11 +52,12 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
                                     m.pharmaceutical_form, m.content, m.medicine_category,
                                     ROW_NUMBER() OVER (
                                         PARTITION BY m.oid
-                                        ORDER BY (CASE WHEN s.taken = false THEN 0 ELSE 1 END), s.schedule_date ASC
+                                        ORDER BY s.schedule_date ASC
                                     ) as rn
                                 FROM schedule_log s
                                 INNER JOIN schedule sched ON sched.oid = s.oid_schedule
                                 INNER JOIN medicine m ON m.oid = sched.oid_medicine
+                                WHERE s.taken = false
                             ) t
                         """)
                 .where("t.rn = 1")

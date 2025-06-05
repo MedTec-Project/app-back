@@ -23,11 +23,20 @@ public class ScheduleLogService {
     }
 
     @Transactional
+    public void registerNextSchedule(String oidSchedule, Date datePara) {
+        registerNextSchedule(oidSchedule, datePara, null);
+    }
+
+    @Transactional
     public void registerNextSchedule(String oidSchedule, Date datePara, Integer interval) {
         ScheduleLog scheduleLog = new ScheduleLog();
         scheduleLog.setOidSchedule(oidSchedule);
         scheduleLog.setStatus(ScheduleStatus.PENDING);
-        scheduleLog.setScheduleDate(getScheduleDate(datePara, interval));
+        if (interval != null) {
+            scheduleLog.setScheduleDate(getScheduleDate(datePara, interval));
+        } else {
+            scheduleLog.setScheduleDate(datePara);
+        }
         scheduleLogRepository.save(scheduleLog);
     }
 

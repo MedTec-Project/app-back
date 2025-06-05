@@ -73,7 +73,7 @@ public class BaseEntity {
 
     public void validateUser() {
         if ((!Objects.equals(UserSession.getUserType(), "admin")) &&
-                ((this.oidUserCreation != null && this.oidUserCreation.equals("user")) || (!Objects.equals(this.oidUserCreation, this.getOidUser())))) {
+                ((this.oidUserCreation != null && !this.oidUserCreation.equals("user")) && (!Objects.equals(this.oidUserCreation, this.getOidUser())))) {
             throw new MEDBadRequestExecption("O Usúario Não tem permissão de acesso a esta entidade");
         }
     }

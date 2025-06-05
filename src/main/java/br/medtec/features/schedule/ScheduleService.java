@@ -41,7 +41,7 @@ public class ScheduleService {
         Schedule schedule = scheduleDTO.toEntity();
         schedule = scheduleRepository.save(schedule);
 
-        scheduleLogService.registerNextSchedule(schedule.getOid(), schedule.getInitialDate(), schedule.getInterval());
+        scheduleLogService.registerNextSchedule(schedule.getOid(), schedule.getInitialDate());
 
         return schedule;
     }

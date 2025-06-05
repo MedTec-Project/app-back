@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Test (Registration and Login)")
-public class LoginServiceTest {
+public class    LoginServiceTest {
 
     @InjectMocks
     LoginService loginServiceMock;

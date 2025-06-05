@@ -15,7 +15,7 @@ public class UtilDate {
     public static Date getDateByString(String date) {
        try {
            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-           dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+           dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
            return dateFormat.parse(date);
        } catch (ParseException e) {
            log.error("Erro ao converter data", e);
