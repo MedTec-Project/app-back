@@ -51,11 +51,19 @@ public class ScheduleLogService {
     public void markScheduleTaken(String oid, Boolean taken) {
         ScheduleLog scheduleLog = scheduleLogRepository.findByOid(oid);
         scheduleLog.setTaken(BooleanUtils.isTrue(taken));
-        scheduleLog.setDateTaken(new Date());
+        scheduleLog.setDateTaken(scheduleLog.getScheduleDate() != null ? scheduleLog.getScheduleDate() : new Date());
         scheduleLog.setStatus(BooleanUtils.isTrue(taken) ? ScheduleStatus.TAKEN : ScheduleStatus.NOT_TAKEN);
-        registerNextSchedule(scheduleLog.getOidSchedule(), scheduleLog.getDateTaken(), scheduleLogRepository.getIntervalByOidScheduleLog(oid));
         scheduleLogRepository.update(scheduleLog);
+            if (BooleanUtils.isTrue(taken)) {
+            registerNextSchedule(scheduleLog.getOidSchedule(), scheduleLog.getDateTaken(), scheduleLogRepository.getIntervalByOidScheduleLog(oid));
+        } else {
+            ScheduleLog nextSchedule = scheduleLogRepository.findNextSchedule(oid);
+            if (nextSchedule != null) {
+                scheduleLogRepository.delete(nextSchedule);
+            }
+        }
     }
+
 
 
 }

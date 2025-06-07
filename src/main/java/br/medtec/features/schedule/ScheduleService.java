@@ -65,7 +65,10 @@ public class ScheduleService {
 
         schedule.validateUser();
 
-        scheduleRepository.delete(schedule);
+        if (schedule.getScheduleLogs() != null && !schedule.getScheduleLogs().isEmpty()) {
+            schedule.getScheduleLogs().forEach(scheduleLogRepository::delete);
+        }
+
     }
 
 
