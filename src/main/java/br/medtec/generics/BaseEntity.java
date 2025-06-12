@@ -2,6 +2,8 @@ package br.medtec.generics;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.UserSession;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Filter;
@@ -47,6 +49,8 @@ public class BaseEntity {
     private Date updateDate;
 
     @Version
+    @JsonIgnore
+    @JsonbTransient
     private Integer version;
 
     @PrePersist

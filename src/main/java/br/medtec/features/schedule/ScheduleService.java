@@ -1,5 +1,6 @@
 package br.medtec.features.schedule;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.image.ImageService;
 import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
 import br.medtec.features.schedule.schedulelog.ScheduleLogService;
@@ -38,6 +39,10 @@ public class ScheduleService {
     public Schedule registerSchedule(ScheduleDTO scheduleDTO) {
         validateSchedule(scheduleDTO);
 
+        if (scheduleRepository.existsByAttribute("oidMedicine", scheduleDTO.getOidMedicine())) {
+            throw new MEDBadRequestExecption("Já Existe Um Agendamento Para Este Medicamento");
+        }
+
         Schedule schedule = scheduleDTO.toEntity();
         schedule = scheduleRepository.save(schedule);
 
@@ -47,7 +52,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Schedule updateSchedule(ScheduleDTO scheduleDTO, String oid) {
+    public ScheduleDTO updateSchedule(ScheduleDTO scheduleDTO, String oid) {
         validateSchedule(scheduleDTO);
 
         Schedule schedule = scheduleRepository.findByOid(oid);
@@ -56,7 +61,9 @@ public class ScheduleService {
 
         Schedule updatedSchedule = scheduleDTO.toEntity(schedule);
 
-        return scheduleRepository.update(updatedSchedule);
+        schedule = scheduleRepository.update(updatedSchedule);
+
+        return schedule.toDTO();
     }
 
     @Transactional
@@ -69,6 +76,7 @@ public class ScheduleService {
             schedule.getScheduleLogs().forEach(scheduleLogRepository::delete);
         }
 
+        scheduleRepository.delete(schedule);
     }
 
 
@@ -112,10 +120,6 @@ public class ScheduleService {
 
         if (scheduleDTO.getInitialDate() == null) {
             validations.add("Data Inicial Não Pode Ser Nula");
-        }
-
-        if (scheduleRepository.existsByAttribute("oidMedicine", scheduleDTO.getOidMedicine())) {
-            validations.add("Já Existe Um Agendamento Para Este Medicamento");
         }
 
         validations.throwErrors();

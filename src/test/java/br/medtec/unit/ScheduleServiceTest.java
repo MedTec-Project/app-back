@@ -111,11 +111,14 @@ class ScheduleServiceTest {
             when(scheduleRepository.findByOid(anyString())).thenReturn(schedule);
             when(scheduleRepository.update(any(Schedule.class))).thenReturn(schedule);
 
-            Schedule updated = scheduleService.updateSchedule(validDTO, "ag-001");
+            ScheduleDTO updated = scheduleService.updateSchedule(validDTO, "ag-001");
 
-            assertNotNull(updated, "O retorno não deveria ser null");
             assertEquals("med-123", updated.getOidMedicine());
             assertEquals(UtilDate.getDateByString("2025-05-22"), updated.getInitialDate());
+            assertEquals(UtilDate.getDateByString("2025-05-30"), updated.getFinalDate());
+            assertEquals(3, updated.getQuantity());
+            assertEquals(1, updated.getInterval());
+            assertEquals("Tomar com água", updated.getReminder());
             verify(scheduleRepository, times(1)).update(any(Schedule.class));
         }
 
