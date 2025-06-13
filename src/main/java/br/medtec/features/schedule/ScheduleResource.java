@@ -1,14 +1,8 @@
 package br.medtec.features.schedule;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.features.image.ImageService;
-import br.medtec.features.schedule.Schedule;
-import br.medtec.features.schedule.ScheduleDTO;
-import br.medtec.features.schedule.ScheduleRepository;
-import br.medtec.features.schedule.ScheduleService;
+import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
 import br.medtec.utils.ResponseUtils;
-import br.medtec.utils.StringUtil;
-import br.medtec.utils.UtilCollection;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -65,5 +59,55 @@ public class ScheduleResource {
         }
     }
 
+    @GET
+    @Path("{oid}")
+    @Operation(summary = "Find Schedule")
+    @APIResponse(responseCode = "200", description = "Schedule found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
+    public Response findSchedule(@PathParam("oid") String oid) {
+        try {
+            return ResponseUtils.ok(scheduleService.getSchedule(oid));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
 
+    @GET
+    @Path("today")
+    @Operation(summary = "Get Today Schedules")
+    @APIResponse(responseCode = "200", description = "Schedules found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
+    public Response findSchedulesToday() {
+        try {
+            List<ScheduleLogDTO> schedules = scheduleService.getSchedulesToday();
+            return ResponseUtils.ok(schedules);
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("general")
+    @Operation(summary = "Get All Schedules")
+    @APIResponse(responseCode = "200", description = "Schedules found", content = @Content(schema = @Schema(implementation = ScheduleDTO.class)))
+    public Response findSchedulesGeneral() {
+        try {
+            List<ScheduleLogDTO> schedules = scheduleService.getSchedulesGeneral();
+            return ResponseUtils.ok(schedules);
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("{oid}/mark")
+    @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Mark Schedule Taken")
+    public Response markScheduleTaken(@PathParam("oid") String oid, ScheduleTakenDTO scheduleTakenDTO) {
+        try {
+            scheduleService.markScheduleTaken(oid, scheduleTakenDTO.getTaken());
+            return ResponseUtils.ok("Schedule marked as taken successfully.");
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+
+    }
 }

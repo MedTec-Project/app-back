@@ -1,5 +1,6 @@
 package br.medtec.features.schedule;
 
+import br.medtec.features.medicine.Medicine;
 import br.medtec.utils.UtilDate;
 import lombok.Data;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -33,6 +34,15 @@ public class ScheduleDTO {
 
     @Schema(example = "Lembrete do agendamento")
     private String reminder;
+
+    @Schema(hidden = true)
+    private String nameMedicine;
+
+    @Schema(hidden = true)
+    private Double dosageMedicine;
+
+    @Schema(hidden = true)
+    private Medicine.DosageType dosageTypeNameMedicine;
 
     public Schedule toEntity() {
         Schedule schedule = new Schedule();

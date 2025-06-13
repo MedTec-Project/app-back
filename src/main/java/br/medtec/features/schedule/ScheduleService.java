@@ -1,36 +1,58 @@
 package br.medtec.features.schedule;
 
+import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.image.ImageService;
-import br.medtec.features.schedule.Schedule;
-import br.medtec.features.schedule.ScheduleDTO;
-import br.medtec.features.schedule.ScheduleRepository;
+import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
+import br.medtec.features.schedule.schedulelog.ScheduleLogService;
 import br.medtec.utils.StringUtil;
+import br.medtec.features.schedule.schedulelog.ScheduleLogRepository;
 import br.medtec.utils.Validations;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+
+import java.util.Collections;
+import java.util.List;
 
 @ApplicationScoped
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
+    private final ScheduleLogRepository scheduleLogRepository;
+
+    private final ImageService imageService;
+
     @Inject
-    public ScheduleService(ScheduleRepository scheduleRepository) {
+    ScheduleLogService scheduleLogService;
+
+    @Inject
+    public ScheduleService(ScheduleRepository scheduleRepository,
+                           ScheduleLogRepository scheduleLogRepository,
+                           ImageService imageService) {
         this.scheduleRepository = scheduleRepository;
+        this.scheduleLogRepository = scheduleLogRepository;
+        this.imageService = imageService;
     }
 
     @Transactional
     public Schedule registerSchedule(ScheduleDTO scheduleDTO) {
         validateSchedule(scheduleDTO);
 
-        Schedule schedule = scheduleDTO.toEntity();
+        if (scheduleRepository.existsByAttribute("oidMedicine", scheduleDTO.getOidMedicine())) {
+            throw new MEDBadRequestExecption("Já Existe Um Agendamento Para Este Medicamento");
+        }
 
-        return scheduleRepository.save(schedule);
+        Schedule schedule = scheduleDTO.toEntity();
+        schedule = scheduleRepository.save(schedule);
+
+        scheduleLogService.registerNextSchedule(schedule.getOid(), schedule.getInitialDate());
+
+        return schedule;
     }
 
     @Transactional
-    public Schedule updateSchedule(ScheduleDTO scheduleDTO, String oid) {
+    public ScheduleDTO updateSchedule(ScheduleDTO scheduleDTO, String oid) {
         validateSchedule(scheduleDTO);
 
         Schedule schedule = scheduleRepository.findByOid(oid);
@@ -39,15 +61,50 @@ public class ScheduleService {
 
         Schedule updatedSchedule = scheduleDTO.toEntity(schedule);
 
-        return scheduleRepository.update(updatedSchedule);
+        schedule = scheduleRepository.update(updatedSchedule);
+
+        return schedule.toDTO();
     }
 
     @Transactional
     public void deleteSchedule(String oid) {
         Schedule schedule = scheduleRepository.findByOid(oid);
+
         schedule.validateUser();
+
+        if (schedule.getScheduleLogs() != null && !schedule.getScheduleLogs().isEmpty()) {
+            schedule.getScheduleLogs().forEach(scheduleLogRepository::delete);
+        }
+
         scheduleRepository.delete(schedule);
     }
+
+
+    @Transactional
+    public List<ScheduleLogDTO> getSchedulesToday() {
+        List<ScheduleLogDTO> schedulesToday = scheduleLogRepository.findToday();
+        schedulesToday.forEach(scheduleLogDTO -> scheduleLogDTO.setImageBase64(imageService.getImage(scheduleLogDTO.getImagePath())));
+        return schedulesToday;
+    }
+
+    @Transactional
+    public List<ScheduleLogDTO> getSchedulesGeneral() {
+        List<ScheduleLogDTO> schedulesGeneral = scheduleLogRepository.findGeneral();
+        schedulesGeneral.forEach(scheduleLogDTO -> scheduleLogDTO.setImageBase64(imageService.getImage(scheduleLogDTO.getImagePath())));
+        return schedulesGeneral;
+    }
+
+    @Transactional
+    public void markScheduleTaken(String oid, Boolean taken) {
+        scheduleLogService.markScheduleTaken(oid, taken);
+    }
+
+    @Transactional
+    public ScheduleDTO getSchedule(String oid) {
+       Schedule schedule = scheduleRepository.findByOid(oid);
+       return schedule.toDTO();
+    }
+
 
     @Transactional
     public void validateSchedule(ScheduleDTO scheduleDTO) {

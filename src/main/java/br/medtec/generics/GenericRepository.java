@@ -9,6 +9,7 @@ public interface GenericRepository<T> {
     T update(T entity);
     void deleteByOid(String oid);
     void delete(T entity);
+    void deleteByAttribute(String atributeName, Object value);
     List<T> findByAttribute(String atributeName, Object value);
     boolean existsByAttribute(String atributeName, Object value);
 }

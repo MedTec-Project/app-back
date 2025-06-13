@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
 @Slf4j
-public class LoginService extends GenericsService {
+public class LoginService {
     private UserRepository userRepository;
 
     @Inject

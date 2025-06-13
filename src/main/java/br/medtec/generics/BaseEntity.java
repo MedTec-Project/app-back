@@ -2,6 +2,8 @@ package br.medtec.generics;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.utils.UserSession;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Filter;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.ParamDef;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -46,6 +49,8 @@ public class BaseEntity {
     private Date updateDate;
 
     @Version
+    @JsonIgnore
+    @JsonbTransient
     private Integer version;
 
     @PrePersist
@@ -72,7 +77,7 @@ public class BaseEntity {
 
     public void validateUser() {
         if ((!Objects.equals(UserSession.getUserType(), "admin")) &&
-                ((this.oidUserCreation != null && this.oidUserCreation.equals("user")) || (!Objects.equals(this.oidUserCreation, this.getOidUser())))) {
+                ((this.oidUserCreation != null && !this.oidUserCreation.equals("user")) && (!Objects.equals(this.oidUserCreation, this.getOidUser())))) {
             throw new MEDBadRequestExecption("O Usúario Não tem permissão de acesso a esta entidade");
         }
     }

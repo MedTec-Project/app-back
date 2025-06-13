@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User Test (Registration and Login)")
-public class LoginServiceTest {
+public class    LoginServiceTest {
 
     @InjectMocks
     LoginService loginServiceMock;
@@ -34,7 +34,6 @@ public class LoginServiceTest {
 
         @BeforeEach
         void setup() {
-            MockitoAnnotations.openMocks(this);
             userDTO = new UserDTO();
             userDTO.setOid("123");
             userDTO.setEmail("richard.fernandes@gmail.com");
