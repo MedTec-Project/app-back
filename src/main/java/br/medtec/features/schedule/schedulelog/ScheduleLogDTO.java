@@ -42,5 +42,11 @@ public class ScheduleLogDTO {
 
     }
 
+    public ScheduleLogDTO(String oid, String oidSchedule, String medicineName) {
+        this.oid = oid;
+        this.oidSchedule = oidSchedule;
+        this.medicineName = medicineName;
+    }
+
 
 }
