@@ -55,7 +55,7 @@ public class ScheduleDTO {
         schedule.setInitialDate(UtilDate.getDateByString(this.initialDate));
         schedule.setFinalDate(UtilDate.getDateByString(this.finalDate));
         schedule.setQuantity(this.quantity);
-        schedule.setInterval(this.interval);
+        schedule.setIntervalMedicine(this.interval);
         schedule.setReminder(this.reminder);
         return schedule;
     }

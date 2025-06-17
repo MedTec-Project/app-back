@@ -74,13 +74,13 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
 
     @Override
     public Integer getIntervalByOidScheduleLog(String oidScheduleLog) {
-        QueryBuilder query = createConsultaNativa();
+        QueryBuilder query = createQueryBuilder();
 
-        query.select("(SELECT interval FROM schedule s WHERE s.oid = sl.oid_schedule)")
-                .from("schedule_log sl")
-                .where("sl.oid = :oid")
+        query.select("s.intervalMedicine")
+                .from("ScheduleLog sl")
+                .from("JOIN sl.schedule s")
+                .where("sl.oidSchedule = :oid")
                 .param("oid", oidScheduleLog);
-
         return (Integer) query.firstResult();
     }
 

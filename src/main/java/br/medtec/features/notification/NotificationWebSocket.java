@@ -1,17 +1,20 @@
 package br.medtec.features.notification;
 
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint("/ws/notification")
+@ApplicationScoped
 public class NotificationWebSocket {
 
     private static final Set<Session> sessions = ConcurrentHashMap.newKeySet();
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @OnOpen
     public void onOpen(Session session) {
@@ -23,12 +26,35 @@ public class NotificationWebSocket {
         sessions.remove(session);
     }
 
-    public static void broadcast(MessageDTO message) {
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        throwable.printStackTrace();
+        sessions.remove(session);
+    }
+
+    @OnMessage
+    public void onMessage(String message, Session session) throws IOException {
+        session.getAsyncRemote().sendText("Echo: " + message);
+    }
+
+    public static void broadcast(String message) {
         sessions.forEach(session -> {
             if (session.isOpen()) {
-                session.getAsyncRemote().sendObject(message);
+                session.getAsyncRemote().sendText(message);
             }
         });
     }
 
+    public static void broadcast(MessageDTO message) {
+        try {
+            String json = mapper.writeValueAsString(message);
+            sessions.forEach(session -> {
+                if (session.isOpen()) {
+                    session.getAsyncRemote().sendText(json);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

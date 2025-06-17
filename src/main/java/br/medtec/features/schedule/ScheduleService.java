@@ -111,7 +111,7 @@ public class ScheduleService {
        return schedule.toDTO();
     }
 
-    @Scheduled(every = "1m")
+    @Scheduled(every = "10s")
     public void checkSchedules() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowWith10minPlus = now.plusMinutes(10);
