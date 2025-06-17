@@ -2,15 +2,21 @@ package br.medtec.features.schedule;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.image.ImageService;
+import br.medtec.features.notification.MessageDTO;
+import br.medtec.features.notification.NotificationWebSocket;
 import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
 import br.medtec.features.schedule.schedulelog.ScheduleLogService;
 import br.medtec.utils.StringUtil;
 import br.medtec.features.schedule.schedulelog.ScheduleLogRepository;
+import br.medtec.utils.UtilDate;
 import br.medtec.utils.Validations;
+import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -103,6 +109,20 @@ public class ScheduleService {
     public ScheduleDTO getSchedule(String oid) {
        Schedule schedule = scheduleRepository.findByOid(oid);
        return schedule.toDTO();
+    }
+
+    @Scheduled(every = "1m")
+    public void checkSchedules() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nowWith10minPlus = now.plusMinutes(10);
+        List<ScheduleLogDTO> getSchedulesNotfication = scheduleLogRepository.findSchedulesNotfication(now, nowWith10minPlus);
+
+        getSchedulesNotfication.forEach(scheduleLogDTO -> {
+            LocalDateTime timeLeft = LocalDateTime.now().minusMinutes(scheduleLogRepository.getIntervalByOidScheduleLog(scheduleLogDTO.getOidSchedule()));
+            String message = "Em " + timeLeft.format(DateTimeFormatter.ofPattern("HH:mm")) + " tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
+            String date = UtilDate.formatDate(now);
+            NotificationWebSocket.broadcast(new MessageDTO(message, date));
+        });
     }
 
 

@@ -5,6 +5,7 @@ import br.medtec.utils.QueryBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
     public Integer getIntervalByOidScheduleLog(String oidScheduleLog) {
         QueryBuilder query = createConsultaNativa();
 
-        query.select("(SELECT interval_medicine FROM schedule s WHERE s.oid = sl.oid_schedule)")
+        query.select("(SELECT interval FROM schedule s WHERE s.oid = sl.oid_schedule)")
                 .from("schedule_log sl")
                 .where("sl.oid = :oid")
                 .param("oid", oidScheduleLog);
@@ -93,6 +94,21 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
                 .param("oid", oidScheduleLog);
 
         return (ScheduleLog) query.firstResult();
+    }
+
+    @Override
+    public List<ScheduleLogDTO> findSchedulesNotfication(LocalDateTime now, LocalDateTime nowWith10minPlus) {
+        QueryBuilder query = createConsultaNativa();
+
+        query.transformDTO(ScheduleLogDTO.class)
+                .select("sl.oid, sl.oid_schedule, m.name")
+                .from("schedule_log sl")
+                .from("INNER JOIN medicine m ON m.oid = (SELECT oid_medicine FROM schedule WHERE schedule.oid = sl.oid_schedule LIMIT 1)")
+                .where("sl.taken IS DISTINCT FROM TRUE AND sl.notification_sent IS DISTINCT FROM TRUE AND sl.schedule_date >= :now AND sl.schedule_date <= :nowWith10minPlus")
+                .param("now", now)
+                .param("nowWith10minPlus", nowWith10minPlus);
+
+        return query.executeQuery();
     }
 
 }

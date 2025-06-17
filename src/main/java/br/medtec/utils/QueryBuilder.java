@@ -7,9 +7,12 @@ import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.Session;
+
+import java.lang.reflect.Constructor;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -177,7 +180,12 @@ public class QueryBuilder {
                         log.debug("Valor: {} Tipo: {}", col, col != null ? col.getClass() : "null");
                     }
                 }
-                return instance.dtoClass.getConstructors()[0].newInstance(cols);
+                if (instance.dtoClass.getConstructors().length > 1) {
+                    Constructor<?> constructor = Arrays.stream(instance.dtoClass.getConstructors()).filter(c -> c.getParameterCount() == cols.length).findFirst().get();
+                    return constructor.newInstance(cols);
+                } else {
+                    return instance.dtoClass.getConstructors()[0].newInstance(cols);
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Erro ao mapear DTO: " + e.getMessage(), e);
             }

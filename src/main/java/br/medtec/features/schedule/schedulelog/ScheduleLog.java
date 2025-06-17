@@ -35,6 +35,9 @@ public class ScheduleLog extends BaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private ScheduleStatus status;
 
+    @Column(name = "notification_sent")
+    private Boolean notificationSent = false;
+
     public ScheduleLog() {
         super();
     }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -23,8 +24,20 @@ public class UtilDate {
        }
     }
 
+    public static String formatDate(LocalDateTime date) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+        return dateFormat.format(date);
+    }
+
     public static String formatDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+        return dateFormat.format(date);
+    }
+
+    public static String formatTimestamp(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         return dateFormat.format(date);
     }
