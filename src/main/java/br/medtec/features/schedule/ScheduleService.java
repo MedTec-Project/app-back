@@ -4,6 +4,7 @@ import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.image.ImageService;
 import br.medtec.features.notification.MessageDTO;
 import br.medtec.features.notification.NotificationWebSocket;
+import br.medtec.features.schedule.schedulelog.ScheduleLog;
 import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
 import br.medtec.features.schedule.schedulelog.ScheduleLogService;
 import br.medtec.utils.StringUtil;
@@ -121,9 +122,11 @@ public class ScheduleService {
             LocalDateTime timeLeft = LocalDateTime.now().minusMinutes(scheduleLogRepository.getIntervalByOidScheduleLog(scheduleLogDTO.getOidSchedule()));
             String message = "Em " + timeLeft.format(DateTimeFormatter.ofPattern("HH:mm")) + " tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
             String date = UtilDate.formatDate(now);
-            NotificationWebSocket.broadcast(new MessageDTO(message, date));
+            scheduleLogService.setNotificationSent(scheduleLogDTO.getOid());
+            NotificationWebSocket.broadcast(new MessageDTO(scheduleLogDTO.getOid(), message, date));
         });
     }
+
 
 
     @Transactional

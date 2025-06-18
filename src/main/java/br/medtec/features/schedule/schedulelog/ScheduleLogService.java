@@ -65,5 +65,13 @@ public class ScheduleLogService {
     }
 
 
+    @Transactional
+    public void setNotificationSent(String oid) {
+        ScheduleLog scheduleLog = scheduleLogRepository.findByOid(oid);
+        scheduleLog.setNotificationSent(true);
+        scheduleLogRepository.update(scheduleLog);
+    }
+
+
 
 }
