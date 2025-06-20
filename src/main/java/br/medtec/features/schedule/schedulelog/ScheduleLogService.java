@@ -54,16 +54,10 @@ public class ScheduleLogService {
         scheduleLog.setDateTaken(scheduleLog.getScheduleDate() != null ? scheduleLog.getScheduleDate() : new Date());
         scheduleLog.setStatus(BooleanUtils.isTrue(taken) ? ScheduleStatus.TAKEN : ScheduleStatus.NOT_TAKEN);
         scheduleLogRepository.update(scheduleLog);
-            if (BooleanUtils.isTrue(taken)) {
+        if (BooleanUtils.isTrue(taken)) {
             registerNextSchedule(scheduleLog.getOidSchedule(), scheduleLog.getDateTaken(), scheduleLogRepository.getIntervalByOidScheduleLog(oid));
-        } else {
-            ScheduleLog nextSchedule = scheduleLogRepository.findNextSchedule(oid);
-            if (nextSchedule != null) {
-                scheduleLogRepository.delete(nextSchedule);
-            }
         }
     }
-
 
     @Transactional
     public void setNotificationSent(String oid) {
@@ -71,7 +65,4 @@ public class ScheduleLogService {
         scheduleLog.setNotificationSent(true);
         scheduleLogRepository.update(scheduleLog);
     }
-
-
-
 }

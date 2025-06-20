@@ -5,6 +5,7 @@ import jakarta.websocket.*;
 import jakarta.websocket.server.ServerEndpoint;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,6 +49,19 @@ public class NotificationWebSocket {
     public static void broadcast(MessageDTO message) {
         try {
             String json = mapper.writeValueAsString(message);
+            sessions.forEach(session -> {
+                if (session.isOpen()) {
+                    session.getAsyncRemote().sendText(json);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void sendMessages(List<MessageDTO> messages) {
+        try {
+            String json = mapper.writeValueAsString(messages);
             sessions.forEach(session -> {
                 if (session.isOpen()) {
                     session.getAsyncRemote().sendText(json);
