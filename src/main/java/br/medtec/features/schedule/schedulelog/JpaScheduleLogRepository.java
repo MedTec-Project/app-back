@@ -101,7 +101,7 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
         QueryBuilder query = createConsultaNativa();
 
         query.transformDTO(ScheduleLogDTO.class)
-                .select("sl.oid, sl.oid_schedule, m.name")
+                .select("sl.oid, sl.oid_schedule, m.name, sl.schedule_date")
                 .from("schedule_log sl")
                 .from("INNER JOIN medicine m ON m.oid = (SELECT oid_medicine FROM schedule WHERE schedule.oid = sl.oid_schedule LIMIT 1)")
                 .where("sl.taken IS DISTINCT FROM TRUE AND sl.notification_sent IS DISTINCT FROM TRUE AND sl.schedule_date >= :now AND sl.schedule_date <= :nowWith10minPlus")

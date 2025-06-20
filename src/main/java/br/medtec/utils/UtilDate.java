@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -54,5 +55,22 @@ public class UtilDate {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
         return dateFormat.format(date);
+    }
+
+    public static String formatTimestamp(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+                .withZone(ZoneId.of("America/Sao_Paulo"));
+        return date.format(formatter);
+    }
+
+    public static String timeLeftInMinutes(Date date) {
+        LocalDateTime dateNow = LocalDateTime.now();
+        LocalDateTime dateFuture = date.toInstant().atZone(ZoneId.of("America/Sao_Paulo")).toLocalDateTime();
+        long minutes = Duration.between(dateNow, dateFuture).toMinutes();
+
+        if (minutes < 0) {
+            return "Tempo Já Passado";
+        }
+        return String.valueOf(minutes);
     }
 }

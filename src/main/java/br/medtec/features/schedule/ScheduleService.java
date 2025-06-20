@@ -20,6 +20,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -135,11 +136,11 @@ public class ScheduleService {
         List<MessageDTO> messages = new ArrayList<>();
         if (UtilCollection.isCollectionValid(scheduleLogs)) {
             scheduleLogs.forEach(scheduleLogDTO -> {
-                LocalDateTime timeLeft = LocalDateTime.now().minusMinutes(scheduleLogRepository.getIntervalByOidScheduleLog(scheduleLogDTO.getOidSchedule()));
-                String message = "Em " + timeLeft.format(DateTimeFormatter.ofPattern("HH:mm")) + " tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
-                String date = UtilDate.formatDate(LocalDateTime.now());
+                Date scheduleDate = scheduleLogDTO.getScheduleDate();
+                String timeLeft = UtilDate.timeLeftInMinutes(scheduleDate);
+                String message = "Em " + timeLeft + " minutos tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
                 scheduleLogService.setNotificationSent(scheduleLogDTO.getOid());
-                messages.add(new MessageDTO(scheduleLogDTO.getOid(), message, date));
+                messages.add(new MessageDTO(scheduleLogDTO.getOid(), message, UtilDate.formatTimestamp(LocalDateTime.now())));
             });
         }
         return messages;
