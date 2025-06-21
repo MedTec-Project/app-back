@@ -1,7 +1,7 @@
 package br.medtec.generics;
 
 import br.medtec.exceptions.MEDExecption;
-import br.medtec.utils.ConsultaBuilder;
+import br.medtec.utils.QueryBuilder;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -35,8 +35,9 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
     }
 
     @Override
-    public void save(T entity) {
+    public T save(T entity) {
         em.persist(entity);
+        return entity;
     }
 
     @Override
@@ -60,6 +61,14 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
     }
 
     @Override
+    public void deleteByAttribute(String atributeName, Object value) {
+        em.createQuery("DELETE FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value")
+                .setParameter("value", value)
+                .executeUpdate();
+        em.flush();
+    }
+
+    @Override
     public List<T> findByAttribute(String atributeName, Object value) {
         TypedQuery<T> query = em.createQuery(
                 "SELECT e FROM " + entityClass.getSimpleName() + " e WHERE e." + atributeName + " = :value", entityClass);
@@ -75,12 +84,12 @@ public class JpaGenericRepository<T> implements GenericRepository<T> {
         return query.getSingleResult() > 0;
     }
 
-    public ConsultaBuilder createConsultaBuilder() {
-        return new ConsultaBuilder(em);
+    public QueryBuilder createQueryBuilder() {
+        return new QueryBuilder(em);
     }
 
-    public ConsultaBuilder createConsultaNativa() {
-        return new ConsultaBuilder(em, true);
+    public QueryBuilder createConsultaNativa() {
+        return new QueryBuilder(em, true);
     }
 
 
