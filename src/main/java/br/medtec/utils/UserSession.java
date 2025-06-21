@@ -1,10 +1,13 @@
 package br.medtec.utils;
 
+import br.medtec.features.user.User;
+import jakarta.inject.Singleton;
 import lombok.Setter;
 
 import java.util.Objects;
 
 @Setter
+@Singleton
 public class UserSession {
 
     private static UserSession instance;
@@ -35,5 +38,15 @@ public class UserSession {
 
     public static String getToken() {
         return getInstance().token;
+    }
+
+    public static void setSession(User user) {
+        if (user == null) {
+            return;
+        }
+        UserSession session = getInstance();
+        session.oidUser = user.getOid();
+        session.userType = user.getAdmin() ? "admin" : "user";
+        session.token = JWTUtils.generateToken(user);
     }
 }

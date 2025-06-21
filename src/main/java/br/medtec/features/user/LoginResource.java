@@ -40,8 +40,7 @@ public class LoginResource extends GenericsResource {
             if (loginService.checkIfExists(userDTO)) {
                 return ResponseUtils.badRequest("Esse email já está cadastrado");
             } else {
-                User user = loginService.createUser(userDTO);
-                return ResponseUtils.created(user);
+                return ResponseUtils.created(loginService.createUser(userDTO));
             }
         } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());
