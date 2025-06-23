@@ -46,7 +46,7 @@ public class Schedule extends BaseEntity {
     private Integer quantity;
 
     @Column(name = "interval_medicine")
-    private Integer interval;
+    private Integer intervalMedicine;
 
     @Column(name = "reminder")
     private String reminder;
@@ -63,7 +63,7 @@ public class Schedule extends BaseEntity {
         scheduleDTO.setInitialDate(UtilDate.formatDate(this.getInitialDate()));
         scheduleDTO.setFinalDate(UtilDate.formatDate(this.getFinalDate()));
         scheduleDTO.setQuantity(this.getQuantity());
-        scheduleDTO.setInterval(this.getInterval());
+        scheduleDTO.setInterval(this.getIntervalMedicine());
         scheduleDTO.setReminder(this.getReminder());
         if (this.getMedicine() != null) {
             scheduleDTO.setNameMedicine(this.getMedicine().getName());

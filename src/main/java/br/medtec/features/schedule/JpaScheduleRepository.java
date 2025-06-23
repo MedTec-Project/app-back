@@ -17,17 +17,12 @@ public class JpaScheduleRepository extends JpaGenericRepository<Schedule> implem
         QueryBuilder query = createQueryBuilder();
         query.select("s")
                 .from("Schedule s")
+                .from("LEFT JOIN FETCH s.scheduleLogs")
                 .where("s.oid = :oid")
                 .param("oid", oid);
 
         return (Schedule) query.firstResult();
     }
 
-
-    @Override
-    public void delete(Schedule schedule) {
-        super.deleteByAttribute("oid", schedule.getOid());
-        super.delete(schedule);
-    }
 
 }
