@@ -40,6 +40,6 @@ public class SymptomSeeder implements Seeder {
 
     @Override
     public int getOrder() {
-        return 1;
+        return 0;
     }
 }

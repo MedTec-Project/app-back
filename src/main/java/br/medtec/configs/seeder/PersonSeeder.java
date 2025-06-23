@@ -14,7 +14,7 @@ public class PersonSeeder implements Seeder {
     EntityManager em;
 
     @Override
-    public int getOrder() { return 2; }
+    public int getOrder() { return 0; }
 
     @Transactional
     public void run() {

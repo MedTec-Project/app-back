@@ -14,7 +14,7 @@ class ScheduleSeeder implements Seeder {
     EntityManager em;
 
     @Override
-    public int getOrder() { return 4; }
+    public int getOrder() { return 2; }
 
     @Transactional
     public void run() {
@@ -23,7 +23,7 @@ class ScheduleSeeder implements Seeder {
                         .setParameter("oid", "sched-00" + i)
                         .setParameter("creator", "person-00" + i)
                         .setParameter("med", "med-00" + i)
-                        .setParameter("doc", "person-00" + ((i + 1) % 10))
+                        .setParameter("doc", "person-001")
                         .executeUpdate()
         );
     }

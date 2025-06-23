@@ -15,13 +15,13 @@ class ScheduleLogSeeder implements Seeder {
 
     @Override
     public int getOrder() {
-        return 5;
+        return 3;
     }
 
     @Transactional
     public void run() {
         IntStream.range(0, 10).forEach(i -> {
-            String scheduleDate = "2025-06-" + String.format("%02d", i + 1) + " 08:00:00";
+            String scheduleDate = "2025-06-23" + " 09:40:00";
             boolean taken = i % 2 == 0;
             String dateTaken = taken ? scheduleDate : null;
             int status = taken ? 1 : 0;

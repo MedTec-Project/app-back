@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "person")
 @Data
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person extends BaseEntity {
 
     @Column(name = "name", nullable = false)

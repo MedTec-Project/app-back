@@ -14,12 +14,12 @@ public class DoctorSeeder implements Seeder {
     @Override
     @Transactional
     public void run() {
-        em.createNativeQuery("INSERT INTO doctor (oid, crm, oid_user_creation, creation_date, version) VALUES ('person-001', 'CRM123456', 'admin-user', NOW(), 0)")
+        em.createNativeQuery("INSERT INTO doctor (oid, crm) VALUES ('person-001', 'CRM123456')")
                 .executeUpdate();
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 1;
     }
 }
