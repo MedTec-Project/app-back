@@ -4,10 +4,12 @@ import br.medtec.exceptions.MEDBadRequestExecption;
 import br.medtec.features.image.ImageService;
 import br.medtec.features.notification.MessageDTO;
 import br.medtec.features.notification.NotificationWebSocket;
+import br.medtec.features.schedule.schedulelog.ScheduleLog;
 import br.medtec.features.schedule.schedulelog.ScheduleLogDTO;
 import br.medtec.features.schedule.schedulelog.ScheduleLogService;
 import br.medtec.utils.StringUtil;
 import br.medtec.features.schedule.schedulelog.ScheduleLogRepository;
+import br.medtec.utils.UtilCollection;
 import br.medtec.utils.UtilDate;
 import br.medtec.utils.Validations;
 import io.quarkus.scheduler.Scheduled;
@@ -17,7 +19,8 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -82,6 +85,7 @@ public class ScheduleService {
             schedule.getScheduleLogs().forEach(scheduleLogRepository::delete);
         }
 
+
         scheduleRepository.delete(schedule);
     }
 
@@ -107,23 +111,41 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleDTO getSchedule(String oid) {
-       Schedule schedule = scheduleRepository.findByOid(oid);
-       return schedule.toDTO();
+        Schedule schedule = scheduleRepository.findByOid(oid);
+        return schedule.toDTO();
     }
 
-    @Scheduled(every = "1m")
+    @Scheduled(every = "10s")
     public void checkSchedules() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nowWith10minPlus = now.plusMinutes(10);
-        List<ScheduleLogDTO> getSchedulesNotfication = scheduleLogRepository.findSchedulesNotfication(now, nowWith10minPlus);
-
-        getSchedulesNotfication.forEach(scheduleLogDTO -> {
-            LocalDateTime timeLeft = LocalDateTime.now().minusMinutes(scheduleLogRepository.getIntervalByOidScheduleLog(scheduleLogDTO.getOidSchedule()));
-            String message = "Em " + timeLeft.format(DateTimeFormatter.ofPattern("HH:mm")) + " tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
-            String date = UtilDate.formatDate(now);
-            NotificationWebSocket.broadcast(new MessageDTO(message, date));
-        });
+        List<ScheduleLogDTO> schedulesToNotify = scheduleLogRepository.findSchedulesNotfication(now, nowWith10minPlus);
+        sendNotification(schedulesToNotify);
     }
+
+    @Transactional
+    public void sendNotification(List<ScheduleLogDTO> scheduleLogs) {
+        List<MessageDTO> messages = buildMessages(scheduleLogs);
+        if (UtilCollection.isCollectionValid(messages)) {
+            NotificationWebSocket.sendMessages(messages);
+        }
+    }
+
+    @Transactional
+    public List<MessageDTO> buildMessages(List<ScheduleLogDTO> scheduleLogs) {
+        List<MessageDTO> messages = new ArrayList<>();
+        if (UtilCollection.isCollectionValid(scheduleLogs)) {
+            scheduleLogs.forEach(scheduleLogDTO -> {
+                Date scheduleDate = scheduleLogDTO.getScheduleDate();
+                String timeLeft = UtilDate.timeLeftInMinutes(scheduleDate);
+                String message = "Em " + timeLeft + " minutos tome o seu medicamento: " + scheduleLogDTO.getMedicineName();
+                scheduleLogService.setNotificationSent(scheduleLogDTO.getOid());
+                messages.add(new MessageDTO(scheduleLogDTO.getOid(), message, UtilDate.formatTimestamp(LocalDateTime.now())));
+            });
+        }
+        return messages;
+    }
+
 
 
     @Transactional

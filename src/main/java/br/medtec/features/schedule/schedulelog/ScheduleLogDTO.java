@@ -42,7 +42,8 @@ public class ScheduleLogDTO {
 
     }
 
-    public ScheduleLogDTO(String oid, String oidSchedule, String medicineName) {
+    public ScheduleLogDTO(String oid, String oidSchedule, String medicineName, Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
         this.oid = oid;
         this.oidSchedule = oidSchedule;
         this.medicineName = medicineName;

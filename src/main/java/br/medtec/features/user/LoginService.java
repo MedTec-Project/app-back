@@ -24,6 +24,7 @@ public class LoginService {
             if (!user.checkPassword(userDTO.getPassword())) {
                 throw new MEDBadRequestExecption("Email ou Senha Incorreto");
             }
+            UserSession.setSession(user);
             return JWTUtils.generateToken(user);
         } else {
             log.warn("Email ou Senha Incorreto {}", userDTO.getEmail());
@@ -32,11 +33,12 @@ public class LoginService {
     }
 
     @Transactional
-    public User createUser(UserDTO userDTO) {
+    public String createUser(UserDTO userDTO) {
         validateUser(userDTO);
         User newUser = userDTO.toEntity();
         userRepository.save(newUser);
-        return newUser;
+        UserSession.setSession(newUser);
+        return JWTUtils.generateToken(newUser);
     }
 
     @Transactional
