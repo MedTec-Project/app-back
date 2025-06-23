@@ -19,10 +19,10 @@ public class Medicine extends BaseEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manufacturer_oid", insertable = false, updatable = false)
+    @JoinColumn(name = "oid_manufacturer", insertable = false, updatable = false)
     private Manufacturer manufacturer;
 
-    @Column(name = "manufacturer_oid")
+    @Column(name = "oid_manufacturer")
     private String oidManufacturer;
 
     @Column(name = "dosage")
