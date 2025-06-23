@@ -107,13 +107,9 @@ public class    LoginServiceTest {
             user.setPassword(userDTO.getPassword());
             user.setName(userDTO.getName());
             user.setPhone(userDTO.getPhone());
-            User registeredUser = loginServiceMock.createUser(userDTO);
-
-            assertNotNull(registeredUser);
-            assertEquals(user.getEmail(), registeredUser.getEmail());
-            assertEquals(user.getName(), registeredUser.getName());
-            assertEquals(user.getPassword(), registeredUser.getPassword());
-            assertEquals(user.getPhone(), registeredUser.getPhone());
+            String token = loginServiceMock.createUser(userDTO);
+            assertNotNull(token);
+            verify(userRepository, times(2)).save(any());
         }
 
         @Test

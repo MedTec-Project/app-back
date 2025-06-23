@@ -12,13 +12,19 @@ import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 
-import java.util.List;
 
-@Path("appointments")
+@Path("appointment")
 public class AppointmentResource {
+
+    final AppointmentRepository appointmentRepository;
 
     @Inject
     AppointmentService appointmentService;
+
+    @Inject
+    public AppointmentResource(AppointmentRepository appointmentRepository) {
+        this.appointmentRepository = appointmentRepository;
+    }
 
     @POST
     @RolesAllowed({"user", "admin"})
@@ -74,6 +80,44 @@ public class AppointmentResource {
             } else {
                 return ResponseUtils.badRequest("Médico não encontrado");
             }
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @GET
+    @RolesAllowed({"user", "admin"})
+    @Operation(summary = "List Appointments")
+    @Produces("application/json")
+    public Response list() {
+        try {
+            return ResponseUtils.ok(appointmentRepository.findAll());
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("today")
+    @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Get Today Appointments")
+    @Produces("application/json")
+    public Response findAppointmentsToday() {
+        try {
+            return ResponseUtils.ok(appointmentRepository.findAppointmentsToday());
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
+
+    @PUT
+    @Path("{oid}/mark")
+    @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Mark Appointment Done")
+    public Response markAppointmentDone(@PathParam("oid") String oid, AppointmentDoneDTO appointmentDoneDTO) {
+        try {
+            appointmentService.markAppointmentDone(oid, appointmentDoneDTO);
+            return ResponseUtils.ok("Appointment marked as done successfully.");
         } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());
         }
