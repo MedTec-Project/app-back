@@ -78,7 +78,7 @@ public class AppointmentResource {
             if (StringUtil.isValidString(oid)) {
                 return ResponseUtils.ok(appointmentService.findAppointment(oid));
             } else {
-                return ResponseUtils.badRequest("Médico não encontrado");
+                return ResponseUtils.badRequest("Consulta não encontrada");
             }
         } catch (MEDBadRequestExecption e) {
             return ResponseUtils.badRequest(e.getMessage());

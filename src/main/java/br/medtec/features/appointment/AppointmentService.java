@@ -51,14 +51,10 @@ public class AppointmentService {
     }
 
     @Transactional
-    public Appointment findAppointment(String oid) {
+    public AppointmentDTO findAppointment(String oid) {
         Appointment appointment = appointmentRepository.findByOid(oid);
-        if (UserSession.getOidUser().equals(appointment.getOidUserCreation())) {
-            return appointment;
-        } else {
-            log.warn("Você {} não tem permissão para acessar este médico {}", UserSession.getOidUser(), oid);
-            throw new MEDBadRequestExecption("Você não tem permissão para acessar este recurso");
-        }
+        appointment.validateUser();
+        return appointment.toDTO();
     }
 
     @Scheduled(every = "10s")

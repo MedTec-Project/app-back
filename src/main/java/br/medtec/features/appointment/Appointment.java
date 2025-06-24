@@ -2,6 +2,7 @@ package br.medtec.features.appointment;
 
 import br.medtec.features.doctor.Doctor;
 import br.medtec.generics.BaseEntity;
+import br.medtec.utils.UtilDate;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,5 +36,15 @@ public class Appointment extends BaseEntity {
 
     @Column(name = "done")
     private Boolean done = false;
+
+    public AppointmentDTO toDTO() {
+        AppointmentDTO appointmentDTO = new AppointmentDTO();
+        appointmentDTO.setOid(this.getOid());
+        appointmentDTO.setOidDoctor(this.getOidDoctor());
+        appointmentDTO.setScheduleDate(UtilDate.formatTimestamp(this.getScheduleDate()));
+        appointmentDTO.setNameDoctor(this.getDoctor().getName());
+        appointmentDTO.setReminder(this.getReminder());
+        return appointmentDTO;
+    }
 
 }
