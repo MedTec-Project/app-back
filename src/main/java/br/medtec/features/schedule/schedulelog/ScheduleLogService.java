@@ -1,16 +1,13 @@
 package br.medtec.features.schedule.schedulelog;
 
-import br.medtec.features.schedule.Schedule;
 import br.medtec.features.schedule.ScheduleStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.BooleanUtils;
 
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @ApplicationScoped
 public class ScheduleLogService {

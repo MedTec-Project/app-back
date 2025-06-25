@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,12 +36,12 @@ public class AppointmentService {
     }
 
     @Transactional
-    public Appointment updateAppointment(AppointmentDTO appointmentDTO, String oid) {
+    public AppointmentDTO updateAppointment(AppointmentDTO appointmentDTO, String oid) {
         validateAppointment(appointmentDTO);
         Appointment appointment = appointmentRepository.findByOid(oid);
         appointment.validateUser();
         Appointment updatedAppointment = appointmentDTO.toEntity(appointment);
-        return appointmentRepository.update(updatedAppointment);
+        return appointmentRepository.update(updatedAppointment).toDTO();
     }
 
     @Transactional
@@ -87,7 +88,7 @@ public class AppointmentService {
     public void markAppointmentDone(String oid, AppointmentDoneDTO appointmentDoneDTO) {
         Appointment appointment = appointmentRepository.findByOid(oid);
         appointment.validateUser();
-        appointment.setDone(!appointmentDoneDTO.isDone());
+        appointment.setDone(BooleanUtils.isTrue(appointmentDoneDTO.isDone()) ? Boolean.TRUE : Boolean.FALSE);
         appointmentRepository.update(appointment);
     }
 
