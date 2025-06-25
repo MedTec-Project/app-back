@@ -9,4 +9,5 @@ public interface AppointmentRepository extends GenericRepository<Appointment> {
 
     List<AppointmentDTO> findAppointmentsToday();
     List<AppointmentDTO> findAppointmentsNotifications();
+    List<AppointmentDTO> findAllEvents();
 }

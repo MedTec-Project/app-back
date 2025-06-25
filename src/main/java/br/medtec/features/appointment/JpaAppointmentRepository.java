@@ -56,4 +56,15 @@ public class JpaAppointmentRepository extends JpaGenericRepository<Appointment> 
 
         return queryBuilder.executeQuery();
     }
+
+    @Override
+    public List<AppointmentDTO> findAllEvents() {
+        QueryBuilder queryBuilder = createConsultaNativa();
+        queryBuilder.transformDTO(AppointmentDTO.class)
+                .select("a.oid, a.schedule_date, a.reminder, a.oid_doctor, p.name AS doctorName")
+                .from("appointment a")
+                .from("LEFT JOIN person p ON p.oid = a.oid_doctor");
+
+        return queryBuilder.executeQuery();
+    }
 }
