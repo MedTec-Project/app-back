@@ -3,6 +3,7 @@ package br.medtec.utils;
 import br.medtec.features.user.User;
 import jakarta.inject.Singleton;
 import lombok.Setter;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Objects;
 
@@ -46,7 +47,7 @@ public class UserSession {
         }
         UserSession session = getInstance();
         session.oidUser = user.getOid();
-        session.userType = user.getAdmin() ? "admin" : "user";
+        session.userType = BooleanUtils.isTrue(user.getAdmin()) ? "admin" : "user";
         session.token = JWTUtils.generateToken(user);
     }
 }
