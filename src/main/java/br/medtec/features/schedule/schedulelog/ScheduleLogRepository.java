@@ -12,4 +12,5 @@ public interface ScheduleLogRepository extends GenericRepository<ScheduleLog> {
      Integer getIntervalByOidScheduleLog(String oidSchedule);
      ScheduleLog findNextSchedule(String oidScheduleLog);
      List<ScheduleLogDTO> findSchedulesNotfication(LocalDateTime now, LocalDateTime nowWith10minPlus);
+     List<ScheduleLogDTO> findAllEvents();
 }

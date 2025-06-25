@@ -84,4 +84,9 @@ public class UtilDate {
         }
         return String.valueOf(minutes);
     }
+
+    public static String transformDate(Date date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+        return formatter.format(date.toInstant());
+    }
 }
