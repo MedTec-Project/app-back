@@ -1,6 +1,8 @@
 package br.medtec.features.appointment;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.features.notification.MessageDTO;
 import br.medtec.features.notification.NotificationWebSocket;
 import br.medtec.utils.*;
@@ -23,6 +25,9 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
 
     @Inject
+    HistoryService historyService;
+
+    @Inject
     public AppointmentService(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
     }
@@ -31,7 +36,7 @@ public class AppointmentService {
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
         validateAppointment(appointmentDTO);
         Appointment appointment = appointmentDTO.toEntity();
-
+        historyService.save("Criado Nova Consulta", HistoryType.INSERT);
         return appointmentRepository.save(appointment);
     }
 
@@ -41,6 +46,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findByOid(oid);
         appointment.validateUser();
         Appointment updatedAppointment = appointmentDTO.toEntity(appointment);
+        historyService.save("Atualizado Consulta", HistoryType.UPDATE);
         return appointmentRepository.update(updatedAppointment).toDTO();
     }
 
@@ -48,6 +54,7 @@ public class AppointmentService {
     public void deleteAppointment(String oid) {
         Appointment appointment = appointmentRepository.findByOid(oid);
         appointment.validateUser();
+        historyService.save("Deletado Consulta", HistoryType.DELETE);
         appointmentRepository.delete(appointment);
     }
 
@@ -89,6 +96,7 @@ public class AppointmentService {
         Appointment appointment = appointmentRepository.findByOid(oid);
         appointment.validateUser();
         appointment.setDone(BooleanUtils.isTrue(appointmentDoneDTO.isDone()) ? Boolean.TRUE : Boolean.FALSE);
+        historyService.save("Consulta Marcada Como Realizada", HistoryType.UPDATE);
         appointmentRepository.update(appointment);
     }
 

@@ -34,15 +34,15 @@ public class MedicineDTO {
     @Schema(example = "bffe7665-344f-4d72-81bc-f30288e48f81")
     private String oidManufacturer;
 
-    @Schema(example = "1")
-    private Integer medicineCategory;
+    @Schema(example = "ANALGESIC")
+    private String medicineCategory;
 
     private String medicineCategoryName;
 
     private String medicineCategoryColor;
 
-    @Schema(example = "1")
-    private Integer pharmaceuticalForm;
+    @Schema(example = "CAPSULE")
+    private String pharmaceuticalForm;
 
     private String pharmaceuticalFormName;
 

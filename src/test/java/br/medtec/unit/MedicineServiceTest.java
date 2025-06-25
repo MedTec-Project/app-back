@@ -40,8 +40,8 @@ public class MedicineServiceTest {
         void setup() {
             medicineDTO = new MedicineDTO();
             medicineDTO.setName("Dorflex");
-            medicineDTO.setMedicineCategory(1);
-            medicineDTO.setPharmaceuticalForm(1);
+            medicineDTO.setMedicineCategory(Medicine.MedicineCategory.ANTIALERGIC.name());
+            medicineDTO.setPharmaceuticalForm(Medicine.PharmaceuticalForm.CAPSULE.name());
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");
@@ -89,7 +89,7 @@ public class MedicineServiceTest {
             });
 
             assertThrows(MEDBadRequestExecption.class, () -> {
-                medicineDTO.setMedicineCategory(999);
+                medicineDTO.setMedicineCategory(null);
                 medicineService.registerMedicine(medicineDTO);
             });
         }
@@ -103,7 +103,7 @@ public class MedicineServiceTest {
             });
 
             assertThrows(MEDBadRequestExecption.class, () -> {
-                medicineDTO.setPharmaceuticalForm(999);
+                medicineDTO.setPharmaceuticalForm(null);
                 medicineService.registerMedicine(medicineDTO);
             });
         }
@@ -134,8 +134,8 @@ public class MedicineServiceTest {
         void setup() {
             medicineDTO = new MedicineDTO();
             medicineDTO.setName("Dorflex");
-            medicineDTO.setMedicineCategory(1);
-            medicineDTO.setPharmaceuticalForm(1);
+            medicineDTO.setMedicineCategory(Medicine.MedicineCategory.ANTIALERGIC.name());
+            medicineDTO.setPharmaceuticalForm(Medicine.PharmaceuticalForm.CAPSULE.name());
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");
@@ -147,8 +147,8 @@ public class MedicineServiceTest {
         @DisplayName("Successfully edit medicine")
         void editMedicineSuccessfully() {
             medicineDTO.setName("Dorflex 2");
-            medicineDTO.setMedicineCategory(2);
-            medicineDTO.setPharmaceuticalForm(2);
+            medicineDTO.setMedicineCategory(Medicine.MedicineCategory.ANTIALERGIC.name());
+            medicineDTO.setPharmaceuticalForm(Medicine.PharmaceuticalForm.CAPSULE.name());
             medicineDTO.setDosage(2.0);
             medicineDTO.setDosageType(2);
             medicineDTO.setOidManufacturer("1234");
@@ -176,8 +176,8 @@ public class MedicineServiceTest {
             medicineDTO = new MedicineDTO();
             medicineDTO.setOid("123");
             medicineDTO.setName("Dorflex");
-            medicineDTO.setMedicineCategory(1);
-            medicineDTO.setPharmaceuticalForm(1);
+            medicineDTO.setMedicineCategory(Medicine.MedicineCategory.ANTIALERGIC.name());
+            medicineDTO.setPharmaceuticalForm(Medicine.PharmaceuticalForm.CAPSULE.name());
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");
@@ -210,8 +210,8 @@ public class MedicineServiceTest {
             medicineDTO = new MedicineDTO();
             medicineDTO.setOid("123");
             medicineDTO.setName("Dorflex");
-            medicineDTO.setMedicineCategory(1);
-            medicineDTO.setPharmaceuticalForm(1);
+            medicineDTO.setMedicineCategory(Medicine.MedicineCategory.ANTIALERGIC.name());
+            medicineDTO.setPharmaceuticalForm(Medicine.PharmaceuticalForm.CAPSULE.name());
             medicineDTO.setDosage(1.0);
             medicineDTO.setDosageType(1);
             medicineDTO.setOidManufacturer("123");

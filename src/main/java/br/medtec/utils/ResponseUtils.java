@@ -8,6 +8,10 @@ public class ResponseUtils {
             return Response.status(Response.Status.CREATED).entity(object).build();
         }
 
+        public static Response created(String message){
+            return Response.status(Response.Status.CREATED).entity(new Mensagem(message)).build();
+        }
+
         public static Response ok(Object object){
             return Response.status(Response.Status.OK).entity(object).build();
         }
