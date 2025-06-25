@@ -79,8 +79,9 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
         query.select("s.intervalMedicine")
                 .from("ScheduleLog sl")
                 .from("JOIN sl.schedule s")
-                .where("sl.oidSchedule = :oid")
+                .where("sl.oid = :oid")
                 .param("oid", oidScheduleLog);
+
         return (Integer) query.firstResult();
     }
 

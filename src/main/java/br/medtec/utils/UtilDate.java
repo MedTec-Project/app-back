@@ -30,6 +30,17 @@ public class UtilDate {
         }
     }
 
+    public static Date getDateTimeByFormatedString(String date) {
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("America/Sao_Paulo"));
+            return dateFormat.parse(date);
+        } catch (ParseException e) {
+            log.error("Erro ao converter data", e);
+            throw new MEDExecption("Erro ao converter data");
+        }
+    }
+
     /**
      * Formata um LocalDateTime no formato dd/MM/yyyy
      */

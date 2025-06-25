@@ -83,7 +83,7 @@ public class QueryBuilder {
     public <T> List<T> executeQuery() {
         Query query = createQuery();
         List<?> raw = query.getResultList();
-        if (instance.dtoClass != null && instance.nativeQuery) {
+        if (instance.dtoClass != null) {
             return (List<T>) mapToDto(raw);
         }
         return (List<T>) raw;
