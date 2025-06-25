@@ -1,6 +1,8 @@
 package br.medtec.features.schedule;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.features.image.ImageService;
 import br.medtec.features.notification.MessageDTO;
 import br.medtec.features.notification.NotificationWebSocket;
@@ -33,6 +35,9 @@ public class ScheduleService {
     private final ImageService imageService;
 
     @Inject
+    HistoryService historyService;
+
+    @Inject
     ScheduleLogService scheduleLogService;
 
     @Inject
@@ -57,6 +62,7 @@ public class ScheduleService {
 
         scheduleLogService.registerNextSchedule(schedule.getOid(), schedule.getInitialDate());
 
+        historyService.save("Criado Novo Agendamento", HistoryType.INSERT);
         return schedule;
     }
 
@@ -72,6 +78,8 @@ public class ScheduleService {
 
         schedule = scheduleRepository.update(updatedSchedule);
 
+        historyService.save("Atualizado Agendamento", HistoryType.UPDATE);
+
         return schedule.toDTO();
     }
 
@@ -85,6 +93,7 @@ public class ScheduleService {
             schedule.getScheduleLogs().forEach(scheduleLogRepository::delete);
         }
 
+        historyService.save("Deletado Agendamento", HistoryType.DELETE);
 
         scheduleRepository.delete(schedule);
     }

@@ -36,11 +36,11 @@ public class Medicine extends BaseEntity {
     private String description;
 
     @Column(name = "medicine_category", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private MedicineCategory medicineCategory;
 
     @Column(name = "pharmaceutical_form", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private PharmaceuticalForm pharmaceuticalForm;
 
     @Column(name = "content")
@@ -101,19 +101,6 @@ public class Medicine extends BaseEntity {
             this.color = color;
         }
 
-        public static MedicineCategory valueOf(Integer value) {
-            if (value == null) {
-                return null;
-            }
-            MedicineCategory[] types = MedicineCategory.values();
-            for (MedicineCategory type : types) {
-                if (Integer.valueOf(type.ordinal()).equals(value)) {
-                    return type;
-                }
-            }
-            return null;
-        }
-
         @Override
         public String toString() {
             return this.description;
@@ -142,16 +129,6 @@ public class Medicine extends BaseEntity {
         PharmaceuticalForm(Integer value, String description) {
             this.value = value;
             this.description = description;
-        }
-
-        public static PharmaceuticalForm valueOf(Integer value) {
-            PharmaceuticalForm[] types = PharmaceuticalForm.values();
-            for (PharmaceuticalForm type : types) {
-                if (Integer.valueOf(type.ordinal()).equals(value)) {
-                    return type;
-                }
-            }
-            return null;
         }
 
         @Override

@@ -16,7 +16,7 @@ public class JpaMedicineRepository extends JpaGenericRepository<Medicine> implem
     }
 
     @Override
-    public List<MedicineDTO> findAll(String name, String manufacturerOid, Integer medicineCategory) {
+    public List<MedicineDTO> findAll(String name, String manufacturerOid, String medicineCategory) {
         QueryBuilder query = createQueryBuilder();
         query.select("new br.medtec.features.medicine.MedicineDTO(m.oid, m.name, m.dosage, m.dosageType, m.pharmaceuticalForm, m.imagePath, m.medicineCategory, m.content)");
         query.from("Medicine m");
@@ -31,7 +31,7 @@ public class JpaMedicineRepository extends JpaGenericRepository<Medicine> implem
                     .param("manufacturerOid", manufacturerOid);
         }
 
-        if (Medicine.MedicineCategory.valueOf(medicineCategory) != null) {
+        if (StringUtil.isValidString(medicineCategory)) {
             query.where("m.medicineCategory = :medicineCategory")
                     .param("medicineCategory", medicineCategory);
         }

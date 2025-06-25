@@ -1,5 +1,7 @@
 package br.medtec.features.schedule.schedulelog;
 
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.features.schedule.ScheduleStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -13,6 +15,9 @@ import java.util.Date;
 public class ScheduleLogService {
 
     private final ScheduleLogRepository scheduleLogRepository;
+
+    @Inject
+    HistoryService historyService;
 
     @Inject
     public ScheduleLogService(ScheduleLogRepository scheduleLogRepository) {
@@ -54,6 +59,7 @@ public class ScheduleLogService {
         if (BooleanUtils.isTrue(taken)) {
             registerNextSchedule(scheduleLog.getOidSchedule(), scheduleLog.getDateTaken(), scheduleLogRepository.getIntervalByOidScheduleLog(oid));
         }
+        historyService.save("Agendamento Marcado Como Consumido", HistoryType.UPDATE);
     }
 
     @Transactional

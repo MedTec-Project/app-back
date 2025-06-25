@@ -89,7 +89,7 @@ public class MedicineResource extends GenericsResource {
     @APIResponse(responseCode = "200", description = "Medicines found", content = @Content(schema = @Schema(implementation = MedicineDTO.class)))
     public Response findMedicines(@QueryParam("name") String medicineName,
                                   @QueryParam("oidManufacturer") String oidManufacturer,
-                                  @QueryParam("category") Integer medicineCategory) {
+                                  @QueryParam("category") String medicineCategory) {
 
         try {
             List<MedicineDTO> medicines = medicineRepository.findAll(medicineName, oidManufacturer, medicineCategory);

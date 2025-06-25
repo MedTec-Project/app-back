@@ -1,5 +1,7 @@
 package br.medtec.features.medicine;
 
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.features.image.ImageService;
 import br.medtec.utils.StringUtil;
 import br.medtec.utils.Validations;
@@ -15,6 +17,9 @@ public class MedicineService {
     private final ImageService imageService;
 
     @Inject
+    HistoryService historyService;
+
+    @Inject
     public MedicineService(MedicineRepository medicineRepository, ImageService imageService) {
         this.medicineRepository = medicineRepository;
         this.imageService = imageService;
@@ -28,6 +33,8 @@ public class MedicineService {
 
         medicine.setImagePath(imageService.saveImage(medicineDTO.getImageBase64(), medicineDTO.getName()));
 
+        historyService.save("Criado Novo Medicamento: " + medicine.getName(), HistoryType.INSERT);
+
         return medicineRepository.save(medicine);
     }
 
@@ -39,6 +46,8 @@ public class MedicineService {
         medicine.validateUser();
         Medicine updatedMedicine = medicineDTO.toEntity(medicine);
 
+        historyService.save("Atualizado Medicamento: " + updatedMedicine.getName(), HistoryType.UPDATE);
+
         return medicineRepository.update(updatedMedicine);
     }
 
@@ -47,6 +56,7 @@ public class MedicineService {
         Medicine medicine = medicineRepository.findByOid(oid);
         medicine.validateUser();
         medicineRepository.delete(medicine);
+        historyService.save("Deletado Medicamento: " + medicine.getName(), HistoryType.DELETE);
     }
 
     @Transactional
@@ -56,11 +66,11 @@ public class MedicineService {
         if (!StringUtil.isValidString(medicineDTO.getName())) {
             validations.add("Nome do medicamento é obrigatório");
         }
-        if (Medicine.MedicineCategory.valueOf(medicineDTO.getMedicineCategory()) == null) {
+        if (!StringUtil.isValidString(medicineDTO.getMedicineCategory())) {
             validations.add("Categoria do medicamento é obrigatória");
         }
 
-        if (Medicine.PharmaceuticalForm.valueOf(medicineDTO.getPharmaceuticalForm()) == null) {
+        if (!StringUtil.isValidString(medicineDTO.getPharmaceuticalForm())) {
             validations.add("Forma farmacêutica do medicamento é obrigatória");
         }
 
