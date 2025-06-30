@@ -41,4 +41,14 @@ public class StringUtil {
     public static String formatPhone(String phone) {
         return phone.replaceAll("[^0-9]", "");
     }
+
+    public static String maskPhone(String phone) {
+        if (phone == null || phone.length() < 10) {
+            return phone;
+        }
+        return String.format("(%s) %s-%s",
+                phone.substring(0, 2),
+                phone.substring(2, 7),
+                phone.substring(7, 11));
+    }
 }

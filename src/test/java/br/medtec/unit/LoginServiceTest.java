@@ -1,7 +1,7 @@
 package br.medtec.unit;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
-import br.medtec.features.user.LoginService;
+import br.medtec.features.user.UserService;
 import br.medtec.features.user.User;
 import br.medtec.features.user.UserDTO;
 import br.medtec.features.user.UserRepository;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +20,7 @@ import static org.mockito.Mockito.*;
 public class    LoginServiceTest {
 
     @InjectMocks
-    LoginService loginServiceMock;
+    UserService loginServiceMock;
 
     @Mock
     UserRepository userRepository;

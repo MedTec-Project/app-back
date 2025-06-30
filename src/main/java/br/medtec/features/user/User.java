@@ -22,6 +22,9 @@ public class User extends Person {
     @Column(name = "admin")
     private Boolean admin;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     public Boolean checkPassword(String password) {
         return this.password.equals(password);
     }
@@ -32,6 +35,7 @@ public class User extends Person {
         userDTO.setEmail(this.email);
         userDTO.setPhone(this.getPhone());
         userDTO.setAdmin(this.admin);
+        userDTO.setImagePath(this.imagePath);
         return userDTO;
     }
 }

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 
 @QuarkusTest
-public class LoginResourceIT {
+public class UserResourceIT {
 
 
     @Nested

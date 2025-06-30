@@ -170,4 +170,24 @@ public class Medicine extends BaseEntity {
             return this.description;
         }
     }
+
+    public MedicineDTO toDTO() {
+        MedicineDTO medicineDTO = new MedicineDTO();
+        medicineDTO.setOid(this.getOid());
+        medicineDTO.setName(this.name);
+        medicineDTO.setDosage(this.dosage);
+        if (this.dosageType != null) {
+            medicineDTO.setDosageTypeName(this.dosageType.toString());
+        }
+        if (this.pharmaceuticalForm != null) {
+            medicineDTO.setPharmaceuticalFormName(this.pharmaceuticalForm.toString());
+        }
+        medicineDTO.setImagePath(this.imagePath);
+        if (this.medicineCategory != null) {
+            medicineDTO.setMedicineCategoryName(this.medicineCategory.toString());
+        }
+        medicineDTO.setContent(this.content);
+        medicineDTO.setImagePath(this.imagePath);
+        return medicineDTO;
+    }
 }
