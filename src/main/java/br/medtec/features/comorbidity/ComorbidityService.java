@@ -1,7 +1,10 @@
 package br.medtec.features.comorbidity;
 
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.features.image.ImageService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
@@ -13,6 +16,10 @@ public class ComorbidityService {
 
     private final ImageService imageService;
 
+    @Inject
+    HistoryService historyService;
+
+    @Inject
     public ComorbidityService(ComorbidityRepository repository, ImageService imageService) {
         this.repository = repository;
         this.imageService = imageService;
@@ -22,6 +29,7 @@ public class ComorbidityService {
     public ComorbidityDTO registerComorbidity(ComorbidityDTO comorbidityDTO) {
         Comorbidity comorbidity = comorbidityDTO.toEntity();
         repository.save(comorbidity);
+        historyService.save("Criado Comorbidade: " + comorbidity.getName(), HistoryType.INSERT);
         return comorbidity.toDTO();
     }
 
@@ -30,7 +38,8 @@ public class ComorbidityService {
         Comorbidity comorbidity = repository.findByOid(oid);
         comorbidity.validateUser();
         comorbidityDTO.toEntity(comorbidity);
-        repository.save(comorbidity);
+        historyService.save("Atualizado Comorbidade: " + comorbidity.getName(), HistoryType.UPDATE);
+        repository.update(comorbidity);
         return comorbidity.toDTO();
     }
 
@@ -38,6 +47,7 @@ public class ComorbidityService {
     public void deleteComorbidity(String oid) {
         Comorbidity comorbidity = repository.findByOid(oid);
         comorbidity.validateUser();
+        historyService.save("Deletado Comorbidade: " + comorbidity.getName(), HistoryType.DELETE);
         repository.delete(comorbidity);
     }
 

@@ -28,6 +28,7 @@ public class ScheduleLog extends BaseEntity {
     @Column(name = "date_taken")
     private Date dateTaken;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "schedule_date", nullable = false)
     private Date scheduleDate;
 

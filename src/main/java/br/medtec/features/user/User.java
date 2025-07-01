@@ -31,6 +31,7 @@ public class User extends Person {
 
     public UserDTO toDTO() {
         UserDTO userDTO = new UserDTO();
+        userDTO.setOid(this.getOid());
         userDTO.setName(this.getName());
         userDTO.setEmail(this.email);
         userDTO.setPhone(this.getPhone());

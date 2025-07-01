@@ -92,4 +92,16 @@ public class UserResource extends GenericsResource {
             return ResponseUtils.badRequest(e.getMessage());
         }
     }
+
+    @PUT
+    @Path("/user/{oid}")
+    @RolesAllowed({"user", "admin"})
+    @Operation(summary = "Update User")
+    public Response update(UserDTO userDTO, @PathParam("oid") String oid) {
+        try {
+            return ResponseUtils.ok(userService.updateUser(userDTO, oid));
+        } catch (MEDBadRequestExecption e) {
+            return ResponseUtils.badRequest(e.getMessage());
+        }
+    }
 }

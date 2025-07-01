@@ -27,7 +27,7 @@ public class ScheduleLogDTO {
     private Medicine.MedicineCategory medicineCategory;
     private String reminder;
 
-    public ScheduleLogDTO(String oid, String oidSchedule, Boolean taken, Byte status, Timestamp scheduleDate, String imagePath, String medicineName, Double dosage, Byte dosageType, String pharmaceuticalForm, Double content, String medicineCategory) {
+    public ScheduleLogDTO(String oid, String oidSchedule, Boolean taken, Short status, Timestamp scheduleDate, String imagePath, String medicineName, Double dosage, String dosageType, String pharmaceuticalForm, Double content, String medicineCategory) {
         this.oid = oid;
         this.oidSchedule = oidSchedule;
         this.status = ScheduleStatus.fromValue(status);
@@ -36,7 +36,7 @@ public class ScheduleLogDTO {
         this.imagePath = imagePath;
         this.medicineName = medicineName;
         this.dosage = dosage;
-        this.dosageType = Medicine.DosageType.valueOf(Integer.valueOf(dosageType));
+        this.dosageType = Medicine.DosageType.valueOf(dosageType);
         this.pharmaceuticalForm = Medicine.PharmaceuticalForm.valueOf(pharmaceuticalForm);
         this.content = content;
         this.medicineCategory = Medicine.MedicineCategory.valueOf(medicineCategory);

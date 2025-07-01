@@ -8,6 +8,8 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 @ApplicationScoped
 @Slf4j
 public class UserService {
@@ -39,6 +41,8 @@ public class UserService {
     @Transactional
     public String createUser(UserDTO userDTO) {
         validateUser(userDTO);
+        String oid = UUID.randomUUID().toString();
+        userDTO.setOid(oid);
         User newUser = userDTO.toEntity();
         userRepository.save(newUser);
         UserSession.setSession(newUser);
@@ -69,6 +73,26 @@ public class UserService {
         String imagePath = imageService.saveImage(userDTO.getImageBase64(), user.getOid());
         user.setImagePath(imagePath);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public UserDTO updateUser(UserDTO userDTO, String oid) {
+        Validations validations = new Validations();
+        if (!StringUtil.isValidString(userDTO.getName())) {
+            validations.add("Nome Invalido");
+        }
+        userDTO.setPhone(StringUtil.removeSpecialChars(userDTO.getPhone()));
+
+        if ((!StringUtil.isValidString(userDTO.getPhone())) || (!StringUtil.isValidPhone(userDTO.getPhone()))) {
+            validations.add("Telefone Invalido");
+        }
+        validations.throwErrors();
+        User user = userRepository.findByOid(oid);
+        user.validateUser();
+        user.setName(userDTO.getName());
+        user.setPhone(userDTO.getPhone());
+        userRepository.update(user);
+        return user.toDTO();
     }
 
     @Transactional

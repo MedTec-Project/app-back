@@ -1,6 +1,8 @@
 package br.medtec.features.doctor;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.history.HistoryService;
+import br.medtec.features.history.HistoryType;
 import br.medtec.utils.StringUtil;
 import br.medtec.utils.UserSession;
 import br.medtec.utils.Validations;
@@ -16,6 +18,9 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
 
     @Inject
+    HistoryService historyService;
+
+    @Inject
     public DoctorService(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
     }
@@ -25,11 +30,13 @@ public class DoctorService {
         validateDoctor(doctorDTO);
         Doctor doctor = doctorDTO.toEntity();
 
-        if (doctorRepository.existsByCrm(doctor.getCrm())) {
-            log.warn("CRM já cadastrado {}", doctor.getCrm());
-            throw new MEDBadRequestExecption("CRM já cadastrado");
+        if (StringUtil.isValidString(doctor.getCrm())) {
+            if (doctorRepository.existsByCrm(doctor.getCrm())) {
+                log.warn("CRM já cadastrado {}", doctor.getCrm());
+                throw new MEDBadRequestExecption("CRM já cadastrado");
+            }
         }
-
+        historyService.save("Criado Médico: " + doctor.getName(), HistoryType.INSERT);
         return doctorRepository.save(doctor);
     }
 
@@ -37,8 +44,10 @@ public class DoctorService {
     public Doctor updateDoctor(DoctorDTO doctorDTO, String oid) {
         validateDoctor(doctorDTO);
         Doctor doctor = doctorRepository.findByOid(oid);
+        doctor.getUsers().size();
         doctor.validateUser();
         Doctor updatedDoctor = doctorDTO.toEntity(doctor);
+        historyService.save("Atualizado Médico: " + updatedDoctor.getName(), HistoryType.UPDATE);
         return doctorRepository.update(updatedDoctor);
     }
 
@@ -46,6 +55,7 @@ public class DoctorService {
     public void deleteDoctor(String oid) {
         Doctor doctor = doctorRepository.findByOid(oid);
         doctor.validateUser();
+        historyService.save("Deletado Médico: " + doctor.getName(), HistoryType.DELETE);
         doctorRepository.delete(doctor);
     }
 
@@ -69,18 +79,6 @@ public class DoctorService {
 
         if (!StringUtil.isValidString(doctorDTO.getName())) {
             validations.add("Nome não pode ser nulo");
-        }
-
-        if (!StringUtil.isValidString(doctorDTO.getCrm())) {
-            validations.add("CRM não pode ser nulo");
-        }
-
-        if (!StringUtil.isValidPhoneOrNull(doctorDTO.getPhone())) {
-            validations.add("Telefone inválido");
-        }
-
-        if (!StringUtil.isValidEmailOrNull(doctorDTO.getContactEmail())) {
-            validations.add("Email inválido");
         }
 
         validations.throwErrors();

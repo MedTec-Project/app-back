@@ -85,7 +85,7 @@ public class DoctorResource extends GenericsResource {
     @Operation(summary = "List Doctors")
     public Response list() {
         try {
-            List<Doctor> doctors = doctorRepository.findAll();
+            List<DoctorDTO> doctors = doctorRepository.findAllDoctors();
             if (doctors != null) {
                 return ResponseUtils.ok(doctors);
             } else {

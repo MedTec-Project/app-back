@@ -201,6 +201,11 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder groupBy(String sql){
+        this.instance.sqlGroup.append(" GROUP BY ").append(sql);
+        return this;
+    }
+
     private class QueryInstance {
         private EntityManager entityManager;
         private final StringBuilder sql = new StringBuilder();

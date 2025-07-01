@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @ApplicationScoped
@@ -21,21 +22,15 @@ public class SymptomSeeder implements Seeder {
                 "Diarreia", "Hipertrofia", "Hemorragia", "Infecção", "Lesão", "Necrose", "Obesidade",
                 "Osteoporose", "Pânico", "Renal", "Síndrome de Down", "Síndrome de Parkinson",
                 "Síndrome de Tourette", "Síndrome do Parkinson", "Síndrome do Tourette",
-                "Traumatismo", "Tumor", "Vômito"
-        );
+                "Traumatismo", "Tumor", "Vômito", "Dor de cabeça", "Dor de garganta", "Febre", "Gripe");
 
         symptoms.forEach(name ->
-                em.createNativeQuery("INSERT INTO symptom (name, creation_date, oid_user_creation, oid) VALUES (:name, CURRENT_TIMESTAMP, 'user', RANDOM_UUID())")
+                em.createNativeQuery("INSERT INTO symptom (name, creation_date, oid_user_creation, oid) VALUES (:name, CURRENT_TIMESTAMP, 'user', :oid)")
                         .setParameter("name", name)
+                        .setParameter("oid", UUID.randomUUID().toString())
                         .executeUpdate()
         );
 
-        IntStream.range(0, 10).forEach(i ->
-                em.createNativeQuery("INSERT INTO symptom (oid, name, oid_user_creation, creation_date, oid_user_update, update_date, version) VALUES (:oid, :name, 'admin-user', NOW(), NULL, NULL, 0)")
-                        .setParameter("oid", "symp-00" + i)
-                        .setParameter("name", "Sintoma" + i)
-                        .executeUpdate()
-        );
     }
 
     @Override

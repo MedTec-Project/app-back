@@ -51,4 +51,8 @@ public class StringUtil {
                 phone.substring(2, 7),
                 phone.substring(7, 11));
     }
+
+    public static String removeSpecialChars(String str) {
+        return str.replaceAll("[^0-9]", "");
+    }
 }

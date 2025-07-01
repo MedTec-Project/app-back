@@ -29,7 +29,7 @@ public class Medicine extends BaseEntity {
     private Double dosage;
 
     @Column(name = "dosage_type")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private DosageType dosageType;
 
     @Column(name = "description")

@@ -58,21 +58,23 @@ public class MedicineDTO {
 
     private List<SymptomDTO> sideEffects;
 
+    private String symptomsString;
+
     public MedicineDTO() {
         this.symptoms = List.of();
         this.sideEffects = List.of();
     }
-
-    public MedicineDTO(String oid, String name, Double dosage, Medicine.DosageType dosageType, Medicine.PharmaceuticalForm pharmaceuticalForm, String imagePath, Medicine.MedicineCategory medicineCategory, Double content) {
+    //m.oid, m.name, m.dosage, m.dosage_type, m.pharmaceutical_form, m.image_path, m.medicine_category, m.content, STRING_AGG(s.name, ', ') as symptoms")
+    public MedicineDTO(String oid, String name, Double dosage, String dosageType, String pharmaceuticalForm, String imagePath, String medicineCategory, Double content, String symptoms) {
         this.oid = oid;
         this.name = name;
         this.dosage = dosage;
-        this.dosageTypeName = dosageType == null ? null : dosageType.name();
-        this.pharmaceuticalFormName = pharmaceuticalForm == null ? null : pharmaceuticalForm.toString();
+        this.dosageTypeName = dosageType;
+        this.pharmaceuticalFormName = pharmaceuticalForm;
+        this.symptomsString = symptoms;
         this.imagePath = imagePath;
         this.content = content;
-        this.medicineCategoryName = medicineCategory == null ? null : medicineCategory.toString();
-        this.medicineCategoryColor = medicineCategory == null ? null : medicineCategory.getColor();
+        this.medicineCategoryName = medicineCategory;
     }
 
     public Medicine toEntity() {

@@ -31,6 +31,9 @@ public class ScheduleLogService {
 
     @Transactional
     public void registerNextSchedule(String oidSchedule, Date datePara, Integer interval) {
+        if (scheduleLogRepository.verifyFinalDate(oidSchedule, interval != null ? getScheduleDate(datePara, interval) : datePara)) {
+            return;
+        }
         ScheduleLog scheduleLog = new ScheduleLog();
         scheduleLog.setOidSchedule(oidSchedule);
         scheduleLog.setStatus(ScheduleStatus.PENDING);

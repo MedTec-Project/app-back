@@ -31,9 +31,9 @@ public class HeaderFilter implements ContainerRequestFilter {
             String oidUsuario = jwtUtils.getClaim("oidUser");
             String tipoUsuario = jwtUtils.getGroups() == null ? null : jwtUtils.getGroups().iterator().next();
 
-            UserSession.getInstance().setOidUser(oidUsuario);
-            UserSession.getInstance().setToken(token);
-            UserSession.getInstance().setUserType(tipoUsuario);
+            UserSession.setOidUser(oidUsuario);
+            UserSession.setToken(token);
+            UserSession.setUserType(tipoUsuario);
 //
 //            if (!isUserAllowed(tipoUsuario, requestContext)) {
 //                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
