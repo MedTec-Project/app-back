@@ -24,8 +24,14 @@ public class UserDTO {
     @Schema(hidden = true)
     private Boolean admin;
 
+    @Schema(hidden = true)
+    private String imagePath;
+
+    private String imageBase64;
+
     public User toEntity() {
         User user = new User();
+        user.setOid(this.oid);
         user.setName(this.name);
         user.setEmail(this.email);
         user.setPassword(this.password);

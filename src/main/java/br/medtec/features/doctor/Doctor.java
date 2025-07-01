@@ -17,6 +17,9 @@ public class Doctor extends Person {
     @Column(name = "crm")
     private String crm;
 
+    @Column(name = "specialty")
+    private String specialty;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "doctor_user",
             joinColumns = @JoinColumn(name = "oid_doctor"),

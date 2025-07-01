@@ -4,6 +4,7 @@ import br.medtec.generics.GenericRepository;
 import org.jboss.resteasy.annotations.Query;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface ScheduleLogRepository extends GenericRepository<ScheduleLog> {
@@ -13,4 +14,5 @@ public interface ScheduleLogRepository extends GenericRepository<ScheduleLog> {
      ScheduleLog findNextSchedule(String oidScheduleLog);
      List<ScheduleLogDTO> findSchedulesNotfication(LocalDateTime now, LocalDateTime nowWith10minPlus);
      List<ScheduleLogDTO> findAllEvents();
+     Boolean verifyFinalDate(String oidSchedule, Date date);
 }

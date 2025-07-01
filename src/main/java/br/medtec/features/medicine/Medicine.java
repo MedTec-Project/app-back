@@ -29,7 +29,7 @@ public class Medicine extends BaseEntity {
     private Double dosage;
 
     @Column(name = "dosage_type")
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private DosageType dosageType;
 
     @Column(name = "description")
@@ -169,5 +169,25 @@ public class Medicine extends BaseEntity {
         public String toString() {
             return this.description;
         }
+    }
+
+    public MedicineDTO toDTO() {
+        MedicineDTO medicineDTO = new MedicineDTO();
+        medicineDTO.setOid(this.getOid());
+        medicineDTO.setName(this.name);
+        medicineDTO.setDosage(this.dosage);
+        if (this.dosageType != null) {
+            medicineDTO.setDosageTypeName(this.dosageType.toString());
+        }
+        if (this.pharmaceuticalForm != null) {
+            medicineDTO.setPharmaceuticalFormName(this.pharmaceuticalForm.toString());
+        }
+        medicineDTO.setImagePath(this.imagePath);
+        if (this.medicineCategory != null) {
+            medicineDTO.setMedicineCategoryName(this.medicineCategory.toString());
+        }
+        medicineDTO.setContent(this.content);
+        medicineDTO.setImagePath(this.imagePath);
+        return medicineDTO;
     }
 }

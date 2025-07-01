@@ -59,4 +59,18 @@ public class ServerImageService implements ImageService {
         }
     }
 
+    @Override
+    public String convertToBase64(String imagePath) {
+        try {
+            if (imagePath == null || imagePath.isEmpty()) {
+                return null;
+            }
+            byte[] imageBytes = Files.readAllBytes(Path.of(imagePath));
+            return Base64.getEncoder().encodeToString(imageBytes);
+        } catch (IOException e) {
+            log.error("Erro ao converter imagem", e);
+            throw new MEDExecption("Não foi possível converter a imagem");
+        }
+    }
+
 }

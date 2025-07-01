@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -121,6 +122,19 @@ public class JpaScheduleLogRepository extends JpaGenericRepository<ScheduleLog> 
                 .from("INNER JOIN medicine m ON m.oid = (SELECT oid_medicine FROM schedule WHERE schedule.oid = sl.oid_schedule LIMIT 1)");
 
         return queryBuilder.executeQuery();
+    }
+
+    @Override
+    public Boolean verifyFinalDate(String oidSchedule, Date date) {
+        QueryBuilder query = createConsultaNativa();
+
+        query.select("s")
+                .from("schedule s")
+                .where("s.oid = :oid AND s.final_date < :date")
+                .param("oid", oidSchedule)
+                .param("date", date);
+
+        return query.firstResult() != null;
     }
 
 }

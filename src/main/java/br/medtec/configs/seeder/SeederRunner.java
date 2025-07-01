@@ -20,8 +20,8 @@ public class SeederRunner {
 
     void onStart(@Observes StartupEvent ev) {
         log.info("Iniciando SeederRunner...");
-        seeders.stream()
-                .sorted(Comparator.comparingInt(Seeder::getOrder))
-                .forEach(Seeder::run);
+//        seeders.stream()
+//                .sorted(Comparator.comparingInt(Seeder::getOrder))
+//                .forEach(Seeder::run);
     }
 }

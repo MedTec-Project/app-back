@@ -27,6 +27,19 @@ public class DoctorDTO {
     @Schema(example = "123456")
     private String crm;
 
+    @Schema(example = "Medicina")
+    private String specialty;
+
+    public DoctorDTO() {
+    }
+
+    public DoctorDTO(String oid, String name, String crm, String specialty) {
+        this.oid = oid;
+        this.name = name;
+        this.crm = crm;
+        this.specialty = specialty;
+    }
+
     public Doctor toEntity() {
         Doctor doctor = new Doctor();
         toEntity(doctor);
@@ -40,6 +53,7 @@ public class DoctorDTO {
         doctor.setPhone(this.phone);
         doctor.setCpf(this.cpf);
         doctor.setCrm(this.crm);
+        doctor.setSpecialty(this.specialty);
         return doctor;
     }
 }

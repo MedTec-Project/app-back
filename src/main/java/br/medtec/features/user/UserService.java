@@ -1,20 +1,26 @@
 package br.medtec.features.user;
 
 import br.medtec.exceptions.MEDBadRequestExecption;
+import br.medtec.features.image.ImageService;
 import br.medtec.utils.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.UUID;
+
 @ApplicationScoped
 @Slf4j
-public class LoginService {
-    private UserRepository userRepository;
+public class UserService {
+    private final UserRepository userRepository;
+
+    private final ImageService imageService;
 
     @Inject
-    public LoginService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ImageService imageService) {
         this.userRepository = userRepository;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -35,6 +41,8 @@ public class LoginService {
     @Transactional
     public String createUser(UserDTO userDTO) {
         validateUser(userDTO);
+        String oid = UUID.randomUUID().toString();
+        userDTO.setOid(oid);
         User newUser = userDTO.toEntity();
         userRepository.save(newUser);
         UserSession.setSession(newUser);
@@ -48,6 +56,43 @@ public class LoginService {
             return user != null;
         }
         return null;
+    }
+
+    @Transactional
+    public UserDTO getUser(String oidUser) {
+        User user = userRepository.findByOid(oidUser);
+        UserDTO userDTO = user.toDTO();
+        userDTO.setImageBase64(imageService.getImage(userDTO.getImagePath()));
+        userDTO.setPhone(StringUtil.maskPhone(userDTO.getPhone()));
+        return userDTO;
+    }
+
+    @Transactional
+    public void uploadUserPhoto(UserDTO userDTO) {
+        User user = userRepository.findByOid(userDTO.getOid());
+        String imagePath = imageService.saveImage(userDTO.getImageBase64(), user.getOid());
+        user.setImagePath(imagePath);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public UserDTO updateUser(UserDTO userDTO, String oid) {
+        Validations validations = new Validations();
+        if (!StringUtil.isValidString(userDTO.getName())) {
+            validations.add("Nome Invalido");
+        }
+        userDTO.setPhone(StringUtil.removeSpecialChars(userDTO.getPhone()));
+
+        if ((!StringUtil.isValidString(userDTO.getPhone())) || (!StringUtil.isValidPhone(userDTO.getPhone()))) {
+            validations.add("Telefone Invalido");
+        }
+        validations.throwErrors();
+        User user = userRepository.findByOid(oid);
+        user.validateUser();
+        user.setName(userDTO.getName());
+        user.setPhone(userDTO.getPhone());
+        userRepository.update(user);
+        return user.toDTO();
     }
 
     @Transactional

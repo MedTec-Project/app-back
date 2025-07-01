@@ -7,7 +7,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.Objects;
 
-@Setter
 @Singleton
 public class UserSession {
 
@@ -20,6 +19,22 @@ public class UserSession {
     private String token;
 
     private UserSession() {
+    }
+
+
+    public static void setOidUser(String oidUser) {
+        UserSession session = getInstance();
+        session.oidUser = oidUser;
+    }
+
+    public static void setUserType(String userType) {
+        UserSession session = getInstance();
+        session.userType = userType;
+    }
+
+    public static void setToken(String token) {
+        UserSession session = getInstance();
+        session.token = token;
     }
 
     public static UserSession getInstance() {
